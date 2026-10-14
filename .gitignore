@@ -14,5 +14,5 @@ data/_*/
 data/index/*
 !data/index/.gitkeep
 
-# 评估产物：报告可重新生成
-evals/reports/
+# 评估报告保留（可复现的证据）；逐次运行产生的临时文件忽略
+evals/reports/*.tmp

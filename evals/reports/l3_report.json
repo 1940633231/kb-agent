@@ -1,0 +1,704 @@
+{
+  "layer": "L3",
+  "label": "+自纠错重试（本项目）",
+  "generated_at": "2026-10-13T09:40:21.287437+00:00",
+  "config": {
+    "mode": "hybrid",
+    "use_rerank": true,
+    "top_k": 5,
+    "strategy": "recursive",
+    "max_retries": 2,
+    "generate": false,
+    "llm_rewrite": true
+  },
+  "metrics": {
+    "answerable_questions": 17,
+    "doc_recall@5": 1.0,
+    "all_docs_hit@5": 1.0,
+    "doc_mrr": 0.9265,
+    "evidence_hit@5": 0.4706,
+    "evidence_hit_final": 0.5294,
+    "mean_evidence_count": 13.05,
+    "retry_rate": 0.6,
+    "mean_retries": 1.1,
+    "refuse_flagged_rate": 1.0,
+    "mean_seconds_per_query": 74.773
+  },
+  "questions": [
+    {
+      "id": "ar-fact-001",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2023"
+      ],
+      "retrieved_docs": [
+        "600519-2023",
+        "600519-2024",
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 28.57
+    },
+    {
+      "id": "ar-fact-002",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2024"
+      ],
+      "retrieved_docs": [
+        "600036-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 30.51
+    },
+    {
+      "id": "ar-fact-003",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 28.8
+    },
+    {
+      "id": "ar-fact-004",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2024",
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 34.6
+    },
+    {
+      "id": "ar-fact-005",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2025"
+      ],
+      "retrieved_docs": [
+        "600036-2023",
+        "600036-2024",
+        "600036-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 33.37
+    },
+    {
+      "id": "ar-table-001",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2024"
+      ],
+      "retrieved_docs": [
+        "300750-2023",
+        "300750-2024",
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 20,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "llm",
+        "llm"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 研发费用明细中",
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 79.39
+    },
+    {
+      "id": "ar-table-002",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2024"
+      ],
+      "retrieved_docs": [
+        "600036-2024",
+        "600036-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 29.31
+    },
+    {
+      "id": "ar-table-003",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2024"
+      ],
+      "retrieved_docs": [
+        "600519-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 29.56
+    },
+    {
+      "id": "ar-table-004",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2023"
+      ],
+      "retrieved_docs": [
+        "600519-2023",
+        "600519-2024",
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 4,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 17,
+      "retry_count": 1,
+      "rewrite_sources": [
+        "llm"
+      ],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 63.73
+    },
+    {
+      "id": "ar-cross-001",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2023"
+      ],
+      "retrieved_docs": [
+        "600036-2023",
+        "600036-2024",
+        "600036-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 16,
+      "retry_count": 1,
+      "rewrite_sources": [
+        "llm"
+      ],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 52.36
+    },
+    {
+      "id": "ar-cross-002",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2024"
+      ],
+      "retrieved_docs": [
+        "600519-2024",
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 20,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "llm",
+        "llm"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 财务费用分别",
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 66.01
+    },
+    {
+      "id": "ar-cross-003",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2023"
+      ],
+      "retrieved_docs": [
+        "600036-2023",
+        "600036-2024",
+        "600036-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 19,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "llm",
+        "llm"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 较上年末上升了",
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 52.67
+    },
+    {
+      "id": "ar-multi-001",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2023",
+        "600519-2024",
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2023",
+        "600519-2024",
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 20,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "llm",
+        "llm"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 营业收入分别",
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 88.43
+    },
+    {
+      "id": "ar-multi-002",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2023",
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2023",
+        "300750-2024",
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": true,
+      "evidence_count": 19,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "llm",
+        "llm"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 两年披露",
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 91.36
+    },
+    {
+      "id": "ar-multi-003",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2023",
+        "600036-2024",
+        "600036-2025"
+      ],
+      "retrieved_docs": [
+        "600036-2023",
+        "600036-2024",
+        "600036-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 33.23
+    },
+    {
+      "id": "ar-calc-001",
+      "question_type": "calc",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2024",
+        "300750-2025",
+        "600519-2023",
+        "600519-2024",
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 2,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 20,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "llm",
+        "llm"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 研发投入合计占营业收入",
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 101.39
+    },
+    {
+      "id": "ar-calc-002",
+      "question_type": "calc",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2024",
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2023",
+        "300750-2024",
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 20,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "llm",
+        "llm"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 营业收入较,增加约",
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 108.89
+    },
+    {
+      "id": "ar-refuse-001",
+      "question_type": "refuse",
+      "expected_behavior": "refuse",
+      "wanted_docs": [],
+      "retrieved_docs": [
+        "300750-2024",
+        "300750-2025",
+        "600036-2024",
+        "600036-2025",
+        "600519-2024",
+        "600519-2025"
+      ],
+      "doc_recall": null,
+      "all_docs_hit": null,
+      "first_relevant_rank_top5": null,
+      "evidence_hit_top5": null,
+      "evidence_hit_final": null,
+      "evidence_count": 15,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "llm",
+        "llm"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 比亚迪",
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 204.31
+    },
+    {
+      "id": "ar-refuse-002",
+      "question_type": "refuse",
+      "expected_behavior": "refuse",
+      "wanted_docs": [],
+      "retrieved_docs": [
+        "300750-2023",
+        "300750-2024",
+        "300750-2025",
+        "600036-2024",
+        "600036-2025",
+        "600519-2023",
+        "600519-2024"
+      ],
+      "doc_recall": null,
+      "all_docs_hit": null,
+      "first_relevant_rank_top5": null,
+      "evidence_hit_top5": null,
+      "evidence_hit_final": null,
+      "evidence_count": 20,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "llm",
+        "llm"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 华为",
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 162.75
+    },
+    {
+      "id": "ar-refuse-003",
+      "question_type": "refuse",
+      "expected_behavior": "refuse",
+      "wanted_docs": [],
+      "retrieved_docs": [
+        "600036-2023",
+        "600036-2024",
+        "600036-2025"
+      ],
+      "doc_recall": null,
+      "all_docs_hit": null,
+      "first_relevant_rank_top5": null,
+      "evidence_hit_top5": null,
+      "evidence_hit_final": null,
+      "evidence_count": 15,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "llm",
+        "llm"
+      ],
+      "graded_passed": false,
+      "graded_reason": "证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 上半年",
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "answer_value_hit": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "seconds": 176.22
+    }
+  ],
+  "elapsed_seconds": 1538.1
+}
