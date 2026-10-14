@@ -1,0 +1,114 @@
+{
+  "generated_at": "2026-10-13T06:47:53.247365+00:00",
+  "source": "http://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "documents": [
+    {
+      "ts_code": "300750",
+      "company": "宁德时代",
+      "year": 2023,
+      "title": "2023年年度报告",
+      "announcement_id": "1219313047",
+      "pdf_url": "https://static.cninfo.com.cn/finalpage/2024-03-16/1219313047.PDF",
+      "file": "data/docs/annual_reports/300750_2023_annual_report.pdf",
+      "bytes": 5986207,
+      "sha256": "6081f0377617dddb82f900569d6458c278a7ab26697b34c87684188eac083471",
+      "fetched_at": "2026-10-13T06:46:35.790977+00:00"
+    },
+    {
+      "ts_code": "300750",
+      "company": "宁德时代",
+      "year": 2024,
+      "title": "2024年年度报告",
+      "announcement_id": "1222806982",
+      "pdf_url": "https://static.cninfo.com.cn/finalpage/2025-03-15/1222806982.PDF",
+      "file": "data/docs/annual_reports/300750_2024_annual_report.pdf",
+      "bytes": 2070073,
+      "sha256": "b4f1713d7b821eb076c102711d177fe942ccc2bc8dd171ae5d7a95799a65b0ad",
+      "fetched_at": "2026-10-13T06:46:38.051026+00:00"
+    },
+    {
+      "ts_code": "300750",
+      "company": "宁德时代",
+      "year": 2025,
+      "title": "2025年年度报告",
+      "announcement_id": "1225002214",
+      "pdf_url": "https://static.cninfo.com.cn/finalpage/2026-03-10/1225002214.PDF",
+      "file": "data/docs/annual_reports/300750_2025_annual_report.pdf",
+      "bytes": 2043710,
+      "sha256": "c15272977147dee7e6935a38ea0e4fd6855370aabb106f54cfe20f7cf6048ec9",
+      "fetched_at": "2026-10-13T06:46:40.064120+00:00"
+    },
+    {
+      "ts_code": "600036",
+      "company": "招商银行",
+      "year": 2023,
+      "title": "招商银行股份有限公司2023年度报告",
+      "announcement_id": "1219403503",
+      "pdf_url": "https://static.cninfo.com.cn/finalpage/2024-03-26/1219403503.PDF",
+      "file": "data/docs/annual_reports/600036_2023_annual_report.pdf",
+      "bytes": 5834543,
+      "sha256": "948a390b579a8d46f281d3f88a346b4388f1bb6b82a90db61d5cd48b4627598a",
+      "fetched_at": "2026-10-13T06:46:48.446287+00:00"
+    },
+    {
+      "ts_code": "600036",
+      "company": "招商银行",
+      "year": 2024,
+      "title": "招商银行股份有限公司2024年度报告",
+      "announcement_id": "1222895154",
+      "pdf_url": "https://static.cninfo.com.cn/finalpage/2025-03-26/1222895154.PDF",
+      "file": "data/docs/annual_reports/600036_2024_annual_report.pdf",
+      "bytes": 6215121,
+      "sha256": "44a8759c94e1ba92f1d96897ca3778592d9a7eb33b53420c19268f0b140d81c3",
+      "fetched_at": "2026-10-13T06:46:58.352293+00:00"
+    },
+    {
+      "ts_code": "600036",
+      "company": "招商银行",
+      "year": 2025,
+      "title": "招商银行股份有限公司2025年度报告",
+      "announcement_id": "1225047590",
+      "pdf_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225047590.PDF",
+      "file": "data/docs/annual_reports/600036_2025_annual_report.pdf",
+      "bytes": 32081947,
+      "sha256": "abe612a273468072b176dd51ea460c1e1596f8ca729cbc6db3fa28ba9a57ea79",
+      "fetched_at": "2026-10-13T06:47:53.247365+00:00"
+    },
+    {
+      "ts_code": "600519",
+      "company": "贵州茅台",
+      "year": 2023,
+      "title": "贵州茅台2023年年度报告",
+      "announcement_id": "1219506510",
+      "pdf_url": "https://static.cninfo.com.cn/finalpage/2024-04-03/1219506510.PDF",
+      "file": "data/docs/annual_reports/600519_2023_annual_report.pdf",
+      "bytes": 3563819,
+      "sha256": "2125ff97a452ea79b0d784e2432f7d224b6aecc330b644b593477d69e22f4ed1",
+      "fetched_at": "2026-10-13T06:46:22.661894+00:00"
+    },
+    {
+      "ts_code": "600519",
+      "company": "贵州茅台",
+      "year": 2024,
+      "title": "贵州茅台2024年年度报告",
+      "announcement_id": "1222993920",
+      "pdf_url": "https://static.cninfo.com.cn/finalpage/2025-04-03/1222993920.PDF",
+      "file": "data/docs/annual_reports/600519_2024_annual_report.pdf",
+      "bytes": 3626217,
+      "sha256": "5299f4940e2ce4e91084b73dc457d558b9d335fa76fbfee6227e4254eb7f4a30",
+      "fetched_at": "2026-10-13T06:46:26.477243+00:00"
+    },
+    {
+      "ts_code": "600519",
+      "company": "贵州茅台",
+      "year": 2025,
+      "title": "贵州茅台2025年年度报告",
+      "announcement_id": "1225114741",
+      "pdf_url": "https://static.cninfo.com.cn/finalpage/2026-04-17/1225114741.PDF",
+      "file": "data/docs/annual_reports/600519_2025_annual_report.pdf",
+      "bytes": 1082847,
+      "sha256": "474905deeaf0f875fc0a1b097a626c0c7852c427faadc5d7fc7816cbf45ea288",
+      "fetched_at": "2026-10-13T06:46:28.183850+00:00"
+    }
+  ]
+}

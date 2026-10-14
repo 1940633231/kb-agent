@@ -1,0 +1,18 @@
+# kb-agent 运行依赖。
+# 检索链路（切片 / embedding / FAISS / BM25 / rerank / 生成）整体复用 production-rag，
+# 所以先把它的依赖原样装齐，再补本项目自己的包。
+-r ../production-rag/requirements.txt
+
+# PDF 文本抽取：统一走 PDFium（原因见 rag_adapter/pdfium_loader.py）
+pypdfium2>=4.30.0
+
+# 编排层（第一阶段起使用）
+langgraph>=1.0.0
+
+# 测试
+pytest>=7.4.0
+
+# 第二阶段：Postgres Checkpointer + Store（配 persistence/docker-compose.yml）
+langgraph-checkpoint-postgres>=2.0.0
+psycopg[binary]>=3.1.0
+psycopg-pool>=3.1.0

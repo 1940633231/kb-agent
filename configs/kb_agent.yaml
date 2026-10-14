@@ -1,0 +1,103 @@
+# kb-agent 的本地轻量配置：只复用 production-rag 的检索链路，
+# 不启用 MySQL / ES / Milvus / Redis / 鉴权 / 审计（第零阶段无需任何外部服务）。
+#
+# 依据：v2 方案 §2.2「RAGService 的轻量模式优先，减少运行时依赖」。
+# 索引与 chunks 元数据落在 data/index/{strategy}/（FAISS + metadata.json）。
+
+auth:
+  enabled: false
+
+cache:
+  enabled: false
+  ttl_seconds: 0
+  max_entries: 8
+  backend: memory
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    db: 0
+    prefix: "kb:qcache:"
+
+audit:
+  enabled: false
+
+embedding:
+  model_name: BAAI/bge-small-zh-v1.5
+  normalize: true
+  batch_size: 32
+
+vector:
+  # 语料约数千 chunk，flat 精确检索、无需调参；index_dir_for() 决定实际路径，
+  # 这里的 index_path/metadata_path 仅为兼容 Config 的默认值。
+  index_path: data/index/faiss.index
+  metadata_path: data/index/metadata.json
+  index_type: flat
+
+chunk:
+  chunk_size: 800
+  overlap: 120
+
+ingestion:
+  # 版本化需要 MySQL 台账；本地轻量模式关闭，同名文档按覆盖语义处理
+  document_versioning:
+    enabled: false
+    retention: latest
+  # 上游 production-rag 的 FAISS 发布前校验用 index.id_map.tolist()，
+  # 而 faiss>=1.15 的 Int64Vector 已无该方法（生产环境同样的报错），
+  # 因此这里关闭上游校验，改由 scripts/ingest_kb.py 的 verify_index() 做等效核对
+  # （metadata.json 与 FAISS 的 vector_id 集合必须一致）。见 README「已知限制」。
+  write_validation:
+    enabled: false
+    strict: true
+
+retrieval:
+  top_k: 5
+  multi_query: 1          # 1 = 关闭多路召回，L0/L1/L2 只改检索方式这一个变量
+  multi_query_auto: false
+  scope:
+    enabled: false
+    mode: auto
+    require_entity: false
+    match_top_k: 10
+
+rerank:
+  model_name: BAAI/bge-reranker-base
+  candidate_pool: 50
+
+context:
+  max_context_tokens: 4096
+  reserved_tokens: 1024
+  tokenizer_backend: tiktoken
+  order_strategy: score
+  budget_temperature: 1.0
+  dedup_span_overlap: 0.5
+  dedup_jaccard: 0.85
+  merge_span_gap: 5
+
+generation:
+  backend: qwen
+  # 本机账号实测（2026-10-13）：qwen-turbo 返回 404 Model not exist，
+  # qwen-plus / qwen-max 可用，因此本地配置用 qwen-plus。
+  model_name: qwen-plus
+  api_key_env: DASHSCOPE_API_KEY
+  temperature: 0.3
+  max_tokens: 1024
+  timeout: 60
+  retry_times: 2
+  retry_backoff: 1.0
+  max_concurrency: 4
+  openai:
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+    model_name: ""
+
+storage:
+  enabled: false
+  pool_size: 5
+  backends:
+    mysql:
+      enabled: false
+    es:
+      enabled: false
+    milvus:
+      enabled: false

@@ -1,0 +1,29 @@
+# kb-agent 的状态持久化基础设施（第二阶段）。
+#
+# 用独立容器与独立数据卷，不碰机器上已有的 mysql8 / redis / milvus 等容器：
+#   docker compose -f persistence/docker-compose.yml up -d
+#   docker compose -f persistence/docker-compose.yml down      # 保留卷，数据不丢
+#   docker compose -f persistence/docker-compose.yml down -v   # 连卷一起删（重建演示用）
+#
+# 端口用 5433，避免与机器上可能存在的 5432 冲突。
+services:
+  postgres:
+    image: postgres:16
+    container_name: kb-agent-postgres
+    environment:
+      POSTGRES_USER: kb_agent
+      POSTGRES_PASSWORD: kb_agent
+      POSTGRES_DB: kb_agent
+    ports:
+      - "5433:5432"
+    volumes:
+      - kb-agent-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kb_agent -d kb_agent"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
+
+volumes:
+  kb-agent-pgdata:

@@ -1,0 +1,11 @@
+{
+  "upstream": "https://github.com/langchain-ai/docs.git",
+  "source_used": "https://ghfast.top/https://github.com/langchain-ai/docs.git",
+  "sparse_path": "src/oss/langgraph",
+  "commit": "204af4134d0d63221a4163512b243ad8391a71d6",
+  "markdown_files": 55,
+  "markdown_bytes": 1240690,
+  "local_dir": "data/docs/langgraph_docs",
+  "fetched_at": "2026-10-13T07:26:16.018740+00:00",
+  "note": "辅库暂未灌入索引：L0/L1/L2 基线固定在 9 份年报语料上，避免语料变动导致基线不可比。"
+}
