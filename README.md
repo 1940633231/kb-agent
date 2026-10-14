@@ -1,5 +1,7 @@
 # kb-agent
 
+[![tests](https://github.com/1940633231/kb-agent/actions/workflows/tests.yml/badge.svg)](https://github.com/1940633231/kb-agent/actions/workflows/tests.yml)
+
 在已有检索底座（`production-rag`）之上，用 LangGraph 构建一层具备**自我纠错**与
 **人工介入**能力的知识问答编排层，并用一份自建的 A 股年报语料，把检索从"够用"
 做到"可靠"、给出**可测量的提升**。
@@ -723,12 +725,16 @@ Postgres 连不上时接口层会降级到内存 checkpointer，日志里留一�
   全部可判定、逐题有原文出处。技术问答（LangGraph 辅库）与多轮/记忆题不在其中：
   前者需要另一套判定口径（定性题要靠裁判），后者需要多轮 harness；
   先保证分母（检索指标）可信，再谈扩展。
-- **CI**：`.github/workflows/tests.yml`。kb-agent 的检索链路是同进程 import
+- **CI**：`.github/workflows/tests.yml`（首次运行记录：**full 模式，62 passed / 5 skipped，2m35s**）。
+  kb-agent 的检索链路是同进程 import
   production-rag（公开仓库 `1940633231/production-rag`），CI 会拉取它并跑完整 67 个用例；
   语料与索引不在版本库里，相关用例（PDFium 抽取 4 个）与 Postgres 用例会自动 skip，
   跳过原因用 `-rs` 打印。网络抖动导致拉取失败时降级为"不依赖它的子集"，
   并把运行模式与 production-rag commit 写进 Step Summary——本地模拟 lite 模式为
   **23 passed / 9 skipped**。CI 另有一道 golden set 结构/题型配比/计算题字面量校验。
+  首次运行的实际跳过原因只有两类，都是设计使然：语料 PDF 不入库（PDFium 抽取 4 个用例），
+  以及 CI 里没有 Postgres（持久化 1 个用例）。安装环节会拉 torch 的 CUDA 轮子（约 2GB），
+  对 CPU-only 测试是浪费，可换 `--extra-index-url https://download.pytorch.org/whl/cpu` 提速。
 - **首 token 与分阶段延迟**：`evals/latency_report.py` 把一次问答切成
   检索 / 首 token(TTFT) / 生成 / 收尾四段并给出 P50、P95；
   token 用量用 tiktoken 估算（cl100k 不是 Qwen 分词器，属估算），
