@@ -22,6 +22,8 @@ class AgentRuntime:
     widened_top_k: int = 15
     #: facet 证据裁剪开关（默认开）；关掉可用于消融对比"裁剪到底值多少"
     scope_evidence_enabled: bool = True
+    #: 规则评分通过后再做一次 LLM 语义复核（抓"规则假通过"，方案 §4.1）
+    llm_grader: Optional[Any] = None
     min_coverage: float = 0.6         # 规则评分的关键词覆盖率下限
     rewriter: Optional[Any] = None    # 有 rewrite(question, reason, prev) -> List[str]
     generate_answers: bool = True     # 评估检索层时置 False，跳过 LLM 生成

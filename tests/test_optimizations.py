@@ -7,10 +7,14 @@ from typing import Any, Dict, List
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from agent.graph import ask, build_graph, default_runtime  # noqa: E402
 from agent.evidence import scope_evidence  # noqa: E402
 from agent.grading import extract_facets  # noqa: E402
 from agent.grounding import extract_numbers, verify_grounding  # noqa: E402
+from agent.llm_grade import LLMGrader  # noqa: E402
+from fakes import FakeGenerator, FakeService, maotai_hit  # noqa: E402
 
 
 def hit(document_id: str, content: str = "内容") -> Dict[str, Any]:
@@ -137,3 +141,100 @@ def test_grounding_uses_longest_metric_token_as_anchor():
         "贵州茅台2025年研发投入合计占营业收入的比例约为多少？")
     assert outcome["verified"] is True
     assert outcome["anchor_tokens"] == ["研发投入合计"]
+
+
+# ---- LLM 语义评分：抓"规则假通过" ----
+
+def test_llm_grader_parses_judgment():
+    grader = LLMGrader(FakeGenerator('{"judgment": "insufficient", "reason": "缺数值", "missing": "营业收入"}'))
+    outcome = grader.grade("贵州茅台2023年营业收入是多少元？", [maotai_hit(2023)])
+    assert outcome["judgment"] == "insufficient"
+    assert outcome["source"] == "llm"
+    assert outcome["missing"] == "营业收入"
+
+
+def test_llm_grader_falls_back_on_error_or_garbage():
+    class Boom:
+        def generate(self, messages):
+            raise RuntimeError("api down")
+
+    grader = LLMGrader(Boom())
+    outcome = grader.grade("问题", [maotai_hit(2023)])
+    assert outcome["source"] == "fallback"
+    assert outcome["judgment"] == "answerable", "外部依赖异常时沿用规则结论"
+
+    grader = LLMGrader(FakeGenerator("我不知道怎么判"))
+    assert grader.grade("问题", [maotai_hit(2023)])["source"] == "fallback"
+
+
+class FakeGrader:
+    def __init__(self, judgment: str) -> None:
+        self.judgment = judgment
+        self.calls = 0
+
+    def grade(self, question, hits):
+        self.calls += 1
+        return {"judgment": self.judgment, "reason": "fake", "missing": "",
+                "source": "llm"}
+
+
+def build_fake_graph(resolver=None, **runtime_kwargs):
+    resolver = resolver or (lambda query: [maotai_hit(2023)])
+    service = FakeService(resolver, generator=FakeGenerator())
+    runtime = default_runtime(service=service, use_llm_rewrite=False,
+                              **runtime_kwargs)
+    return build_graph(runtime)
+
+
+def test_llm_grader_flips_rule_pass_into_retry():
+    """规则说"证据已覆盖"，LLM 复核说不足 → 应当触发重试而不是直接作答。"""
+    grader = FakeGrader("insufficient")
+    graph = build_fake_graph(llm_grader=grader, generate_answers=False)
+    result = ask(graph, "贵州茅台2023年的营业收入是多少元？", thread_id="t-llmgrade")
+
+    assert grader.calls >= 1
+    assert result["retry_count"] == 2, "被复核拦下后应走满重试"
+    score = result["retrieval_score"]
+    assert score["passed"] is False and score["rule_passed"] is True
+    assert score["llm_review"]["judgment"] == "insufficient"
+
+
+def test_llm_grader_answerable_keeps_single_pass():
+    grader = FakeGrader("answerable")
+    graph = build_fake_graph(llm_grader=grader, generate_answers=False)
+    result = ask(graph, "贵州茅台2023年的营业收入是多少元？", thread_id="t-llmok")
+    assert result["retry_count"] == 0
+    assert result["retrieval_score"]["passed"] is True
+
+
+def test_numeric_discipline_reaches_the_prompt():
+    """生成时必须带上数字纪律（数字逐字引用 / 换算先给原值 / 多公司逐条标注）。"""
+    captured = {}
+
+    class RecordingGenerator(FakeGenerator):
+        def generate(self, messages):
+            captured["system"] = messages[0]["content"]
+            return super().generate(messages)
+
+    service = FakeService(lambda query: [maotai_hit(2023)],
+                          generator=RecordingGenerator())
+    runtime = default_runtime(service=service, use_llm_rewrite=False)
+    graph = build_graph(runtime)
+    ask(graph, "贵州茅台2023年的营业收入是多少元？", thread_id="t-prompt")
+
+    system = captured["system"]
+    assert "数字纪律" in system
+    assert "逐字一致" in system
+    assert "公司+年份=数值" in system
+
+
+def test_default_runtime_routes_known_fields_out_of_extra():
+    """回归：字段名与 AgentRuntime 同名的注入参数不能落进 extra（踩过两次）。"""
+    service = FakeService(lambda query: [maotai_hit(2023)])
+    grader = FakeGrader("answerable")
+    runtime = default_runtime(service=service, use_llm_rewrite=False,
+                              llm_grader=grader, widened_top_k=7,
+                              interrupt_on_low_confidence=True)
+    assert runtime.llm_grader is grader
+    assert runtime.widened_top_k == 7
+    assert runtime.extra == {"interrupt_on_low_confidence": True}

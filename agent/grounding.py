@@ -63,6 +63,11 @@ def _equivalents(number: str) -> List[str]:
     return [v for v in variants if v and v != "0" and set(v) != {"0"}]
 
 
+def number_equivalents(number: str) -> List[str]:
+    """数字的等价写法（含金额数量级换算），供引用覆盖等离线分析复用。"""
+    return _equivalents(number)
+
+
 def verify_grounding(answer: Optional[str], citations: List[Dict],
                      chunks: List[Dict], question: str) -> Dict[str, Any]:
     """返回 {checked, grounded, ungrounded, verified}。"""

@@ -36,10 +36,22 @@ sys.path.insert(0, str(EVALS_DIR))
 import run_eval as base  # noqa: E402  （复用 golden set 与指标口径）
 
 from agent.graph import ask, build_graph, default_runtime  # noqa: E402
+from agent.grounding import extract_numbers, number_equivalents  # noqa: E402
 from rag_adapter.settings import load_env, use_project_root_as_cwd  # noqa: E402
 
 REFUSAL_MARKERS = ("无法回答", "无法确认", "没有相关", "未提及", "不足以", "没有找到",
                    "无法提供", "不包含", "未包含")
+
+_CHUNK_INDEX: Dict[str, Dict] = {}
+
+
+def chunk_index(strategy: str = "recursive") -> Dict[str, Dict]:
+    """chunk_id → chunk（离线算"引用覆盖"用，只加载一次）。"""
+    if not _CHUNK_INDEX:
+        meta = json.loads((PROJECT_ROOT / "data" / "index" / strategy /
+                           "metadata.json").read_text(encoding="utf-8"))
+        _CHUNK_INDEX.update({value["chunk_id"]: value for value in meta.values()})
+    return _CHUNK_INDEX
 
 
 def mean(values: Sequence[Optional[float]]) -> Optional[float]:
@@ -56,7 +68,8 @@ def evaluate(questions: List[Dict], args) -> Dict:
     runtime = default_runtime(generate_answers=args.generate,
                               use_llm_rewrite=not args.rule_rewrite,
                               max_retries=args.max_retries,
-                              scope_evidence_enabled=not args.no_scope)
+                              scope_evidence_enabled=not args.no_scope,
+                              use_llm_grader=not args.no_llm_grade)
     graph = build_graph(runtime)
     offsets = base.rag.load_page_offsets(args.strategy)
 
@@ -108,6 +121,22 @@ def evaluate(questions: List[Dict], args) -> Dict:
                                   for variant in base.answer_variants(entry))
                               for entry in values]
         grounding = result.get("grounding") or {}
+
+        # 引用覆盖：答案里的数字有没有出现在**被引用的片段**里（不管指标词是否相关）。
+        # 它与 grounding 是两个不同的量：
+        #   citation_coverage 低 → 引用没覆盖到答案里的数字（引用可信度问题）
+        #   grounding 未通过 → 覆盖了但片段与问题指标不相关（选错指标/选错表）
+        numbers = extract_numbers(answer)
+        index = chunk_index(args.strategy)
+        cited_text = base.normalize(" ".join(
+            (index.get(c.get("chunk_id")) or {}).get("content") or ""
+            for c in (result.get("citations") or [])))
+        # 注意别复用 covered：上面的 covered 是"文档交集"（算 doc_recall 用），
+        # 这里一旦同名覆盖，doc_recall 就会变成"计数比"（曾出现 3.72 这种不可能的值）
+        covered_numbers = [n for n in numbers
+                           if any(base.normalize(v) in cited_text
+                                  for v in number_equivalents(n))]
+        coverage = (len(covered_numbers) / len(numbers)) if numbers else None
         wanted_companies = {doc.split("-")[0] for doc in wanted}
         wanted_years = {doc.split("-")[1] for doc in wanted}
         foreign_evidence = sorted(
@@ -145,6 +174,9 @@ def evaluate(questions: List[Dict], args) -> Dict:
             "grounding_checked": grounding.get("checked"),
             "grounding_verified": grounding.get("verified"),
             "ungrounded_numbers": grounding.get("ungrounded") or [],
+            "llm_review": (result.get("retrieval_score") or {}).get("llm_review"),
+            "numbers_total": len(numbers),
+            "citation_coverage": coverage,
             "answer": answer,
             "citations": result.get("citations") or [],
             "citation_count": len(result.get("citations") or []),
@@ -191,6 +223,10 @@ def evaluate(questions: List[Dict], args) -> Dict:
              for r in rows if r["grounding_checked"]]),
         "mean_ungrounded_numbers": mean(
             [len(r["ungrounded_numbers"]) for r in rows]),
+        "citation_coverage": mean([r["citation_coverage"] for r in rows]),
+        "citation_full_coverage_rate": mean(
+            [1.0 if r["citation_coverage"] == 1.0 else 0.0
+             for r in rows if r["citation_coverage"] is not None]),
     }
     if args.generate:
         answered = [r for r in rows if r["expected_behavior"] == "answer"]
@@ -219,6 +255,8 @@ def main() -> int:
                         help="改写只用规则兜底（不调 LLM）")
     parser.add_argument("--no-scope", action="store_true",
                         help="关闭 facet 证据裁剪（消融对比用）")
+    parser.add_argument("--no-llm-grade", action="store_true",
+                        help="关闭 LLM 语义复核（消融对比用；默认开启）")
     parser.add_argument("--generate", action="store_true",
                         help="打开生成链路（消耗 API 额度）")
     args = parser.parse_args()

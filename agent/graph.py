@@ -13,6 +13,7 @@ build_graph 的 checkpointer 参数就是为此留的注入点。
 """
 from __future__ import annotations
 
+import dataclasses
 from typing import Any, Dict, Optional
 
 from langgraph.checkpoint.memory import InMemorySaver
@@ -77,6 +78,8 @@ def default_runtime(strategy: str = "recursive",
                     memory_user_id: str = "",
                     review_timeout_seconds: Optional[float] = 3600.0,
                     scope_evidence_enabled: bool = True,
+                    use_llm_grader: bool = False,
+                    llm_grader: Optional[Any] = None,
                     **extra: Any) -> AgentRuntime:
     """默认运行时：L2 检索配置（hybrid + rerank）+ LLM 改写。
 
@@ -89,18 +92,31 @@ def default_runtime(strategy: str = "recursive",
     service = service or rag.build_service(strategy=strategy, mode="hybrid",
                                           use_rerank=True)
     page_offsets = rag.load_page_offsets(strategy)
+    if llm_grader is None and use_llm_grader:
+        generator = service._pipeline.generator  # noqa: SLF001
+        if generator is not None:
+            from agent.llm_grade import LLMGrader
+            llm_grader = LLMGrader(generator)
     rewriter = None
     if use_llm_rewrite:
         generator = service._pipeline.generator  # noqa: SLF001
         if generator is not None:
             rewriter = LLMRewriter(generator)
+    # 结构性防错：关键字里凡与 AgentRuntime 字段同名的一律按字段传入，
+    # 其余才进 extra。此前 memory_store / llm_grader 都被默默吞进 extra，
+    # 表现为"配置了却不生效"，两次都靠测试才发现。
+    field_names = {field.name for field in dataclasses.fields(AgentRuntime)}
+    passed = {key: value for key, value in extra.items() if key in field_names}
+    leftover = {key: value for key, value in extra.items()
+                if key not in field_names}
     return AgentRuntime(service=service, strategy=strategy, max_retries=max_retries,
                         rewriter=rewriter, generate_answers=generate_answers,
                         memory_store=memory_store, memory_user_id=memory_user_id,
                         review_timeout_seconds=review_timeout_seconds,
                         scope_evidence_enabled=scope_evidence_enabled,
-                        page_offsets=page_offsets,
-                        extra=dict(extra))
+                        llm_grader=llm_grader,
+                        page_offsets=page_offsets, **passed,
+                        extra=leftover)
 
 
 def ask(graph: Any, question: str, thread_id: str = "demo",

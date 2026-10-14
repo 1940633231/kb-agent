@@ -36,8 +36,15 @@ MEMORY_UNAVAILABLE = ("识别到这是一条长期偏好，但当前线程没有
                       "本次未写入。")
 
 UNCERTAIN_CLAUSE = (
-    "7. 本次检索证据未通过完整性校验。如果上下文不足以回答，请明确说明"
+    "本次检索证据未通过完整性校验。如果上下文不足以回答，请明确说明"
     "“根据现有信息无法回答”，不要给出未在上下文中出现的数字。"
+)
+# 数字纪律：针对实测的两类错答——模型自行换算单位后给出错值、
+# 以及跨公司题把两家的数字混配（ar-crossco-002 出现过 18,606,756,000 / 186.07）
+NUMERIC_DISCIPLINE = (
+    "数字纪律：引用的数值必须与上下文逐字一致；需要换算单位时，先写上下文里的原值，"
+    "再在括号里给出换算结果；上下文没有出现的数值一律不写；"
+    "问题涉及多家公司或多个年份时，逐条标注“公司+年份=数值”，不要混用。"
 )
 
 
@@ -142,12 +149,23 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         hits = state.get("retrieved_chunks") or []
         score = grade_evidence(state["question"], hits,
                                min_coverage=runtime.min_coverage)
+        # 规则说"够"才值得复核："规则假通过"会变成沉默的错答（贵且危险），
+        # "规则假不通过"只是多一次重试（便宜，已用关键词修复与 facet 裁剪压掉）
+        if score["passed"] and runtime.llm_grader is not None:
+            review = runtime.llm_grader.grade(state["question"], hits)
+            score["llm_review"] = review
+            if review.get("judgment") == "insufficient" and review.get("source") == "llm":
+                score["passed"] = False
+                score["rule_passed"] = True
+                score["reason"] = "LLM 复核判定证据不足: {}".format(
+                    review.get("reason") or review.get("missing") or "")
         return {
             "retrieval_score": score,
             "status": "graded",
             "trace": [{"node": "grade_retrieval", "passed": score["passed"],
                        "reason": score["reason"],
                        "coverage": score["coverage"],
+                       "llm_review": (score.get("llm_review") or {}).get("judgment"),
                        "documents": score["documents"]}],
         }
 
@@ -233,9 +251,14 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
                 "content": messages[0]["content"] + "\n" + memory_block +
                            "\n（以上只影响回答口径与风格；具体事实仍必须来自上下文。）",
             }
+        extra_clauses = [NUMERIC_DISCIPLINE]
         if not (state.get("retrieval_score") or {}).get("passed", True):
-            messages[0] = {"role": "system",
-                           "content": messages[0]["content"] + "\n" + UNCERTAIN_CLAUSE}
+            extra_clauses.append(UNCERTAIN_CLAUSE)
+        # 上游 system prompt 已编号到 6，这里接着往下编
+        numbered = "\n".join("{}. {}".format(index + 7, text)
+                             for index, text in enumerate(extra_clauses))
+        messages[0] = {"role": "system",
+                       "content": messages[0]["content"] + "\n" + numbered}
 
         generator = pipeline.generator
         writer = _stream_writer(runtime)

@@ -21,6 +21,8 @@ class ApiSettings:
     default_user: str = "demo-user"
     #: 生成过程的 token 级流式（SSE）
     token_stream: bool = True
+    #: 规则评分通过后再做一次 LLM 语义复核（抓"规则假通过"）
+    llm_grade: bool = True
 
     @classmethod
     def from_env(cls) -> "ApiSettings":
@@ -40,4 +42,5 @@ class ApiSettings:
                                                         "3600")),
             default_user=os.environ.get("KB_AGENT_USER", "demo-user"),
             token_stream=flag("KB_AGENT_TOKEN_STREAM", True),
+            llm_grade=flag("KB_AGENT_LLM_GRADE", True),
         )

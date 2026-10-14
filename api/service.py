@@ -143,6 +143,7 @@ class AppContext:
             review_timeout_seconds=self.settings.review_timeout_seconds,
             interrupt_on_low_confidence=self.settings.interrupt_on_low_confidence,
             enable_token_stream=bool(streaming and self.settings.token_stream),
+            use_llm_grader=self.settings.llm_grade,
         )
 
 
