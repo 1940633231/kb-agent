@@ -724,9 +724,11 @@ Postgres 连不上时接口层会降级到内存 checkpointer，日志里留一�
   前者需要另一套判定口径（定性题要靠裁判），后者需要多轮 harness；
   先保证分母（检索指标）可信，再谈扩展。
 - **CI**：`.github/workflows/tests.yml`。kb-agent 的检索链路是同进程 import
-  production-rag，它是独立仓库，所以 CI 先尝试拉取它：拉到就跑完整 67 个用例，
-  拉不到就跑不依赖它的子集（本地模拟：**23 passed / 9 skipped**，跳过原因用 `-rs` 打印，
-  不假装全绿）。CI 里另有一道 golden set 结构校验。
+  production-rag（公开仓库 `1940633231/production-rag`），CI 会拉取它并跑完整 67 个用例；
+  语料与索引不在版本库里，相关用例（PDFium 抽取 4 个）与 Postgres 用例会自动 skip，
+  跳过原因用 `-rs` 打印。网络抖动导致拉取失败时降级为"不依赖它的子集"，
+  并把运行模式与 production-rag commit 写进 Step Summary——本地模拟 lite 模式为
+  **23 passed / 9 skipped**。CI 另有一道 golden set 结构/题型配比/计算题字面量校验。
 - **首 token 与分阶段延迟**：`evals/latency_report.py` 把一次问答切成
   检索 / 首 token(TTFT) / 生成 / 收尾四段并给出 P50、P95；
   token 用量用 tiktoken 估算（cl100k 不是 Qwen 分词器，属估算），

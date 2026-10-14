@@ -1,11 +1,11 @@
 name: tests
 
-# 说明：kb-agent 的检索链路是"同进程 import production-rag"（方案 §2.2），
-# 而 production-rag 是独立仓库。CI 里先尝试拉取它：
-#   - 拉到了 → 装齐依赖跑完整用例（需要该仓库可公开访问，或配置 token）
-#   - 拉不到 → 只跑不依赖它的用例（语料/索引本就不在版本库里，相关用例会自动 skip）
-# 这样 CI 不会因为"缺一个可选依赖"而红，但也不会假装全绿：
-# pytest 的 -rs 会把跳过原因列出来。
+# kb-agent 的检索链路是"同进程 import production-rag"（方案 §2.2），
+# 而 production-rag 是**公开仓库**，所以 CI 正常拉取它并跑完整用例。
+#
+# 仍然保留降级路径的唯一理由：网络抖动不该让构建变红。拉取失败时只跑不依赖它的
+# 子集（语料与索引不在版本库里，相关用例本来就会 skip），并把运行模式写进
+# Step Summary，避免"看起来全绿其实只跑了一半"。
 on:
   push:
   pull_request:
@@ -19,28 +19,45 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: 尝试拉取 production-rag（可选依赖）
+      - name: 拉取 production-rag（公开仓库）
         id: sibling
         continue-on-error: true
         run: |
-          git clone --depth 1 https://github.com/1940633231/production-rag.git ../production-rag
+          for attempt in 1 2 3; do
+            if git clone --depth 1 https://github.com/1940633231/production-rag.git ../production-rag; then
+              echo "resolved_commit=$(git -C ../production-rag rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "第 $attempt 次拉取失败，重试…"
+            sleep 5
+          done
+          exit 1
 
       - name: 安装依赖
+        id: deps
         run: |
           python -m pip install --upgrade pip
           if [ -d ../production-rag ]; then
-            echo "检测到 production-rag，安装完整依赖"
+            echo "mode=full" >> "$GITHUB_OUTPUT"
             pip install -r requirements.txt
             pip install -e ../production-rag
           else
-            echo "未取到 production-rag，只安装 CI 最小依赖"
+            echo "mode=lite" >> "$GITHUB_OUTPUT"
             pip install -r requirements-ci.txt
           fi
+
+      - name: 记录运行模式与 production-rag 版本
+        run: |
+          {
+            echo "### 测试环境"
+            echo "- 模式：**${{ steps.deps.outputs.mode }}**"
+            echo "- production-rag commit：\`${{ steps.sibling.outputs.resolved_commit || '未取到（降级为 lite）' }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: 跑测试（跳过原因用 -rs 打印）
         run: python -m pytest tests -q -rs
 
-      - name: 校验 golden set 可解析且题型配比正确
+      - name: 校验 golden set 结构、题型配比与 id 唯一性
         run: |
           python - <<'PY'
           import json, collections, pathlib
@@ -52,5 +69,8 @@ jobs:
           assert len({r['id'] for r in rows}) == len(rows), "id 必须唯一"
           for required in ("fact", "table", "cross_section", "cross_document", "calc", "refuse"):
               assert kinds.get(required), f"缺题型 {required}"
+          for row in rows:
+              if row["question_type"] == "calc":
+                  assert row.get("evidence_literals"), f"{row['id']} 缺 evidence_literals"
           print("golden set OK:", len(rows), dict(kinds))
           PY
