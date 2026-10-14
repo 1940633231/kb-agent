@@ -24,6 +24,27 @@
 
 ## 目录结构
 
+### 总体架构（分层）
+
+```mermaid
+flowchart TB
+    U["用户 / 测试客户端"] --> API["接口层 FastAPI<br/>/ask · /ask/stream(SSE) · /threads/{id}/review"]
+    API --> GRAPH["编排层 LangGraph 主图<br/>understand → retrieve → grade → decide<br/>→ rewrite ⟲ / generate → verify → finalize"]
+    GRAPH --> SUB["检索子图（无状态、可单测）<br/>多查询合并去重 + facet 裁剪"]
+    SUB --> RAG["检索层：复用 production-rag<br/>向量(FAISS) + BM25 + RRF + Cross-Encoder 重排"]
+    GRAPH --> HITL["人工审核<br/>interrupt() / Command(resume=...)"]
+    GRAPH <--> CP["Checkpointer<br/>线程状态（Postgres / 内存）"]
+    GRAPH <--> STORE["Store<br/>跨会话记忆（namespace 隔离）"]
+    CP --> PG[("PostgreSQL<br/>kb-agent-postgres 容器")]
+    STORE --> PG
+    RAG --> IDX["索引：3,576 chunk<br/>faiss.index + metadata.json + page_offsets.json"]
+    RAG --> LLM["模型：qwen-flash（生成/改写/复核/裁判）<br/>bge-small-zh-v1.5 · bge-reranker-base"]
+    EVAL["评估层<br/>golden set 50 题 · 分层矩阵 · LLM 裁判 · 延迟"] --> GRAPH
+```
+
+边界说明：检索子图只返回候选与检索统计，**判定与重试全部在编排层**；
+接口层只做 HTTP 语义（校验、错误映射、SSE 编码、请求级日志），不复制判定逻辑。
+
 ```text
 kb-agent/
 ├── agent/            # 主图：state / nodes / graph / grading / rewriter / 检索子图
