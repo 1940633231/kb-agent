@@ -1,0 +1,56 @@
+name: tests
+
+# 说明：kb-agent 的检索链路是"同进程 import production-rag"（方案 §2.2），
+# 而 production-rag 是独立仓库。CI 里先尝试拉取它：
+#   - 拉到了 → 装齐依赖跑完整用例（需要该仓库可公开访问，或配置 token）
+#   - 拉不到 → 只跑不依赖它的用例（语料/索引本就不在版本库里，相关用例会自动 skip）
+# 这样 CI 不会因为"缺一个可选依赖"而红，但也不会假装全绿：
+# pytest 的 -rs 会把跳过原因列出来。
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 尝试拉取 production-rag（可选依赖）
+        id: sibling
+        continue-on-error: true
+        run: |
+          git clone --depth 1 https://github.com/1940633231/production-rag.git ../production-rag
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          if [ -d ../production-rag ]; then
+            echo "检测到 production-rag，安装完整依赖"
+            pip install -r requirements.txt
+            pip install -e ../production-rag
+          else
+            echo "未取到 production-rag，只安装 CI 最小依赖"
+            pip install -r requirements-ci.txt
+          fi
+
+      - name: 跑测试（跳过原因用 -rs 打印）
+        run: python -m pytest tests -q -rs
+
+      - name: 校验 golden set 可解析且题型配比正确
+        run: |
+          python - <<'PY'
+          import json, collections, pathlib
+          rows = [json.loads(l) for l in
+                  pathlib.Path("evals/golden_set.jsonl").read_text(encoding="utf-8").splitlines()
+                  if l.strip()]
+          kinds = collections.Counter(r["question_type"] for r in rows)
+          assert len(rows) >= 50, f"验收集应 ≥50 题，当前 {len(rows)}"
+          assert len({r['id'] for r in rows}) == len(rows), "id 必须唯一"
+          for required in ("fact", "table", "cross_section", "cross_document", "calc", "refuse"):
+              assert kinds.get(required), f"缺题型 {required}"
+          print("golden set OK:", len(rows), dict(kinds))
+          PY

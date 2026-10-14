@@ -5,8 +5,13 @@ import sys
 from pathlib import Path
 from typing import Dict, List
 
+import pytest
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
+
+# kb-agent 同进程 import production-rag（app 包）；CI 里没有它时整模块跳过
+pytest.importorskip("app.core.config", reason="需要 production-rag（app 包）")
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from agent.graph import ask, build_graph, default_runtime  # noqa: E402

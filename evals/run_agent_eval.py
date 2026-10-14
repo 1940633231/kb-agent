@@ -42,6 +42,35 @@ from rag_adapter.settings import load_env, use_project_root_as_cwd  # noqa: E402
 REFUSAL_MARKERS = ("无法回答", "无法确认", "没有相关", "未提及", "不足以", "没有找到",
                    "无法提供", "不包含", "未包含")
 
+# token 估算：用 tiktoken 的 cl100k_base 近似（不是 Qwen 的分词器，属**估算**，
+# 报告里必须标注这一点）。价格不写死在代码里——单价随官方调价变化，
+# 用环境变量传入，没配就只报 token 数，不报钱。
+_ENCODER = None
+
+
+def estimate_tokens(text: str) -> int:
+    global _ENCODER
+    if _ENCODER is None:
+        try:
+            import tiktoken
+            _ENCODER = tiktoken.get_encoding("cl100k_base")
+        except Exception:  # noqa: BLE001
+            _ENCODER = False
+    if not _ENCODER:
+        return max(1, len(text) // 2)
+    return len(_ENCODER.encode(text or ""))
+
+
+def cost_estimate(prompt_tokens: int, answer_tokens: int) -> Optional[float]:
+    """按环境变量里的单价估算成本（元）。单价示例：qwen-flash 按官方价填写。"""
+    import os
+    in_price = os.environ.get("KB_AGENT_INPUT_PRICE_PER_M")
+    out_price = os.environ.get("KB_AGENT_OUTPUT_PRICE_PER_M")
+    if not in_price or not out_price:
+        return None
+    return round(prompt_tokens / 1e6 * float(in_price)
+                 + answer_tokens / 1e6 * float(out_price), 6)
+
 _CHUNK_INDEX: Dict[str, Dict] = {}
 
 
@@ -213,6 +242,9 @@ def evaluate(questions: List[Dict], args) -> Dict:
                                   for c in (result.get("citations") or [])) if
                 (result.get("citations") or []) else None,
             "refused": any(marker in answer for marker in REFUSAL_MARKERS),
+            "prompt_tokens_est": estimate_tokens(
+                " ".join((hit.get("content") or "") for hit in evidence) + item["question"]),
+            "answer_tokens_est": estimate_tokens(answer),
             "seconds": round(elapsed, 2),
         }
         rows.append(row)
@@ -262,6 +294,14 @@ def evaluate(questions: List[Dict], args) -> Dict:
              for r in rows if r["repair_fixed"] is not None]),
         "unverified_rate": mean(
             [1.0 if r["status"] == "answered_unverified" else 0.0 for r in rows]),
+        # 成本与用量（token 为 tiktoken 估算；单价不写死，用环境变量传入）
+        "prompt_tokens_est_mean": mean([r["prompt_tokens_est"] for r in rows]),
+        "answer_tokens_est_mean": mean([r["answer_tokens_est"] for r in rows]),
+        "tokens_est_total": sum(r["prompt_tokens_est"] + r["answer_tokens_est"]
+                                for r in rows),
+        "cost_estimate_per_query": cost_estimate(
+            int(mean([r["prompt_tokens_est"] for r in rows]) or 0),
+            int(mean([r["answer_tokens_est"] for r in rows]) or 0)),
     }
     if args.generate:
         answered = [r for r in rows if r["expected_behavior"] == "answer"]

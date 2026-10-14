@@ -10,6 +10,9 @@ import pytest
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
+# kb-agent 同进程 import production-rag（app 包）；CI 里没有它时整模块跳过
+pytest.importorskip("app.core.config", reason="需要 production-rag（app 包）")
+
 from rag_adapter.pdfium_loader import PdfiumLoader  # noqa: E402
 from rag_adapter.settings import ANNUAL_REPORTS_DIR  # noqa: E402
 

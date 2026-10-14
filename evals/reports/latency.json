@@ -1,0 +1,70 @@
+{
+  "summary": {
+    "samples": 6,
+    "generate": true,
+    "model": "qwen-flash",
+    "retrieval_p50": 38.39,
+    "retrieval_p95": 41.92,
+    "ttft_p50": 0.33,
+    "ttft_p95": 0.94,
+    "total_p50": 39.47,
+    "total_p95": 42.65,
+    "mean_stream_events": 18.0
+  },
+  "rows": [
+    {
+      "retrieval_s": 37.98,
+      "ttft_s": 1.11,
+      "generation_s": 0.42,
+      "total_s": 39.51,
+      "stream_events": 21,
+      "id": "ar-fact-001",
+      "question_type": "fact"
+    },
+    {
+      "retrieval_s": 38.92,
+      "ttft_s": 0.41,
+      "generation_s": 0.08,
+      "total_s": 39.42,
+      "stream_events": 8,
+      "id": "ar-fact-002",
+      "question_type": "fact"
+    },
+    {
+      "retrieval_s": 38.8,
+      "ttft_s": 0.39,
+      "generation_s": 1.0,
+      "total_s": 40.2,
+      "stream_events": 37,
+      "id": "ar-fact-003",
+      "question_type": "fact"
+    },
+    {
+      "retrieval_s": 34.49,
+      "ttft_s": 0.27,
+      "generation_s": 0.38,
+      "total_s": 35.15,
+      "stream_events": 19,
+      "id": "ar-fact-004",
+      "question_type": "fact"
+    },
+    {
+      "retrieval_s": 34.01,
+      "ttft_s": 0.24,
+      "generation_s": 0.57,
+      "total_s": 34.82,
+      "stream_events": 10,
+      "id": "ar-fact-005",
+      "question_type": "fact"
+    },
+    {
+      "retrieval_s": 42.92,
+      "ttft_s": 0.27,
+      "generation_s": 0.27,
+      "total_s": 43.47,
+      "stream_events": 13,
+      "id": "ar-table-001",
+      "question_type": "table"
+    }
+  ]
+}

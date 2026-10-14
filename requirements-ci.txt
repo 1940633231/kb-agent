@@ -1,0 +1,4 @@
+# CI 里跑"不依赖 production-rag"的那部分用例所需的最小依赖。
+# 完整用例（67 个）需要本地以可编辑方式安装 ../production-rag，见 README。
+pytest>=7.4.0
+tiktoken>=0.5.0

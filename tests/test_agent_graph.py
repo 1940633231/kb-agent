@@ -10,6 +10,10 @@ import pytest
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
+# kb-agent 的检索链路同进程 import production-rag（app 包）。CI 里没有它时，
+# 这个模块整体跳过，而不是让收集阶段直接报 import error。
+pytest.importorskip("app.core.config", reason="需要 production-rag（app 包）")
+
 from agent import graph as agent_graph  # noqa: E402
 from agent.grading import extract_facets, grade_evidence  # noqa: E402
 from agent.nodes import (OUT_OF_SCOPE, PENDING_REVIEW,  # noqa: E402

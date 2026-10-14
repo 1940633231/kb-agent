@@ -5,16 +5,24 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
+import pytest
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from agent.graph import ask, build_graph, default_runtime  # noqa: E402
 from agent.evidence import scope_evidence  # noqa: E402
 from agent.grading import extract_facets  # noqa: E402
 from agent.grounding import extract_numbers, verify_grounding  # noqa: E402
 from agent.llm_grade import LLMGrader  # noqa: E402
 from fakes import FakeGenerator, FakeService, maotai_hit  # noqa: E402
+
+
+def graph_api():
+    """延迟导入主图：它依赖 production-rag（app 包），没有就跳过相关用例。"""
+    pytest.importorskip("app.core.config", reason="需要 production-rag（app 包）")
+    from agent.graph import ask, build_graph, default_runtime
+    return ask, build_graph, default_runtime
 
 
 def hit(document_id: str, content: str = "内容") -> Dict[str, Any]:
@@ -179,6 +187,7 @@ class FakeGrader:
 
 
 def build_fake_graph(resolver=None, **runtime_kwargs):
+    _, build_graph, default_runtime = graph_api()
     resolver = resolver or (lambda query: [maotai_hit(2023)])
     service = FakeService(resolver, generator=FakeGenerator())
     runtime = default_runtime(service=service, use_llm_rewrite=False,
@@ -188,6 +197,7 @@ def build_fake_graph(resolver=None, **runtime_kwargs):
 
 def test_llm_grader_flips_rule_pass_into_retry():
     """规则说"证据已覆盖"，LLM 复核说不足 → 应当触发重试而不是直接作答。"""
+    ask, _, _ = graph_api()
     grader = FakeGrader("insufficient")
     graph = build_fake_graph(llm_grader=grader, generate_answers=False)
     result = ask(graph, "贵州茅台2023年的营业收入是多少元？", thread_id="t-llmgrade")
@@ -200,6 +210,7 @@ def test_llm_grader_flips_rule_pass_into_retry():
 
 
 def test_llm_grader_answerable_keeps_single_pass():
+    ask, _, _ = graph_api()
     grader = FakeGrader("answerable")
     graph = build_fake_graph(llm_grader=grader, generate_answers=False)
     result = ask(graph, "贵州茅台2023年的营业收入是多少元？", thread_id="t-llmok")
@@ -209,6 +220,7 @@ def test_llm_grader_answerable_keeps_single_pass():
 
 def test_numeric_discipline_reaches_the_prompt():
     """生成时必须带上数字纪律（数字逐字引用 / 换算先给原值 / 多公司逐条标注）。"""
+    ask, build_graph, default_runtime = graph_api()
     captured = {}
 
     class RecordingGenerator(FakeGenerator):
@@ -230,6 +242,7 @@ def test_numeric_discipline_reaches_the_prompt():
 
 def test_default_runtime_routes_known_fields_out_of_extra():
     """回归：字段名与 AgentRuntime 同名的注入参数不能落进 extra（踩过两次）。"""
+    _, _, default_runtime = graph_api()
     service = FakeService(lambda query: [maotai_hit(2023)])
     grader = FakeGrader("answerable")
     runtime = default_runtime(service=service, use_llm_rewrite=False,

@@ -76,9 +76,10 @@ context:
 
 generation:
   backend: qwen
-  # 本机账号实测（2026-10-13）：qwen-turbo 返回 404 Model not exist，
-  # qwen-plus / qwen-max 可用，因此本地配置用 qwen-plus。
-  model_name: qwen-plus
+  # 本机账号实测（2026-10-14）：qwen-turbo 404、qwen-plus 403（免费额度耗尽），
+  # qwen-flash 可用且返回 token 用量，因此本地配置用 qwen-flash。
+  # 注：评估结果与模型版本绑定，报告里必须注明用的是哪个模型。
+  model_name: qwen-flash
   api_key_env: DASHSCOPE_API_KEY
   temperature: 0.3
   max_tokens: 1024
