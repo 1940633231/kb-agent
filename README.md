@@ -17,7 +17,7 @@
 | 第零阶段 | 语料抓取、灌库、20 题 golden set、L0 检索基线 | 已完成：9 份年报 / 3,576 chunk；L0 Recall@5=0.882 |
 | 第一阶段 | LangGraph 主图：State / 节点 / 条件边 / 检索子图 / 自纠错重试 | 已完成，见「第一阶段」 |
 | 第二阶段 | Postgres Checkpointer、Store 长期记忆、Interrupt 人工审核 | 已完成，见「第二阶段」 |
-| 第三阶段 | FastAPI + SSE、分层评估报告、演示与面试材料 | 未开始 |
+| 第三阶段 | FastAPI + SSE、结构化日志、四场景演示 | 已完成，见「第三阶段」 |
 
 ## 目录结构
 
@@ -26,7 +26,7 @@ kb-agent/
 ├── agent/            # 主图：state / nodes / graph / grading / rewriter / 检索子图
 ├── rag_adapter/      # 对 production-rag 的封装：配置、年报装载、检索入口
 ├── persistence/      # Postgres Checkpointer / Store 装配 + docker-compose
-├── api/              # FastAPI 接口与 SSE（第三阶段）
+├── api/              # FastAPI 接口、SSE 事件流、结构化日志
 ├── configs/          # kb_agent.yaml（本地轻量检索配置）
 ├── scripts/          # 抓取年报、灌库、原文定位
 ├── evals/            # golden_set.jsonl、run_eval.py、baseline.json、reports/
@@ -331,6 +331,33 @@ python -m pytest tests -q                 # 20 passed
    （方案 §4.1 允许的"必要时再用一次轻量 LLM 评分"），把上面第 1 类失败纳入重试触发条件。
    这是当前唯一能继续抬高 L3 证据命中的低风险办法。
 
+**生成链路结果（20 题全量跑，`python evals/run_agent_eval.py --generate`）**
+
+| 指标 | 值 | 说明 |
+|---|---|---|
+| 有引用率 | **1.000** | 17 道可答题全部给出了引用 |
+| 引用有效率 | **1.000** | 引用编号都能映射回本次真正送进 prompt 的证据片段 |
+| 拒答正确率 | **1.000** | 3 道应拒答题全部明确拒答，没有编造 |
+| 答案含期望值（严格字面） | 0.588 | 见下面的口径说明 |
+
+严格字面匹配低估了真实正确率，人工抽查 7 道"未命中"后分三类：
+
+- **口径问题（2 题）**：`ar-fact-001` 答"14,769,360.50 万元"，换算正是 147,693,604,994.14 元；
+  `ar-multi-001` 同理。数值是对的，只是没按题面单位复述。→ 判定应做单位归一化。
+- **真实错误（4 题）**：`ar-fact-004` 引了现金流量表的 85,305,341,965.73 元（正确值 82,320,067,101.68）；
+  `ar-table-004` 引错了表行；`ar-calc-001` 拿 2023 年的研发投入回答 2025 年的问题；
+  `ar-cross-003` 证据里其实有 5.01%，模型却答"没有数据"。
+  其中 `ar-calc-001` 暴露了一个具体缺陷：规则评分只校验"问题年份的**文档**在证据里"，
+  没校验"送进 prompt 的**片段**属于该年份"，于是同文档其他年份的表格混进来造成张冠李戴。
+- **部分作答（1 题）**：`ar-calc-002` 给了 2025 年营收，没有给出题目要的差额。
+
+按"数值正确"重算，人工抽查口径下至少 12/17（≈0.71）。这一节故意把严格值与抽查值都写出来，
+因为"0.588 还是 0.71"取决于判定口径，而口径必须写清楚才可信。
+
+**L3 证据命中的run-to-run 波动**：两次全量跑分别是 0.529 与 0.588。原因是改写由 LLM 生成，
+不同轮次的子查询不同，追加到的证据也不同。**文档级指标（1.000 / 1.000 / 0.9265）两次完全一致**，
+可复现；证据级指标需要固定改写策略（或固定随机种子）才能当作稳定基线——这是当前评估方法的一个已知缺口。
+
 ## 第二阶段：状态持久化与人工介入
 
 目标：把"进程内存里的对话"变成"可恢复的线程"，把"自动作答"接上"人工把关"。
@@ -396,6 +423,64 @@ python scripts/review_cli.py --thread demo-review --review-id <id> --decision re
   多副本需要数据库层互斥，列入"明确不达标"。
 - 审核超时在提交时判定（`--timeout-seconds`，默认 3600s），没有后台清扫任务。
 
+## 第三阶段：接口与演示
+
+接口层只负责 HTTP 语义（校验、错误映射、SSE 编码、请求级日志），Agent 逻辑仍在
+主图里——接口层不复制判定与重试。
+
+```powershell
+python -m api                     # 默认 127.0.0.1:8300
+python scripts/demo_api.py        # 跑通四个场景
+```
+
+| 方法 | 路径 | 用途 |
+|---|---|---|
+| GET | `/health` | 健康检查；回显 Checkpointer / Store / 是否开启审核 |
+| POST | `/ask` | 同步问答（可带 `thread_id` / `user_id` / `generate`） |
+| POST | `/ask/stream` | SSE：`progress` 节点级进度 → `token` 生成片段 → `answer` 最终结果 |
+| GET | `/threads/{id}` | 线程状态（重启恢复演示：换进程仍能读到） |
+| GET | `/threads/{id}/review` | 查看待审项 |
+| POST | `/threads/{id}/review` | 提交审核：`approve` / `reject` / `supplement` |
+
+**为什么进度事件和 token 一起推**：本机瓶颈是 CPU 上的 Cross-Encoder 重排
+（单题 60~75s），用户最需要看到的是"检索在重试、预算被放宽"这类进度，
+而不是等到最后才知道结果。token 级流式通过 LangGraph 的
+`stream_mode="custom"` + 节点内 `get_stream_writer()` 实现，
+与非流式路径共用同一套 prompt / 上下文装配（不做第二份生成逻辑）。
+
+**结构化日志**：接口层输出一行一个 JSON（`request_id` / `thread_id` / `duration_ms`
+/ `status_code`），把一次 SSE 流的多个事件串成一条链路：
+
+```json
+{"ts": 1791944646.3, "event": "ask_done", "request_id": "d99fdf9da8a3",
+ "thread_id": "rev-1", "status": "answered", "retry_count": 2, "duration_ms": 69.3}
+```
+
+**四场景演示**（对应方案 S3）
+
+| 场景 | 触发方式 | 观察点 |
+|---|---|---|
+| 正常问答 | `POST /ask` | 答案 + 引用（含文档标题与页码） |
+| 检索重试 | `POST /ask/stream` | `decide_next_step action=retrieve` → `rewrite_query retry=1` → `retrieve_knowledge retry=1 budget=15`（实测三轮预算 `[5, 15, 15]`） |
+| 重启恢复 | 重启服务后 `GET /threads/{id}` | `has_checkpoint=true`，状态与证据仍在 |
+| 人工审核 | 低置信度问题 + `/review` | 挂起 payload → 提交 → `review_rejected/approved` → 重复提交 `already_processed` |
+
+实测（2026-10-14，机器空闲时）：同步问答 35.8s；SSE 一条流里收到 141 个 token 事件；
+引用形如 `[3] 贵州茅台2024年年度报告 p.16`；证据不足的问题三轮检索预算 `[5, 15, 15]`、
+两轮 `rewrite_query`，最后带保留作答并挂到人工审核。
+
+**前置：WSL 里的 Docker 会随空闲关闭**
+
+```powershell
+wsl -d Ubuntu20 bash -lc "sudo -n service docker start"   # 重新起来即可
+wsl -d Ubuntu20 bash -lc "sudo -n docker start kb-agent-postgres"
+```
+
+容器配了 `restart: unless-stopped`，dockerd 一回来容器就自己起；数据在独立数据卷里
+（实测：dockerd 重启后 `alice` 的记忆与线程 checkpoint 都还在）。
+Postgres 连不上时接口层会降级到内存 checkpointer，日志里留一条
+`postgres_unavailable`，人工审核则无法跨进程恢复。
+
 ## 已知限制（不掩盖）
 
 - **上游发布前校验在本机不可用**：`production-rag` 的 FAISS 校验调用
@@ -413,8 +498,9 @@ python scripts/review_cli.py --thread demo-review --review-id <id> --decision re
   （判不出"缺的是那个具体数字"，见第一阶段第 3 点）。
 - **引用页码取 chunk 起始页**：chunk 跨页时给的是首页，不是数字所在页
   （上面的实测里销售费用在 p.11，引用标 p.10）。
-- **单题耗时 60~75s**：瓶颈是 CPU 上的 Cross-Encoder 重排（每题候选池 50），
-  不是编排层。要进第三阶段必须先解决这个（缓存/并行/缩小候选池），否则 SSE 演示体验会很差。
+- **单题耗时 35~75s**：瓶颈是 CPU 上的 Cross-Encoder 重排（每题候选池 50），
+  机器空闲约 36s/题，有其他 CPU 任务（如并行跑评估）时会涨到 75s 以上。
+  优化方向：候选池裁剪、批量重排、查询缓存，或换 API 侧的 rerank 服务。
 - 表格在抽取后是"拍平"的文本行，数字顺序保留、行列语义丢失；表格题的召回
   依赖数字与表头关键词共现，不是结构化取数。
 - golden set 的 20 题为自建最小集，验收前需扩到 50 题。

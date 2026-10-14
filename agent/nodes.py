@@ -53,6 +53,21 @@ def _history(messages: List[Any]) -> List[Dict[str, str]]:
     return items[:-1]
 
 
+def _stream_writer(runtime: Any):
+    """拿到 LangGraph 的自定义流写入器（用于 SSE 的 token 事件）。
+
+    只在显式开启（enable_token_stream）时尝试，非流式调用下返回 None，
+    保证同步接口的行为与质量完全不受影响。
+    """
+    if not runtime.extra.get("enable_token_stream"):
+        return None
+    try:
+        from langgraph.config import get_stream_writer
+        return get_stream_writer()
+    except Exception:  # noqa: BLE001 - 无流式上下文时退回非流式生成
+        return None
+
+
 def build_nodes(runtime: Any) -> Dict[str, Any]:
     """按运行时依赖构造节点函数集合。"""
 
@@ -210,8 +225,19 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             messages[0] = {"role": "system",
                            "content": messages[0]["content"] + "\n" + UNCERTAIN_CLAUSE}
 
-        answer = pipeline.generator.generate(messages)
-        citations = [enrich_citation(citation, runtime.page_offsets)
+        generator = pipeline.generator
+        writer = _stream_writer(runtime)
+        if writer is not None and hasattr(generator, "stream_generate"):
+            # 逐片段推给 SSE，同时拼出完整答案供引用提取与状态落库
+            parts: List[str] = []
+            for chunk in generator.stream_generate(messages):
+                if chunk:
+                    parts.append(chunk)
+                    writer({"type": "token", "text": chunk})
+            answer = "".join(parts)
+        else:
+            answer = generator.generate(messages)
+        citations = [enrich_citation(citation, runtime.page_offsets, chunks)
                      for citation in CitationExtractor().extract(answer, chunks)]
         return {
             "answer": answer,

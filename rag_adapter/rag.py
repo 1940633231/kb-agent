@@ -196,7 +196,8 @@ def describe_hit(hit: Dict, offsets: Optional[Dict[str, Dict]] = None) -> Dict:
     }
 
 
-def enrich_citation(citation: Dict, offsets: Dict[str, Dict]) -> Dict:
+def enrich_citation(citation: Dict, offsets: Dict[str, Dict],
+                    chunks: Optional[List[Dict]] = None) -> Dict:
     """给引用补上可追溯信息：文档标题、公司、年份与原文页码。
 
     上游 CitationExtractor 从 chunk metadata 取 file_name，而我们的语料元数据用的是
@@ -205,6 +206,15 @@ def enrich_citation(citation: Dict, offsets: Dict[str, Dict]) -> Dict:
     chunk 的 start_offset 映射回页码，引用才真正可回溯（对应验收项 M6）。
     """
     document_id = citation.get("document_id") or ""
+    # 上游只从 chunk.metadata 取 document_id；真实语料里 chunk 顶层也有该字段，
+    # 元数据缺失时会退化成 "unknown"，这里按 chunk_id 回查一次兜底
+    if (not document_id or document_id == "unknown") and chunks:
+        for chunk in chunks:
+            if chunk.get("chunk_id") == citation.get("chunk_id"):
+                document_id = (chunk.get("document_id")
+                               or (chunk.get("metadata") or {}).get("document_id")
+                               or "")
+                break
     entry = offsets.get(document_id) or {}
     page = page_for_offset(offsets, document_id, int(citation.get("start_offset") or 0))
     return dict(

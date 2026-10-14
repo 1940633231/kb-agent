@@ -72,6 +72,7 @@ def default_runtime(strategy: str = "recursive",
                     use_llm_rewrite: bool = True,
                     generate_answers: bool = True,
                     max_retries: int = 2,
+                    service: Optional[Any] = None,
                     memory_store: Optional[Any] = None,
                     memory_user_id: str = "",
                     review_timeout_seconds: Optional[float] = 3600.0,
@@ -82,7 +83,10 @@ def default_runtime(strategy: str = "recursive",
     增量才能归因到编排层。
     """
     load_env()
-    service = rag.build_service(strategy=strategy, mode="hybrid", use_rerank=True)
+    # service 可注入：同一进程里要为同步接口与流式接口各建一份运行时，
+    # 不该因此重复加载 embedding / rerank 模型
+    service = service or rag.build_service(strategy=strategy, mode="hybrid",
+                                          use_rerank=True)
     page_offsets = rag.load_page_offsets(strategy)
     rewriter = None
     if use_llm_rewrite:
