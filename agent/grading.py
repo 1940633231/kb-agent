@@ -22,12 +22,27 @@ from typing import Dict, Iterable, List
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REPORTS_REGISTRY = PROJECT_ROOT / "data" / "docs" / "annual_reports" / "metadata.json"
 
-# 问题里的疑问/口语化成分，不参与关键词覆盖判定
+# 问题里的疑问/口语化成分 + 关系/比较类短语，都不参与关键词覆盖判定。
+# 实测教训：漏掉"较上年末上升了"这类比较短语时，它会被当成"指标关键词"，
+# 于是评分永远不通过、白烧两轮重试，最后把能答的题烧成拒答
+# （ar-cross-003 就是这么错的）。
 QUESTION_NOISE = (
     "是多少元", "是多少千元", "是多少亿元", "是多少百万元", "多少个百分点",
     "分别是多少", "保留两位小数", "单位不同", "分别是", "是多少", "有多少",
     "多少", "请问", "约为", "大约", "注意", "是否", "为什么", "哪些", "什么",
-    "如何", "同年", "列出",
+    "如何", "同年", "列出", "两位小数",
+    # 关系/比较类短语
+    "较上年末", "较上年底", "上年末", "上年同期", "上期", "同期", "同比", "环比",
+    "百分点", "个百分点", "增减", "变动", "变化", "上升", "下降", "增加", "减少",
+    # 单位词与泛化填充词：它们不是指标名，留在关键词里只会让覆盖判定假失败
+    "分别", "比例", "明细", "披露", "实现", "情况", "数据",
+    "百万元", "千元", "万元", "亿元", "元",
+    "两年", "三年", "多年", "本年", "当年", "全年",
+)
+
+# 清洗后若一个 token 的字符全部来自这里，说明它是关系词残留（如"上升了"），不是指标名
+RELATIONAL_CHARS = set(
+    "较上年末同期同比环增减升降变动情况幅度分别为保留位小数单位注意与和及或是在于了"
 )
 
 
@@ -61,18 +76,23 @@ def extract_facets(question: str) -> Dict[str, List[str]]:
     companies = [name for name in COMPANIES if name in question]
 
     remainder = question
-    for noise in QUESTION_NOISE:
+    # 长短语优先替换，避免"是多少元"被"多少"先吃掉一半
+    for noise in sorted(QUESTION_NOISE, key=len, reverse=True):
         remainder = remainder.replace(noise, " ")
     for name in companies:
         remainder = remainder.replace(name, " ")
     remainder = re.sub(r"20\d{2}年?", " ", remainder)
-    remainder = re.sub(r"[0-9%．.、，,；;：:（）()《》\"'？?！!的与和及或是在于]", " ",
-                       remainder)
+    # 注意：不要把"在/于/对"当分隔符——它们会切开"归属于上市公司股东的净利润"
+    remainder = re.sub(
+        r"[0-9%．.、，,；;：:（）()《》\"'？?！!\[\]\s的与和及或是占较中]", " ",
+        remainder)
 
     keywords: List[str] = []
     for token in re.split(r"\s+", remainder):
         token = token.strip()
         if len(token) < 2 or token in keywords:
+            continue
+        if all(char in RELATIONAL_CHARS for char in token):
             continue
         keywords.append(token)
     return {"years": years, "companies": companies, "keywords": keywords}

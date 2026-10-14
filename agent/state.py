@@ -45,6 +45,8 @@ class AgentState(TypedDict, total=False):
     citations: List[Dict[str, Any]]
     # 生成时真正送进 prompt 的 chunks（[1][2] 编号与它一一对应）
     context_chunks: List[Dict[str, Any]]
+    # 答案落地校验（数字是否能在"含问题指标词"的被引片段里找到）
+    grounding: Dict[str, Any]
 
     # 人工介入（第二阶段接 Interrupt/Command，本阶段只记录待审标记）
     needs_human_review: bool
@@ -77,6 +79,7 @@ def initial_state(question: str,
         "answer": None,
         "citations": [],
         "context_chunks": [],
+        "grounding": {},
         "needs_human_review": False,
         "review_result": None,
         "status": "received",

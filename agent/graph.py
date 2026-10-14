@@ -76,6 +76,7 @@ def default_runtime(strategy: str = "recursive",
                     memory_store: Optional[Any] = None,
                     memory_user_id: str = "",
                     review_timeout_seconds: Optional[float] = 3600.0,
+                    scope_evidence_enabled: bool = True,
                     **extra: Any) -> AgentRuntime:
     """默认运行时：L2 检索配置（hybrid + rerank）+ LLM 改写。
 
@@ -97,6 +98,7 @@ def default_runtime(strategy: str = "recursive",
                         rewriter=rewriter, generate_answers=generate_answers,
                         memory_store=memory_store, memory_user_id=memory_user_id,
                         review_timeout_seconds=review_timeout_seconds,
+                        scope_evidence_enabled=scope_evidence_enabled,
                         page_offsets=page_offsets,
                         extra=dict(extra))
 

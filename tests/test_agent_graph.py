@@ -253,21 +253,33 @@ def test_retrieval_subgraph_merges_and_dedupes():
 
 def test_evidence_accumulates_across_retries():
     """自纠错只做加法：重试后第一轮证据仍在（L3 第一版负向结果的根因）。"""
-    rounds = {"count": 0}
-
     def resolver(query: str) -> List[Dict]:
-        if "2023年" in query and "年度报告" in query:
-            return [maotai_year_hit(2023, score=0.6)]
-        rounds["count"] += 1
-        return [maotai_year_hit(2025, score=0.9)]
+        if "2025年" in query and "年度报告" in query:
+            return [maotai_year_hit(2025, score=0.6)]
+        return [maotai_year_hit(2023, score=0.9)]
 
     graph, _ = build_graph(resolver)
-    result = agent_graph.ask(graph, QUESTION, thread_id="t-accumulate")
+    result = agent_graph.ask(graph, "贵州茅台2023年与2025年的营业收入分别是多少元？",
+                             thread_id="t-accumulate")
 
     document_ids = {hit["document_id"] for hit in result["retrieved_chunks"]}
     assert result["retry_count"] == 1
     assert document_ids == {"600519-2023", "600519-2025"}, "新证据追加而非覆盖"
     assert result["retrieved_chunks"][0]["score"] == 0.9, "先到的证据保持在前"
+
+
+def test_facet_scope_drops_unnamed_year_from_evidence():
+    """问题只点名 2023 时，混进来的 2025 片段要被裁掉（跨年污染实测 11/17）。"""
+    graph, _ = build_graph(lambda q: [maotai_year_hit(2023, score=0.9),
+                                      maotai_year_hit(2025, score=0.8)])
+    result = agent_graph.ask(graph, QUESTION, thread_id="t-scope")
+
+    document_ids = {hit["document_id"] for hit in result["retrieved_chunks"]}
+    assert document_ids == {"600519-2023"}
+    stats = result["retrieval_stats"]["scope"]
+    assert stats["scoped"] is True and stats["dropped"] == 1
+    assert any("scoped_out" in entry and entry["scoped_out"] == 1
+               for entry in result["trace"] if entry["node"] == "retrieve_knowledge")
 
 
 def test_accumulate_evidence_dedupes_and_caps():

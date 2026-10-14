@@ -81,6 +81,29 @@ def text_variants(value_entry: Dict) -> List[str]:
     return [v for v in variants if v]
 
 
+MONEY_UNITS = {"元": 1.0, "千元": 1e3, "万元": 1e4, "百万元": 1e6, "亿元": 1e8}
+
+
+def answer_variants(value_entry: Dict) -> List[str]:
+    """答案判定用的数值变体：金额单位互相换算，避免把"换算了单位"当成答错。
+
+    实测依据：`ar-fact-001` 期望 147,693,604,994.14 元，模型答"14,769,360.50 万元"——
+    数值正确，只是换了单位；`ar-multi-001` 同理。只做字面匹配会把它判成错。
+    """
+    value = float(value_entry["value"])
+    unit = (value_entry.get("unit") or "").strip()
+    if unit not in MONEY_UNITS:
+        return text_variants(value_entry)
+    base = value * MONEY_UNITS[unit]
+    variants = set()
+    for factor in MONEY_UNITS.values():
+        scaled = base / factor
+        for text in ("{:.2f}".format(scaled), "{:,.2f}".format(scaled)):
+            variants.add(text)
+            variants.add(text.rstrip("0").rstrip("."))
+    return [v for v in variants if v and set(v) != {"0"}]
+
+
 def normalize(text: str) -> str:
     return re.sub(r"[,\s\u3000]", "", text or "")
 

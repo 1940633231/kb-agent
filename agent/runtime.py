@@ -20,6 +20,8 @@ class AgentRuntime:
     # 实测依据：茅台两道元级数字题，含答案的片段排在 rerank 第 6 / 第 16 位，
     # top-5 拿不到，放宽到 15 就能覆盖。
     widened_top_k: int = 15
+    #: facet 证据裁剪开关（默认开）；关掉可用于消融对比"裁剪到底值多少"
+    scope_evidence_enabled: bool = True
     min_coverage: float = 0.6         # 规则评分的关键词覆盖率下限
     rewriter: Optional[Any] = None    # 有 rewrite(question, reason, prev) -> List[str]
     generate_answers: bool = True     # 评估检索层时置 False，跳过 LLM 生成

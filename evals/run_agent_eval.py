@@ -55,7 +55,8 @@ def citation_is_valid(citation: Dict, chunks: List[Dict]) -> bool:
 def evaluate(questions: List[Dict], args) -> Dict:
     runtime = default_runtime(generate_answers=args.generate,
                               use_llm_rewrite=not args.rule_rewrite,
-                              max_retries=args.max_retries)
+                              max_retries=args.max_retries,
+                              scope_evidence_enabled=not args.no_scope)
     graph = build_graph(runtime)
     offsets = base.rag.load_page_offsets(args.strategy)
 
@@ -78,7 +79,7 @@ def evaluate(questions: List[Dict], args) -> Dict:
                                              for hit in evidence[:args.top_k]))
         values = item.get("expected_values") or []
         value_flags = [any(variant and base.normalize(variant) in joined_full
-                           for variant in base.text_variants(entry))
+                           for variant in base.answer_variants(entry))
                        for entry in values]
         probes = base.evidence_probes(item)
         probe_flags_full = [probe in joined_full for probe in probes]
@@ -102,6 +103,22 @@ def evaluate(questions: List[Dict], args) -> Dict:
                 break
 
         answer = result.get("answer") or ""
+        answer_value_flags = [any(variant and base.normalize(variant)
+                                  in base.normalize(answer)
+                                  for variant in base.answer_variants(entry))
+                              for entry in values]
+        grounding = result.get("grounding") or {}
+        wanted_companies = {doc.split("-")[0] for doc in wanted}
+        wanted_years = {doc.split("-")[1] for doc in wanted}
+        foreign_evidence = sorted(
+            doc for doc in hit_docs
+            if doc and (doc.split("-")[0] not in wanted_companies
+                        or doc.split("-")[1] not in wanted_years))
+        cited_docs = {c.get("document_id") for c in (result.get("citations") or [])}
+        foreign_cited = sorted(
+            doc for doc in cited_docs
+            if doc and (doc.split("-")[0] not in wanted_companies
+                        or doc.split("-")[1] not in wanted_years))
         row = {
             "id": item["id"],
             "question_type": item["question_type"],
@@ -121,9 +138,13 @@ def evaluate(questions: List[Dict], args) -> Dict:
             "graded_reason": (result.get("retrieval_score") or {}).get("reason"),
             "needs_human_review": result.get("needs_human_review"),
             "status": result.get("status"),
-            "answer_value_hit": (any(base.normalize(variant) in base.normalize(answer)
-                                     for variant in base.text_variants(entry))
-                                 for entry in values) if answer else None,
+            "answer_value_hit": (all(answer_value_flags) if values else None)
+                                if answer else None,
+            "foreign_evidence_docs": foreign_evidence,
+            "foreign_cited_docs": foreign_cited,
+            "grounding_checked": grounding.get("checked"),
+            "grounding_verified": grounding.get("verified"),
+            "ungrounded_numbers": grounding.get("ungrounded") or [],
             "answer": answer,
             "citations": result.get("citations") or [],
             "citation_count": len(result.get("citations") or []),
@@ -133,8 +154,6 @@ def evaluate(questions: List[Dict], args) -> Dict:
             "refused": any(marker in answer for marker in REFUSAL_MARKERS),
             "seconds": round(elapsed, 2),
         }
-        if row["answer_value_hit"] is not None:
-            row["answer_value_hit"] = all(row["answer_value_hit"])
         rows.append(row)
         print("  {} retry={} docs={} evidence={} hit_top5={} hit_final={}".format(
             item["id"], row["retry_count"], len(hit_docs), row["evidence_count"],
@@ -163,6 +182,15 @@ def evaluate(questions: List[Dict], args) -> Dict:
         "refuse_flagged_rate": mean([1.0 if r["needs_human_review"] else 0.0
                                      for r in refuse_rows]),
         "mean_seconds_per_query": mean([r["seconds"] for r in rows]),
+        "foreign_evidence_rate": mean(
+            [1.0 if r["foreign_evidence_docs"] else 0.0 for r in answerable]),
+        "foreign_citation_rate": mean(
+            [1.0 if r["foreign_cited_docs"] else 0.0 for r in answerable]),
+        "grounding_verified_rate": mean(
+            [1.0 if r["grounding_verified"] else 0.0
+             for r in rows if r["grounding_checked"]]),
+        "mean_ungrounded_numbers": mean(
+            [len(r["ungrounded_numbers"]) for r in rows]),
     }
     if args.generate:
         answered = [r for r in rows if r["expected_behavior"] == "answer"]
@@ -189,6 +217,8 @@ def main() -> int:
     parser.add_argument("--golden-set", default=str(base.GOLDEN_SET_PATH))
     parser.add_argument("--rule-rewrite", action="store_true",
                         help="改写只用规则兜底（不调 LLM）")
+    parser.add_argument("--no-scope", action="store_true",
+                        help="关闭 facet 证据裁剪（消融对比用）")
     parser.add_argument("--generate", action="store_true",
                         help="打开生成链路（消耗 API 额度）")
     args = parser.parse_args()

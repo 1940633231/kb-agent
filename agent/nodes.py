@@ -13,6 +13,8 @@ from app.citation.citation import CitationExtractor
 from langgraph.types import interrupt
 
 from agent.grading import extract_facets, grade_evidence, needs_knowledge_base
+from agent.evidence import scope_evidence
+from agent.grounding import verify_grounding
 from agent.memory import extract_memory, format_memories, recall, remember
 from agent.review import build_review_payload
 from agent.retrieval_subgraph import build_retrieval_subgraph
@@ -115,14 +117,24 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         candidates = accumulate_evidence(state.get("retrieved_chunks") or [],
                                         result.get("candidates") or [],
                                         runtime.evidence_limit)
+        # facet 裁剪：去掉问题没点名的公司/年份片段（重试只追加的代价是污染也会留）
+        if runtime.scope_evidence_enabled:
+            candidates, scope_stats = scope_evidence(
+                state["question"], candidates,
+                year_window=int(runtime.extra.get("year_window", 0)))
+        else:
+            scope_stats = {"scoped": False, "reason": "disabled",
+                           "kept": len(candidates), "dropped": 0}
         return {
             "retrieved_chunks": candidates,
             "retrieval_stats": dict(result.get("stats") or {},
-                                    accumulated=len(candidates), budget=budget),
+                                    accumulated=len(candidates), budget=budget,
+                                    scope=scope_stats),
             "status": "retrieving",
             "trace": [{"node": "retrieve_knowledge", "queries": list(queries),
                        "candidate_count": len(candidates),
                        "budget": budget,
+                       "scoped_out": scope_stats.get("dropped", 0),
                        "retry": int(state.get("retry_count") or 0)}],
         }
 
@@ -239,14 +251,17 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             answer = generator.generate(messages)
         citations = [enrich_citation(citation, runtime.page_offsets, chunks)
                      for citation in CitationExtractor().extract(answer, chunks)]
+        grounding = verify_grounding(answer, citations, chunks, question)
         return {
             "answer": answer,
             "citations": citations,
             "context_chunks": chunks,
+            "grounding": grounding,
             "status": "answered",
             "trace": [{"node": "generate_answer", "answer_len": len(answer or ""),
                        "context_chunks": len(chunks),
                        "citations": len(citations),
+                       "ungrounded": len(grounding.get("ungrounded") or []),
                        "memories_used": len(state.get("memories") or [])}],
         }
 
