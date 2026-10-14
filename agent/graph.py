@@ -56,7 +56,8 @@ def build_graph(runtime: AgentRuntime, checkpointer: Optional[Any] = None,
         "finalize_response": "finalize_response",
     })
     builder.add_edge("rewrite_query", "retrieve_knowledge")
-    builder.add_conditional_edges("generate_answer", route_after_generate, {
+    builder.add_edge("generate_answer", "verify_answer")
+    builder.add_conditional_edges("verify_answer", route_after_generate, {
         "human_review": "human_review",
         "remember_preference": "remember_preference",
     })

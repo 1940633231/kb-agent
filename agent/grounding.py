@@ -33,6 +33,11 @@ from agent.grading import extract_facets, normalize
 _NUMBER = re.compile(r"\d[\d,]{2,}\.?\d*")
 MONEY_SCALES = (1.0, 1e3, 1e4, 1e6, 1e8)
 
+# 报表/章节标识：同一指标在年报里常有多个口径（合并 vs 母公司），
+# 实测错例 ar-fact-001 就是拿了"母公司利润表"的营业收入答合并口径的问题。
+STATEMENT_MARKERS = ("合并", "母公司", "主要会计数据", "利润表", "资产负债表",
+                     "现金流量表", "所有者权益变动表", "分季度")
+
 
 def extract_numbers(text: str) -> List[str]:
     """抽候选数字：过滤年份与过短数字，去重保序。"""
@@ -69,8 +74,15 @@ def number_equivalents(number: str) -> List[str]:
 
 
 def verify_grounding(answer: Optional[str], citations: List[Dict],
-                     chunks: List[Dict], question: str) -> Dict[str, Any]:
-    """返回 {checked, grounded, ungrounded, verified}。"""
+                     chunks: List[Dict], question: str,
+                     accept_derived: bool = True) -> Dict[str, Any]:
+    """返回 {checked, grounded, derived, ungrounded, verified}。
+
+    accept_derived：把"由片段里若干数字加/减得到的值"也算通过。
+    实测依据：`ar-fact-004` 的正确答案是四个季度归母净利润之**和**
+    （82,320,067,101.68），`ar-calc-002` 是两年营业收入之**差**；
+    如果一律要求逐字出现，这两类合法聚合会被误判成未落地。
+    """
     numbers = extract_numbers(answer or "")
     if not numbers:
         return {"checked": 0, "grounded": [], "ungrounded": [], "verified": True}
@@ -82,6 +94,7 @@ def verify_grounding(answer: Optional[str], citations: List[Dict],
         anchor_tokens = [token for token in metric_tokens if len(token) == longest]
     by_chunk = {chunk.get("chunk_id"): chunk for chunk in chunks or []}
     cited_texts: List[str] = []
+    raw_texts: List[str] = []
     for citation in citations or []:
         chunk = by_chunk.get(citation.get("chunk_id"))
         if chunk is None:
@@ -89,15 +102,100 @@ def verify_grounding(answer: Optional[str], citations: List[Dict],
         candidate = normalize(chunk.get("content") or "")
         if not anchor_tokens or any(normalize(t) in candidate for t in anchor_tokens):
             cited_texts.append(candidate)
+            # 抽数字必须用**原文**：归一化会去掉逗号与空格，把相邻数字粘成一个巨数
+            raw_texts.append(chunk.get("content") or "")
 
     grounded: List[str] = []
+    derived: List[str] = []
     ungrounded: List[str] = []
+    numbers_by_text: List[float] = []
+    for text in raw_texts:
+        for token in extract_numbers(text):
+            try:
+                numbers_by_text.append(float(token.replace(",", "")))
+            except ValueError:
+                continue
     for number in numbers:
         variants = [normalize(v) for v in _equivalents(number)]
         hit = any(any(v and v in text for v in variants) for text in cited_texts)
-        (grounded if hit else ungrounded).append(number)
+        if hit:
+            grounded.append(number)
+            continue
+        if accept_derived and _is_derived(number, numbers_by_text):
+            derived.append(number)
+            continue
+        ungrounded.append(number)
 
-    return {"checked": len(numbers), "grounded": grounded,
+    return {"checked": len(numbers), "grounded": grounded, "derived": derived,
             "ungrounded": ungrounded, "verified": not ungrounded,
             "metric_tokens": metric_tokens, "anchor_tokens": anchor_tokens,
             "citation_chunks": len(cited_texts)}
+
+
+def _is_derived(number: str, pool: List[float], tolerance: float = 0.01) -> bool:
+    """number 是否等于 pool 中若干数字的和或两数之差（相对误差 ≤1%）。"""
+    try:
+        target = float(number.replace(",", ""))
+    except ValueError:
+        return False
+    if not pool or target == 0:
+        return False
+
+    def close(value: float) -> bool:
+        return abs(value - target) <= abs(target) * tolerance
+
+    if close(sum(pool)):
+        return True
+    if len(pool) >= 2:
+        for left in pool:
+            for right in pool:
+                if left is right:
+                    continue
+                if close(left + right) or close(abs(left - right)):
+                    return True
+    return False
+
+
+def detect_ambiguous_metric(question: str, chunks: List[Dict],
+                            max_values: int = 4) -> Dict[str, Any]:
+    """**同一份文档**里同一指标是否出现多个候选数值（口径/表格不同）。
+
+    为什么要单独检测：`ar-fact-001` 问合并口径的营业收入，证据里同时有
+    "主要会计数据"的 147,693,604,994.14 与"母公司利润表"的 81,415,570,788.59，
+    两者都能通过"数字能否在片段里找到"的落地校验——落地校验管不了口径混淆。
+
+    只看**单份文档内**的冲突：跨文档的多个数值是合法的（多公司/多年份题，
+    每份文档各自一个值），不能据此触发修复。
+
+    返回 {ambiguous, metric, values, document_id}。
+    """
+    tokens = extract_facets(question)["keywords"]
+    if not tokens:
+        return {"ambiguous": False, "metric": "", "values": []}
+    longest = max(len(token) for token in tokens)
+    anchors = [token for token in tokens if len(token) == longest]
+
+    per_document: Dict[str, List[str]] = {}
+    for chunk in chunks or []:
+        content = chunk.get("content") or ""
+        flat = normalize(content)
+        if not any(normalize(anchor) in flat for anchor in anchors):
+            continue
+        document_id = chunk.get("document_id") or \
+            (chunk.get("metadata") or {}).get("document_id") or "?"
+        bucket = per_document.setdefault(document_id, [])
+        for number in extract_numbers(content):
+            if number not in bucket:
+                bucket.append(number)
+
+    for document_id, values in per_document.items():
+        if len(values) >= 2:
+            return {"ambiguous": True, "metric": anchors[0],
+                    "values": values[:max_values], "document_id": document_id}
+    return {"ambiguous": False, "metric": anchors[0], "values": []}
+
+
+def has_statement_label(answer: str) -> bool:
+    """答案里是否标注了口径/表格（合并、母公司、主要会计数据…）。"""
+    text = answer or ""
+    return any(marker in text for marker in STATEMENT_MARKERS)

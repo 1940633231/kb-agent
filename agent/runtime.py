@@ -24,6 +24,12 @@ class AgentRuntime:
     scope_evidence_enabled: bool = True
     #: 规则评分通过后再做一次 LLM 语义复核（抓"规则假通过"，方案 §4.1）
     llm_grader: Optional[Any] = None
+    #: 生成后的落地复核与修复。**默认关闭**：`evals/repair_targeting.py` 用裁判口径
+    #: 离线量过——按当前触发条件（数字引不到出处 / 口径歧义未标注），修 5 道真错
+    #: 会同时改动 11 道本来正确的答案（13 道正确答案里只有 2 道能干净放过）。
+    #: 触发条件必须先收紧（例如只对"整个证据里都找不到的数字"触发）再打开。
+    enable_answer_repair: bool = False
+    max_repair_rounds: int = 1
     min_coverage: float = 0.6         # 规则评分的关键词覆盖率下限
     rewriter: Optional[Any] = None    # 有 rewrite(question, reason, prev) -> List[str]
     generate_answers: bool = True     # 评估检索层时置 False，跳过 LLM 生成

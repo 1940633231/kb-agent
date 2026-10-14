@@ -76,7 +76,33 @@ def evaluate(questions: List[Dict], args) -> Dict:
     rows: List[Dict] = []
     for item in questions:
         started = time.time()
-        result = ask(graph, item["question"], thread_id="l3-{}".format(item["id"]))
+        try:
+            result = ask(graph, item["question"], thread_id="l3-{}".format(item["id"]))
+        except Exception as exc:  # noqa: BLE001
+            # 单题失败（模型额度、网络、意外异常）不该让整轮评估作废：
+            # 记一行错误继续跑，报告里能看出哪几题没测成
+            print("  {} 失败: {}: {}".format(item["id"], type(exc).__name__,
+                                            str(exc)[:120]))
+            rows.append({
+                "id": item["id"], "question_type": item["question_type"],
+                "expected_behavior": item.get("expected_behavior"),
+                "wanted_docs": sorted("{}-{}".format(d.get("ts_code"), d.get("year"))
+                                      for d in item.get("expected_docs") or []),
+                "retrieved_docs": [], "doc_recall": None, "all_docs_hit": None,
+                "first_relevant_rank_top5": None, "evidence_hit_top5": None,
+                "evidence_hit_final": None, "evidence_count": 0, "retry_count": 0,
+                "rewrite_sources": [], "graded_passed": None, "graded_reason": "",
+                "needs_human_review": None, "status": "error", "repairs": 0,
+                "repair_fixed": None, "answer_value_hit": None,
+                "foreign_evidence_docs": [], "foreign_cited_docs": [],
+                "grounding_checked": 0, "grounding_verified": None,
+                "ungrounded_numbers": [], "llm_review": None, "numbers_total": 0,
+                "citation_coverage": None, "answer": "", "citations": [],
+                "citation_count": 0, "citation_valid": None, "refused": False,
+                "seconds": round(time.time() - started, 2),
+                "error": "{}: {}".format(type(exc).__name__, str(exc)[:300]),
+            })
+            continue
         elapsed = time.time() - started
 
         evidence = result.get("retrieved_chunks") or []
@@ -167,6 +193,9 @@ def evaluate(questions: List[Dict], args) -> Dict:
             "graded_reason": (result.get("retrieval_score") or {}).get("reason"),
             "needs_human_review": result.get("needs_human_review"),
             "status": result.get("status"),
+            "repairs": len(result.get("repair_history") or []),
+            "repair_fixed": bool((result.get("repair_history") or [{}])[0].get("fixed"))
+                             if result.get("repair_history") else None,
             "answer_value_hit": (all(answer_value_flags) if values else None)
                                 if answer else None,
             "foreign_evidence_docs": foreign_evidence,
@@ -227,6 +256,12 @@ def evaluate(questions: List[Dict], args) -> Dict:
         "citation_full_coverage_rate": mean(
             [1.0 if r["citation_coverage"] == 1.0 else 0.0
              for r in rows if r["citation_coverage"] is not None]),
+        "repair_rate": mean([1.0 if r["repairs"] else 0.0 for r in rows]),
+        "repair_fixed_rate": mean(
+            [1.0 if r["repair_fixed"] else 0.0
+             for r in rows if r["repair_fixed"] is not None]),
+        "unverified_rate": mean(
+            [1.0 if r["status"] == "answered_unverified" else 0.0 for r in rows]),
     }
     if args.generate:
         answered = [r for r in rows if r["expected_behavior"] == "answer"]

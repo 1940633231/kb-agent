@@ -47,6 +47,9 @@ class AgentState(TypedDict, total=False):
     context_chunks: List[Dict[str, Any]]
     # 答案落地校验（数字是否能在"含问题指标词"的被引片段里找到）
     grounding: Dict[str, Any]
+    # 同一指标在证据里是否出现多个候选值（口径歧义），以及修复记录
+    ambiguity: Dict[str, Any]
+    repair_history: Annotated[List[Dict[str, Any]], operator.add]
 
     # 人工介入（第二阶段接 Interrupt/Command，本阶段只记录待审标记）
     needs_human_review: bool
@@ -80,6 +83,8 @@ def initial_state(question: str,
         "citations": [],
         "context_chunks": [],
         "grounding": {},
+        "ambiguity": {},
+        "repair_history": [],
         "needs_human_review": False,
         "review_result": None,
         "status": "received",

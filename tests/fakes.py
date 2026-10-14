@@ -6,6 +6,7 @@ test_agent_graph.py 里的版本多了 context_manager / prompt_builder / genera
 """
 from __future__ import annotations
 
+import hashlib
 from typing import Any, Dict, Iterable, Iterator, List
 
 COMPANY_BY_CODE = {"600519": "贵州茅台", "300750": "宁德时代", "600036": "招商银行"}
@@ -13,8 +14,11 @@ COMPANY_BY_CODE = {"600519": "贵州茅台", "300750": "宁德时代", "600036":
 
 def make_hit(document_id: str, content: str, score: float = 0.7) -> Dict[str, Any]:
     code, year = document_id.split("-")
+    # chunk_id 必须与内容相关：早先固定用 #1 会把同一文档的多个片段在
+    # "按 chunk_id 去重"的环节里合并成一个（测试替身自身的坑）
+    digest = hashlib.md5(content.encode("utf-8")).hexdigest()[:6]
     return {
-        "chunk_id": "{}#1".format(document_id),
+        "chunk_id": "{}#{}".format(document_id, digest),
         "document_id": document_id,
         "score": score,
         "content": content,

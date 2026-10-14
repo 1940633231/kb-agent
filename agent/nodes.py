@@ -15,6 +15,8 @@ from langgraph.types import interrupt
 from agent.grading import extract_facets, grade_evidence, needs_knowledge_base
 from agent.evidence import scope_evidence
 from agent.grounding import verify_grounding
+from agent.grounding import detect_ambiguous_metric, has_statement_label
+from agent.repair import repair_answer
 from agent.memory import extract_memory, format_memories, recall, remember
 from agent.review import build_review_payload
 from agent.retrieval_subgraph import build_retrieval_subgraph
@@ -316,6 +318,90 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
                     update["status"] = "memory_unavailable"
         return update
 
+    def verify_answer(state: Dict[str, Any]) -> Dict[str, Any]:
+        """生成后复核：数字能否逐字定位 + 指标口径是否消歧；必要时修复一轮。
+
+        诊断依据：LLM 复核判定 `ar-fact-001/004` 的证据"够"是对的，错误发生在生成侧
+        （拿母公司口径的数、换算出错、多值题漏答）。所以修复放在生成之后、定稿之前，
+        而不是让检索层再重试。
+        """
+        answer = state.get("answer")
+        citations = state.get("citations") or []
+        chunks = state.get("context_chunks") or []
+        question = state["question"]
+        attempts = len(state.get("repair_history") or [])
+
+        def audit(text: str):
+            return (verify_grounding(text, citations, chunks, question),
+                    detect_ambiguous_metric(question, chunks))
+
+        if not (isinstance(answer, str) and answer.strip()) or not chunks \
+                or not runtime.enable_answer_repair:
+            grounding = state.get("grounding") or {}
+            return {"status": state.get("status"),
+                    "trace": [{"node": "verify_answer", "skipped": True,
+                               "ungrounded": len(grounding.get("ungrounded") or [])}]}
+
+        grounding, ambiguity = audit(answer)
+        ambiguous_unlabeled = (ambiguity.get("ambiguous")
+                               and not has_statement_label(answer))
+        if not grounding["ungrounded"] and not ambiguous_unlabeled:
+            return {"grounding": grounding, "ambiguity": ambiguity,
+                    "status": "answered",
+                    "trace": [{"node": "verify_answer", "grounded": len(grounding["grounded"]),
+                               "derived": len(grounding["derived"]),
+                               "ungrounded": 0, "ambiguous": ambiguity.get("ambiguous"),
+                               "repairs": 0}]}
+
+        record: Dict[str, Any] = {
+            "round": attempts + 1,
+            "ungrounded_before": grounding["ungrounded"],
+            "ambiguous": bool(ambiguity.get("ambiguous")),
+        }
+        repaired = None
+        if attempts < runtime.max_repair_rounds:
+            evidence_text = "\n".join(
+                "[{}] {}".format(index + 1, (chunk.get("content") or "")[:600])
+                for index, chunk in enumerate(chunks[:6]))
+            repaired = repair_answer(runtime.pipeline.generator, question,
+                                     evidence_text, answer,
+                                     grounding["ungrounded"], ambiguity)
+
+        if repaired and repaired != answer:
+            grounding_after, ambiguity_after = audit(repaired)
+            still_bad = bool(grounding_after["ungrounded"]) or (
+                ambiguity_after.get("ambiguous")
+                and not has_statement_label(repaired))
+            # 修复稿通常更好（至少数字是逐字的），失败时也保留它并标记待审
+            citations_after = [
+                enrich_citation(citation, runtime.page_offsets, chunks)
+                for citation in CitationExtractor().extract(repaired, chunks)]
+            record.update({"fixed": not still_bad,
+                           "ungrounded_after": grounding_after["ungrounded"]})
+            if not still_bad:
+                return {"answer": repaired, "citations": citations_after,
+                        "grounding": grounding_after, "ambiguity": ambiguity_after,
+                        "repair_history": [record], "status": "answered_repaired",
+                        "trace": [{"node": "verify_answer", "repairs": 1,
+                                   "fixed": True,
+                                   "grounded": len(grounding_after["grounded"]),
+                                   "derived": len(grounding_after["derived"])}]}
+            answer, citations, grounding, ambiguity = (repaired, citations_after,
+                                                      grounding_after, ambiguity_after)
+
+        record["fixed"] = False
+        record["ungrounded_after"] = grounding["ungrounded"]
+        caveat = "（注：以下数字无法在引用片段中逐字定位：{}，已标记人工复核）".format(
+            "、".join(grounding["ungrounded"]) or "口径歧义未消解")
+        return {"answer": "{}\n\n{}".format(answer, caveat), "citations": citations,
+                "grounding": grounding, "ambiguity": ambiguity,
+                "needs_human_review": True, "repair_history": [record],
+                "status": "answered_unverified",
+                "trace": [{"node": "verify_answer", "repairs": 1 if repaired else 0,
+                           "fixed": False,
+                           "ungrounded": len(grounding["ungrounded"]),
+                           "ambiguous": ambiguity.get("ambiguous")}]}
+
     def human_review(state: Dict[str, Any]) -> Dict[str, Any]:
         """人工审核：interrupt 暂停，等 Command(resume=...) 带回审核结果。
 
@@ -378,6 +464,7 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         "decide_next_step": decide_next_step,
         "rewrite_query": rewrite_query,
         "generate_answer": generate_answer,
+        "verify_answer": verify_answer,
         "remember_preference": remember_preference,
         "human_review": human_review,
         "finalize_response": finalize_response,
