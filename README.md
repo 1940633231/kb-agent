@@ -38,7 +38,7 @@ flowchart TB
     CP --> PG[("PostgreSQL<br/>kb-agent-postgres 容器")]
     STORE --> PG
     RAG --> IDX["索引：3,576 chunk<br/>faiss.index + metadata.json + page_offsets.json"]
-    RAG --> LLM["模型：qwen-flash（生成/改写/复核/裁判）<br/>bge-small-zh-v1.5 · bge-reranker-base"]
+    RAG --> LLM["模型：LLM_MODEL（生成/改写/复核/裁判）<br/>bge-small-zh-v1.5 · bge-reranker-base"]
     EVAL["评估层<br/>golden set 50 题 · 分层矩阵 · LLM 裁判 · 延迟"] --> GRAPH
 ```
 
@@ -68,11 +68,14 @@ D:\Python\Python312\python.exe -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ..\production-rag  # 同进程 import，方案 §2.2
 
 # 2) 密钥
-Copy-Item .env.example .env     # 填入 DASHSCOPE_API_KEY
+Copy-Item .env.example .env     # 填入 LLM_BASE_URL / LLM_API_KEY / LLM_MODEL
 ```
 
 模型（`BAAI/bge-small-zh-v1.5`、`BAAI/bge-reranker-base`）走本机 HuggingFace 缓存，
 离线可用：`HF_HUB_OFFLINE=1`。
+
+LLM 统一走 OpenAI-compatible `/chat/completions`。旧版 `DASHSCOPE_API_KEY` /
+`DASHSCOPE_MODEL` 仍可作为兼容输入，但显式 `LLM_*` 配置优先。
 
 ## 第零阶段：数据与基线
 
@@ -748,7 +751,8 @@ Postgres 连不上时接口层会降级到内存 checkpointer，日志里留一�
   先保证分母（检索指标）可信，再谈扩展。
 - **CI**：`.github/workflows/tests.yml`（首次运行记录：**full 模式，62 passed / 5 skipped，2m35s**）。
   kb-agent 的检索链路是同进程 import
-  production-rag（公开仓库 `1940633231/production-rag`），CI 会拉取它并跑完整 67 个用例；
+  production-rag（公开仓库 `1940633231/production-rag`），CI 会拉取 workflow
+  中固定的已验证 commit 并跑完整测试集；
   语料与索引不在版本库里，相关用例（PDFium 抽取 4 个）与 Postgres 用例会自动 skip，
   跳过原因用 `-rs` 打印。网络抖动导致拉取失败时降级为"不依赖它的子集"，
   并把运行模式与 production-rag commit 写进 Step Summary——本地模拟 lite 模式为

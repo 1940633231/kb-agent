@@ -22,18 +22,44 @@ EVALS_DIR = PROJECT_ROOT / "evals"
 GOLDEN_SET_PATH = EVALS_DIR / "golden_set.jsonl"
 BASELINE_PATH = EVALS_DIR / "baseline.json"
 
+DASHSCOPE_COMPAT_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+DASHSCOPE_COMPAT_MODEL = "qwen-flash"
+
 
 def load_env(path: Optional[Path] = None) -> None:
     """把 .env 读进 os.environ；已存在的环境变量不覆盖。"""
     env_path = path or ENV_PATH
-    if not env_path.exists():
+    if env_path.exists():
+        for raw in env_path.read_text(encoding="utf-8").splitlines():
+            line = raw.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            os.environ.setdefault(
+                key.strip(), value.strip().strip('"').strip("'")
+            )
+    _bridge_legacy_llm_env()
+
+
+def _bridge_legacy_llm_env() -> None:
+    """兼容旧 DashScope 配置，运行时统一使用 LLM_* 变量。
+
+    显式配置的 LLM_* 始终优先；只有旧变量存在且新变量为空时才迁移。
+    """
+    legacy_api_key = os.getenv("DASHSCOPE_API_KEY", "").strip()
+    if not legacy_api_key:
         return
-    for raw in env_path.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, value = line.split("=", 1)
-        os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
+    def set_if_blank(name: str, value: str) -> None:
+        if not os.getenv(name, "").strip():
+            os.environ[name] = value
+
+    set_if_blank("LLM_API_KEY", legacy_api_key)
+    set_if_blank("LLM_BASE_URL", DASHSCOPE_COMPAT_BASE_URL)
+    set_if_blank(
+        "LLM_MODEL",
+        os.getenv("DASHSCOPE_MODEL", "").strip() or DASHSCOPE_COMPAT_MODEL,
+    )
 
 
 def use_project_root_as_cwd() -> Path:

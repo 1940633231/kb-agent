@@ -75,22 +75,19 @@ context:
   merge_span_gap: 5
 
 generation:
-  backend: qwen
-  # 本机账号实测（2026-10-14）：qwen-turbo 404、qwen-plus 403（免费额度耗尽），
-  # qwen-flash 可用且返回 token 用量，因此本地配置用 qwen-flash。
-  # 注：评估结果与模型版本绑定，报告里必须注明用的是哪个模型。
-  model_name: qwen-flash
-  api_key_env: DASHSCOPE_API_KEY
+  # 与 production-rag 的统一 LLM 后端保持一致；切换提供商只改 LLM_* 环境变量。
+  backend: llm
   temperature: 0.3
   max_tokens: 1024
   timeout: 60
   retry_times: 2
   retry_backoff: 1.0
   max_concurrency: 4
-  openai:
-    base_url: https://api.openai.com/v1
-    api_key_env: OPENAI_API_KEY
-    model_name: ""
+  llm:
+    base_url_env: LLM_BASE_URL
+    api_key_env: LLM_API_KEY
+    require_api_key: true
+    model_env: LLM_MODEL
 
 storage:
   enabled: false

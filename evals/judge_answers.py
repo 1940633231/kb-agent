@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -139,7 +140,7 @@ def main() -> int:
         "answer_correct_rate": round(sum(scores) / len(scores), 4) if scores else None,
         "verdicts": verdicts,
         "incorrect_categories": categories,
-        "judge": "llm (qwen)",
+        "judge": "llm ({})".format(os.environ.get("LLM_MODEL", "unknown")),
     }
     out_path = PROJECT_ROOT / (args.out or str(report_path).replace(
         PROJECT_ROOT.as_posix(), "").lstrip("/").replace(".json", "_judged.json"))

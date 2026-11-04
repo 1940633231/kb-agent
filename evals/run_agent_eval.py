@@ -7,7 +7,7 @@
     evidence_hit_final              按 Agent 实际证据预算（不只 top-5）的命中
     refuse_flagged_rate             应拒答题是否被标成低置信度/待审
 
---generate 打开完整生成链路（需要 DASHSCOPE_API_KEY），额外报告：
+--generate 打开完整生成链路（需要 LLM_API_KEY / LLM_BASE_URL / LLM_MODEL），额外报告：
     answer_value_rate    答案里出现期望数值的比例
     citation_rate        有引用的答案比例
     citation_valid_rate  引用编号都能映射回证据的比例
@@ -42,8 +42,8 @@ from rag_adapter.settings import load_env, use_project_root_as_cwd  # noqa: E402
 REFUSAL_MARKERS = ("无法回答", "无法确认", "没有相关", "未提及", "不足以", "没有找到",
                    "无法提供", "不包含", "未包含")
 
-# token 估算：用 tiktoken 的 cl100k_base 近似（不是 Qwen 的分词器，属**估算**，
-# 报告里必须标注这一点）。价格不写死在代码里——单价随官方调价变化，
+# token 估算：用 tiktoken 的 cl100k_base 近似（不是具体模型的分词器，属**估算**，
+# 报告里必须标注这一点）。价格不写死在代码里，单价随官方调价变化，
 # 用环境变量传入，没配就只报 token 数，不报钱。
 _ENCODER = None
 
@@ -62,7 +62,7 @@ def estimate_tokens(text: str) -> int:
 
 
 def cost_estimate(prompt_tokens: int, answer_tokens: int) -> Optional[float]:
-    """按环境变量里的单价估算成本（元）。单价示例：qwen-flash 按官方价填写。"""
+    """按环境变量里的单价估算成本（元）；单价按 LLM_MODEL 的官方价格填写。"""
     import os
     in_price = os.environ.get("KB_AGENT_INPUT_PRICE_PER_M")
     out_price = os.environ.get("KB_AGENT_OUTPUT_PRICE_PER_M")

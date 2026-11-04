@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import statistics
 import sys
 import time
@@ -109,7 +110,7 @@ def main() -> int:
     summary = {
         "samples": len(rows),
         "generate": not args.no_generate,
-        "model": "qwen-flash",
+        "model": os.environ.get("LLM_MODEL", "unknown"),
         "retrieval_p50": percentile([r["retrieval_s"] for r in rows if r["retrieval_s"]], 0.5),
         "retrieval_p95": percentile([r["retrieval_s"] for r in rows if r["retrieval_s"]], 0.95),
         "ttft_p50": percentile([r["ttft_s"] for r in rows if r["ttft_s"]], 0.5),
