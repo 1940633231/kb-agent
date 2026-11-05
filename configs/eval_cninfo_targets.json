@@ -1,0 +1,26 @@
+{
+  "description": "Minimal P0 annual-report targets for rag-eval nightly.",
+  "targets": [
+    {
+      "company": "贵州茅台",
+      "ts_code": "600519",
+      "stock": "600519,gssh0600519",
+      "searchkey": "",
+      "enabled": true
+    },
+    {
+      "company": "宁德时代",
+      "ts_code": "300750",
+      "stock": "",
+      "searchkey": "宁德时代",
+      "enabled": true
+    },
+    {
+      "company": "招商银行",
+      "ts_code": "600036",
+      "stock": "600036,gssh0600036",
+      "searchkey": "",
+      "enabled": true
+    }
+  ]
+}
