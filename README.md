@@ -182,6 +182,33 @@ python evals/run_eval.py                  # L0/L1/L2
 python evals/run_eval.py --layers L0      # 只跑基线
 ```
 
+#### rag-eval 平台接入（推荐）
+
+50 题 golden set 不修改原文件，转换为 retrieval 与 agent 两套平台数据集：
+
+```powershell
+python -m pip install -e ..\production-rag\packages\rag-eval
+python scripts/migrate_rag_eval_golden_set.py
+rag-eval validate evals\rag_eval\kb_agent_retrieval_50
+rag-eval validate evals\rag_eval\kb_agent_l3_50
+```
+
+本地无 LLM / 无外部服务的 nightly baseline：
+
+```powershell
+rag-eval run --config configs\eval.kb_retrieval.yaml `
+  --baseline evals\rag_eval\baselines\kb_agent_retrieval_50.json
+rag-eval run --config configs\eval.kb_agent.yaml `
+  --baseline evals\rag_eval\baselines\kb_agent_l3_50.json
+```
+
+- retrieval baseline：Recall@5 `0.79`，evidence hit@5 `0.84`。
+- L3 vector baseline：coverage `1.0`，evidence hit final `0.84`，human review rate `0.68`。
+- `KB_AGENT_EVAL_GENERATE`、`KB_AGENT_EVAL_LLM_REWRITE`、`KB_AGENT_EVAL_LLM_GRADER`
+  默认均为 `false`；生成与 LLM judge 只在显式开启时运行。
+- 旧 `run_eval.py`、`run_agent_eval.py`、`judge_answers.py` 保留用于兼容和一致性对照。
+- 接入说明见 `docs/rag_eval_integration.md`。
+
 | 层 | 说明 | 变量 |
 |---|---|---|
 | L0 | 单路向量（基线） | — |

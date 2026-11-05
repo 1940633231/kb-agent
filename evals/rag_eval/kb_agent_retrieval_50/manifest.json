@@ -1,0 +1,10 @@
+{
+  "dataset_id": "kb-agent-annual-reports-retrieval-50",
+  "version": "1.0.0",
+  "task": "retrieval",
+  "samples_file": "samples.jsonl",
+  "qrels_file": "qrels.json",
+  "description": "50-question kb-agent retrieval-only annual-report evaluation set.",
+  "source": "kb-agent",
+  "created_at": "2026-11-05T00:00:00+08:00"
+}
