@@ -187,7 +187,8 @@ python evals/run_eval.py --layers L0      # 只跑基线
 50 题 golden set 不修改原文件，转换为 retrieval 与 agent 两套平台数据集：
 
 ```powershell
-python -m pip install -e ..\production-rag\packages\rag-eval
+python -m pip install -r requirements-eval-github.txt
+# PyPI 发布后：pip install "rag-eval>=0.1.0,<0.2.0"
 python scripts/migrate_rag_eval_golden_set.py
 rag-eval validate evals\rag_eval\kb_agent_retrieval_50
 rag-eval validate evals\rag_eval\kb_agent_l3_50

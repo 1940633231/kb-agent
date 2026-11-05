@@ -5,11 +5,13 @@
 From `kb-agent`:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -e `
-  ..\production-rag\packages\rag-eval
+.\.venv\Scripts\python.exe -m pip install -r requirements-eval-github.txt
+# After PyPI publication:
+.\.venv\Scripts\python.exe -m pip install "rag-eval>=0.1.0,<0.2.0"
 ```
 
-This installs the evaluator and its declared metric dependencies.
+This installs the same pinned GitHub Release version used by CI. The version
+range in `requirements-eval.txt` is the post-PyPI release dependency.
 
 ## Convert the 50-question golden set
 

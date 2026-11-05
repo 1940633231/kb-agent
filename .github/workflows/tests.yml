@@ -47,7 +47,7 @@ jobs:
             echo "mode=full" >> "$GITHUB_OUTPUT"
             pip install -r requirements.txt
             pip install -e ../production-rag
-            pip install -e ../production-rag/packages/rag-eval
+            pip install -r requirements-eval-github.txt
           else
             echo "mode=lite" >> "$GITHUB_OUTPUT"
             pip install -r requirements-ci.txt
@@ -63,9 +63,7 @@ jobs:
 
       - name: 跑完整测试
         if: steps.deps.outputs.mode == 'full'
-        run: |
-          python -m pytest tests -q -rs
-          python -m pytest ../production-rag/packages/rag-eval/tests -q
+        run: python -m pytest tests -q -rs
 
       - name: 跑降级测试
         if: steps.deps.outputs.mode == 'lite'
