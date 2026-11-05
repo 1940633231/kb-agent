@@ -6,6 +6,7 @@ from eval_adapter import (
     KbAgentAnswerJudge,
     KbAgentL3Adapter,
     KbAgentRetrievalAdapter,
+    _build_service,
 )
 from rag_eval.contracts import EvalSample, Prediction, load_dataset
 from rag_eval.registry import RunContext
@@ -84,6 +85,36 @@ def test_retrieval_adapter_does_not_call_generator() -> None:
     assert generator.calls == 0
     assert prediction.documents[0].document_id == "600519-2023"
     assert prediction.metadata["retrieval_only"] is True
+
+
+def test_retrieval_only_service_uses_stub_generation(monkeypatch) -> None:
+    captured = {}
+
+    class FakeConfig:
+        def __init__(self):
+            self.data = {"generation": {"backend": "llm"}}
+
+    class FakeRag:
+        @staticmethod
+        def build_config():
+            return FakeConfig()
+
+    class FakeRAGService:
+        def __init__(self, **kwargs):
+            captured.update(kwargs)
+
+    import app.rag.service
+
+    monkeypatch.setattr(app.rag.service, "RAGService", FakeRAGService)
+    _build_service(
+        FakeRag,
+        strategy="recursive",
+        mode="vector",
+        use_rerank=False,
+        retrieval_only=True,
+    )
+
+    assert captured["config"].data["generation"]["backend"] == "stub"
 
 
 def test_l3_adapter_defaults_to_retrieval_only() -> None:
