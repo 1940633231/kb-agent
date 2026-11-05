@@ -16,3 +16,10 @@ data/index/*
 
 # 评估报告保留（可复现的证据）；逐次运行产生的临时文件忽略
 evals/reports/*.tmp
+
+# rag-eval local outputs
+.rag-eval-cache/
+evals/reports/rag_eval/retrieval/
+evals/reports/rag_eval/agent/
+evals/reports/rag_eval/agent_generate/
+evals/reports/rag_eval/trends/

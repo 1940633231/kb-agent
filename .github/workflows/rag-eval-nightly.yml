@@ -1,0 +1,99 @@
+name: rag-eval nightly
+
+on:
+  schedule:
+    # 03:00 Asia/Shanghai
+    - cron: "0 19 * * *"
+  workflow_dispatch:
+
+env:
+  PRODUCTION_RAG_REF: main
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+      LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+      LLM_MODEL: ${{ secrets.LLM_MODEL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Check out production-rag
+        run: |
+          git clone --depth 1 --branch "$PRODUCTION_RAG_REF" \
+            https://github.com/1940633231/production-rag.git ../production-rag
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e ../production-rag
+          pip install -r requirements-eval-github.txt
+
+      - name: Cache annual reports and local index
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/docs/annual_reports
+            data/index/recursive
+            ~/.cache/huggingface
+          key: kb-agent-eval-${{ hashFiles('data/docs/annual_reports/metadata.json', 'requirements.txt') }}
+
+      - name: Fetch annual reports
+        run: python scripts/fetch_annual_reports.py
+
+      - name: Rebuild local retrieval index when missing
+        run: |
+          if [ ! -f data/index/recursive/faiss.index ] || \
+             [ ! -f data/index/recursive/metadata.json ]; then
+            python scripts/ingest_kb.py
+          fi
+
+      - name: Build rag-eval datasets
+        run: python scripts/migrate_rag_eval_golden_set.py
+
+      - name: Retrieval-only nightly gate
+        run: |
+          rag-eval run \
+            --config configs/eval.kb_retrieval.yaml \
+            --baseline evals/rag_eval/baselines/kb_agent_retrieval_50.json \
+            --trend-csv evals/reports/rag_eval/trends/retrieval.csv
+
+      - name: L3 Agent nightly gate
+        run: |
+          rag-eval run \
+            --config configs/eval.kb_agent.yaml \
+            --baseline evals/rag_eval/baselines/kb_agent_l3_50.json \
+            --trend-csv evals/reports/rag_eval/trends/agent.csv
+
+      - name: Generated L3 + LLM Judge advisory
+        if: env.LLM_API_KEY != ''
+        env:
+          KB_AGENT_EVAL_L3_MODE: vector
+          KB_AGENT_EVAL_L3_RERANK: "false"
+          KB_AGENT_EVAL_GENERATE: "true"
+          KB_AGENT_EVAL_LLM_REWRITE: "false"
+          KB_AGENT_EVAL_LLM_GRADER: "false"
+        run: |
+          rag-eval run \
+            --config configs/eval.kb_agent_generate.yaml \
+            --json > /tmp/generated-run.json
+          run_dir=$(python -c "import json; print(json.load(open('/tmp/generated-run.json', encoding='utf-8'))['run_directory'])")
+          python scripts/run_rag_eval_judge.py \
+            --dataset evals/rag_eval/kb_agent_l3_50 \
+            --run-dir "$run_dir" \
+            --out evals/reports/rag_eval/agent_generate/judge.json
+
+      - name: Upload evaluation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb-agent-rag-eval
+          path: evals/reports/rag_eval/

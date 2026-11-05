@@ -1,0 +1,14 @@
+dataset: evals/rag_eval/kb_agent_l3_50
+adapter: eval_adapter:KbAgentL3Adapter
+model: kb-agent-l3-generated
+prompt_version: kb-agent-l3-generated-v1
+seed: 42
+max_errors: 5
+min_coverage: 0.9
+timeout_seconds: 600
+cache_dir: .rag-eval-cache/kb-agent/agent-generate
+output_dir: evals/reports/rag_eval/agent_generate
+k_values: [1, 3, 5]
+thresholds:
+  recall@5: 0.0
+  evidence_hit_final: 0.0

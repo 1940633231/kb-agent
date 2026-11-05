@@ -1,0 +1,17 @@
+dataset: evals/rag_eval/kb_agent_l3_50
+adapter: eval_adapter:KbAgentL3VectorAdapter
+model: BAAI/bge-small-zh-v1.5
+prompt_version: kb-agent-l3-vector-norerank
+seed: 42
+max_errors: 0
+min_coverage: 1.0
+timeout_seconds: 600
+cache_dir: .rag-eval-cache/kb-agent/agent
+output_dir: evals/reports/rag_eval/agent
+k_values: [1, 3, 5]
+thresholds:
+  recall@5: 0.0
+  evidence_hit_final: 0.0
+  retry_rate: 0.05
+  foreign_evidence_rate: 0.0
+  human_review_rate: 0.1
