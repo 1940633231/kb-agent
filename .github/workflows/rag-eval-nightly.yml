@@ -47,7 +47,9 @@ jobs:
           key: kb-agent-eval-${{ hashFiles('data/docs/annual_reports/metadata.json', 'requirements.txt') }}
 
       - name: Fetch annual reports
-        run: python scripts/fetch_annual_reports.py
+        run: |
+          python scripts/fetch_annual_reports.py \
+            --targets configs/eval_cninfo_targets.json
 
       - name: Rebuild local retrieval index when missing
         run: |
