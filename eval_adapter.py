@@ -135,6 +135,28 @@ def _index_errors(strategy: str, mode: str) -> list[str]:
     return errors
 
 
+def _build_service(
+    rag,
+    *,
+    strategy: str,
+    mode: str,
+    use_rerank: bool,
+    retrieval_only: bool,
+):
+    """Build RAGService without requiring LLM config for retrieval-only runs."""
+    from app.rag.service import RAGService
+
+    config = rag.build_config()
+    if retrieval_only:
+        config.data.setdefault("generation", {})["backend"] = "stub"
+    return RAGService(
+        config=config,
+        strategy=strategy,
+        mode=mode,
+        use_rerank=use_rerank,
+    )
+
+
 class KbAgentRetrievalAdapter:
     """Retrieval-only adapter using rag_adapter.rag.retrieve()."""
 
@@ -184,10 +206,12 @@ class KbAgentRetrievalAdapter:
 
         use_project_root_as_cwd()
         load_env()
-        self._service = rag.build_service(
+        self._service = _build_service(
+            rag,
             strategy=self.strategy,
             mode=self.mode,
             use_rerank=self.use_rerank,
+            retrieval_only=True,
         )
         self._offsets = rag.load_page_offsets(self.strategy)
 
@@ -323,10 +347,12 @@ class KbAgentL3Adapter:
         use_project_root_as_cwd()
         load_env()
         if self._service is None:
-            self._service = rag.build_service(
+            self._service = _build_service(
+                rag,
                 strategy=self.strategy,
                 mode=self.mode,
                 use_rerank=self.use_rerank,
+                retrieval_only=not self.generate_answers,
             )
         runtime = default_runtime(
             strategy=self.strategy,
