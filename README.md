@@ -16,7 +16,7 @@
 
 | 阶段 | 内容 | 状态 |
 |---|---|---|
-| 第零阶段 | 语料抓取、灌库、20 题 golden set、L0 检索基线 | 已完成：9 份年报 / 3,576 chunk；L0 Recall@5=0.882 |
+| 第零阶段 | 语料扩展与审计、灌库、golden set、L0 检索基线 | 已完成：30 家 / 90 份年报 / 37,958 chunk；历史 L0 Recall@5=0.882（9 份语料） |
 | 第一阶段 | LangGraph 主图：State / 节点 / 条件边 / 检索子图 / 自纠错重试 | 已完成，见「第一阶段」 |
 | 第二阶段 | Postgres Checkpointer、Store 长期记忆、Interrupt 人工审核 | 已完成，见「第二阶段」 |
 | 第三阶段 | FastAPI + SSE、结构化日志、四场景演示 | 已完成，见「第三阶段」 |
@@ -37,7 +37,7 @@ flowchart TB
     GRAPH <--> STORE["Store<br/>跨会话记忆（namespace 隔离）"]
     CP --> PG[("PostgreSQL<br/>kb-agent-postgres 容器")]
     STORE --> PG
-    RAG --> IDX["索引：3,576 chunk<br/>faiss.index + metadata.json + page_offsets.json"]
+    RAG --> IDX["索引：37,958 chunk<br/>faiss.index + metadata.json + page_offsets.json"]
     RAG --> LLM["模型：LLM_MODEL（生成/改写/复核/裁判）<br/>bge-small-zh-v1.5 · bge-reranker-base"]
     EVAL["评估层<br/>golden set 50 题 · 分层矩阵 · LLM 裁判 · 延迟"] --> GRAPH
 ```
@@ -51,7 +51,7 @@ kb-agent/
 ├── rag_adapter/      # 对 production-rag 的封装：配置、年报装载、检索入口
 ├── persistence/      # Postgres Checkpointer / Store 装配 + docker-compose
 ├── api/              # FastAPI 接口、SSE 事件流、结构化日志
-├── configs/          # kb_agent.yaml（本地轻量检索配置）
+├── configs/          # kb_agent.yaml + cninfo_targets.json（检索与抓取配置）
 ├── scripts/          # 抓取年报、灌库、原文定位
 ├── evals/            # golden_set.jsonl、run_eval.py、baseline.json、reports/
 ├── data/docs/        # annual_reports/（PDF + 抓取登记表）
@@ -81,28 +81,55 @@ LLM 统一走 OpenAI-compatible `/chat/completions`。旧版 `DASHSCOPE_API_KEY`
 
 ### 1. 语料
 
-三家 A 股公司 × 近三年（2023/2024/2025）共 9 份年报，来自巨潮资讯公告接口：
+30 家 A 股公司 × 近三年（2023/2024/2025）共 90 份年报，来自巨潮资讯公告接口。
+完整名单、代码、查询参数与 5 家替补候选项见 `configs/cninfo_targets.json`；默认
+只抓取 `enabled=true` 的 30 家，替补项显式加 `--include-candidates` 才启用。
 
-| 公司 | 代码 | 选它的原因 |
-|---|---|---|
-| 贵州茅台 | 600519 | 消费、表格规整，适合表格题 |
-| 宁德时代 | 300750 | 制造、附注长，且两年披露单位不同（万元 / 千元） |
-| 招商银行 | 600036 | 金融、科目体系不同，适合跨文档对比 |
+语料覆盖消费、新能源、家电、工程机械、金融、电子、半导体、医药、能源与物流。
+原有贵州茅台、宁德时代、招商银行保留，用于延续 50 题回归集的历史可比性。
 
 ```powershell
-python scripts/fetch_annual_reports.py --out-dir data/docs/annual_reports
+python scripts/fetch_annual_reports.py `
+  --targets configs/cninfo_targets.json `
+  --years 2023 2024 2025 `
+  --out-dir data/docs/annual_reports
+
+python scripts/audit_annual_reports.py `
+  --targets configs/cninfo_targets.json `
+  --metadata data/docs/annual_reports/metadata.json `
+  --report evals/reports/corpus_audit.json
 ```
 
 抓取结果登记在 `data/docs/annual_reports/metadata.json`：公告标题、公告 ID、
 PDF 直链、字节数、sha256、抓取时间。**只有登记表进 git，PDF 不进**（体积大、可重抓）。
+每次抓取还会写 `data/docs/annual_reports/fetch_report.json`，按公司/年份记录查询、
+选择或下载失败，避免失败只停留在终端。
 
 抓取要点（都已实测）：
 
 - 查询接口 `POST http://www.cninfo.com.cn/new/hisAnnouncement/query` **必须带 User-Agent**。
 - 沪市可用 `stock="600519,gssh0600519"`；深市 orgId 前缀无稳定规律（300750 各种
   前缀组合都返回 0 条），改用 `searchkey="宁德时代"` 更稳。
+- `stock` 为空时自动回退到 `searchkey`；配置项缺少两者时再回退到公司名。
 - 返回体含 `<em>` 高亮标签，需要先剥标签再匹配标题。
 - 标题过滤要排除 `摘要 / 英文 / 更正 / 已取消 / 半年 / 季度` 等干扰项。
+
+阶段 0 实测（2026-11-06）：抓取 90/90 份成功，PDFium 打开与文本抽取 90/90，
+正文合计 **24,067,420 字符**，SHA-256 无重复；审计报告为
+`evals/reports/corpus_audit.json`。重建后为 **37,958 chunk**，FAISS vector 数与
+metadata vector ID 集合一致，页码映射 90/90 份文档覆盖。纯 CPU embedding 约
+18,831 秒，是语料扩展阶段的主要耗时。
+
+扩展后原 50 题回归可完整运行：
+
+- 确定性 L0：Recall@5 `0.8333`、全命中率 `0.7778`、MRR `0.5915`，
+  报告见 `evals/reports/stage0_expanded_retrieval.json`。
+- L3 生成烟测（规则改写、关闭 LLM 复核、`max_retries=0`）：45 道可答题均完成
+  检索与生成；文档 Recall@5 `0.9333`、证据命中 `0.5333`、答案数值命中 `0.6222`、
+  引用率 `0.8667`、平均 66.5 秒/题，报告见
+  `evals/reports/stage0_expanded_generation.json`。
+
+这些是“扩展后、P0 之前”的基线，不应与 9 份语料的历史数字直接混比。
 
 ### 1b. 辅库：LangGraph 官方文档
 
@@ -116,7 +143,8 @@ python scripts/fetch_langgraph_docs.py      # 默认走镜像，网络可直连�
 并把 upstream / 实际使用的镜像 / commit / 文件数写入
 `data/docs/langgraph_docs_registry.json`。
 
-**辅库暂未灌入索引**：L0/L1/L2 基线固定在 9 份年报语料上，避免语料一变动基线就不可比。
+**辅库暂未灌入索引**：L0/L1/L2 历史基线明确标注为 9 份年报语料版本，避免把扩展
+前后的指标混在一起比较。
 技术问答题属于 50 题扩展集的范围，接入时建议单独一个索引/命名空间。
 
 ### 2. PDF 文本抽取：改用 PDFium（有实测证据的决策）
@@ -224,9 +252,9 @@ rag-eval run --config configs\eval.kb_agent.yaml `
 L0 基线写入 `evals/baseline.json`（方案 §6.4 规则 2：灌库完成后立即测出），
 各层汇总写入 `evals/reports/layer_matrix.json`。
 
-### 6. 第零阶段结果（实测，2026-10-13）
+### 6. 扩展前第零阶段结果（实测，2026-10-13）
 
-环境：9 份年报 / 3,576 chunk / `BAAI/bge-small-zh-v1.5` / `BAAI/bge-reranker-base` /
+历史环境：9 份年报 / 3,576 chunk / `BAAI/bge-small-zh-v1.5` / `BAAI/bge-reranker-base` /
 chunk 800·overlap 120 / strategy=recursive / top_k=5 / faiss 1.15.1。
 
 | 层 | 说明 | Recall@5 | 全命中率 | MRR | 证据命中@5 |
@@ -800,7 +828,8 @@ Postgres 连不上时接口层会降级到内存 checkpointer，日志里留一�
   改为在 `scripts/ingest_kb.py` 里用 `faiss.vector_to_array` 做等效核对
   （metadata.json 与 FAISS 的 vector_id 集合必须一致），并在本地配置里关闭
   上游校验开关。
-- 语料只有 3 家公司 × 3 年、共 9 份年报，**不能**据此谈容量或 SLA。
+- 语料已扩展到 30 家公司 × 3 年、共 90 份年报，但仍**不能**据此谈生产容量或 SLA；
+  原 50 题和 L0-L3 数字同时保留“9 份语料版本”的标注，扩展后的新基线需单独评测。
 - **证据级指标的口径**：计算题与单位换算题（"增加约多少亿元"）的期望值是算出来的，
   原文里没有该字面量，所以这类题用 `evidence_literals` 声明"证据里必须真实出现的数字"。
   修正口径后 L1/L2 的证据命中是 0.353 / 0.471（此前 0.588 / 0.706 是把"算出来的期望值"

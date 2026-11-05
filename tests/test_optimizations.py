@@ -76,9 +76,9 @@ def test_scope_keeps_all_named_facets_for_cross_company_question():
 
 
 def test_scope_with_unknown_company_filters_by_year_only():
-    """问题点名的公司不在语料里（应拒答题）：只有年份可用，就只按年份裁。"""
+    """问题点名的公司不在扩展后的语料里：只有年份可用，就只按年份裁。"""
     hits = [hit("600519-2023"), hit("300750-2024")]
-    kept, stats = scope_evidence("比亚迪2024年的营业收入是多少？", hits)
+    kept, stats = scope_evidence("苹果公司2024年的营业收入是多少？", hits)
     assert [h["document_id"] for h in kept] == ["300750-2024"]
     assert stats["scoped"] is True
 
