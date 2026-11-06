@@ -176,6 +176,27 @@ def test_rerank_does_not_drop_route_provenance():
     assert routes[1]["hits"][0]["retrieval_routes"] == ["route-2"]
 
 
+def test_vector_route_uses_full_candidate_limit_before_top_k_cut():
+    service = FakeService(lambda query: [
+        make_hit(
+            "600519-2023",
+            "贵州茅台2023年年度报告 营业收入 100,000,000.00 {} ".format(index),
+            score=1.0 - index / 100,
+        )
+        for index in range(8)
+    ])
+
+    hits, routes = retrieve_routes_with_evidence(
+        service,
+        [route("route-1", 2023, "obligation-1")],
+        top_k=3,
+        route_candidate_limit=8,
+    )
+
+    assert len(routes[0]["hits"]) == 8
+    assert len(hits) == 3
+
+
 def test_strict_scope_does_not_fall_back_when_filter_result_is_empty():
     kept, stats = scope_evidence(
         "贵州茅台2023年的营业收入是多少元？",

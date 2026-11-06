@@ -128,9 +128,12 @@ def run_generation(questions: list[dict], repeats: int,
     started = time.time()
     runs = []
     service = None
-    if generation_mode == "vector":
+    if generation_mode in {"vector", "hybrid"}:
         service = rag.build_service(
-            strategy="recursive", mode="vector", use_rerank=False)
+            strategy="recursive",
+            mode=generation_mode,
+            use_rerank=(generation_mode == "hybrid"),
+        )
     for repeat in range(1, repeats + 1):
         print("generation repeat {}/{}".format(repeat, repeats), flush=True)
         args = SimpleNamespace(
@@ -140,7 +143,9 @@ def run_generation(questions: list[dict], repeats: int,
             no_scope=False,
             no_pre_retrieval_routing=False,
             no_strict_route_filter=False,
-            route_candidate_limit=50,
+            route_candidate_limit=(
+                200 if generation_mode == "vector" else 50
+            ),
             no_llm_grade=True,
             strategy="recursive",
             top_k=top_k,
@@ -168,9 +173,12 @@ def run_generation(questions: list[dict], repeats: int,
             }
             for row in evaluation_rows(report)
             if row.get("status") in {
-                "error", "answer_hard_gate_failed",
-                "answered_unverified", "refused_no_evidence",
+                "error", "answer_hard_gate_failed", "answered_unverified",
             }
+            or (
+                row.get("status") == "refused_no_evidence"
+                and row.get("expected_behavior") != "refuse"
+            )
         ]
     claim_report = {}
     claim_path = REPORTS / "claim_audit.json"

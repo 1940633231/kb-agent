@@ -481,6 +481,12 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             answer = "".join(parts)
         else:
             answer = generator.generate(messages)
+        if not (answer or "").strip() and hasattr(generator, "generate"):
+            answer = generator.generate(messages)
+        generation_status = "answered"
+        if not (answer or "").strip():
+            answer = REFUSAL_NO_EVIDENCE
+            generation_status = "refused_no_evidence"
         citations = [enrich_citation(citation, runtime.page_offsets, chunks)
                      for citation in CitationExtractor().extract(answer, chunks)]
         grounding = verify_grounding(answer, citations, chunks, question)
@@ -490,7 +496,7 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             "context_chunks": chunks,
             "prompt_budget": budget_result["budget"],
             "grounding": grounding,
-            "status": "answered",
+            "status": generation_status,
             "trace": [{"node": "generate_answer", "answer_len": len(answer or ""),
                        "context_chunks": len(chunks),
                        "prompt_tokens_estimate": budget_result["budget"][

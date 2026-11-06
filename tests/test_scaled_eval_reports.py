@@ -61,9 +61,24 @@ def test_scaled_generation_has_three_runs_with_mean_and_stddev():
 
 def test_scaled_generation_records_failures_per_repeat():
     report = load("scaled_generation.json")
+    refusal_ids = {
+        item["id"]
+        for item in (
+            json.loads(line)
+            for line in (
+                PROJECT_ROOT / "evals" / "golden_set_scaled_120.jsonl"
+            ).read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        )
+        if item.get("expected_behavior") == "refuse"
+    }
     assert set(report["failures"]) == {"1", "2", "3"}
     assert all(isinstance(items, list)
                for items in report["failures"].values())
+    assert all(
+        not refusal_ids.intersection(item.get("id") for item in items)
+        for items in report["failures"].values()
+    )
 
 
 def test_claim_and_budget_reports_meet_p1_p2_gates():

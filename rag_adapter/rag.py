@@ -15,6 +15,7 @@ from app.ingestion.document import Document
 from app.rag.service import RAGService
 
 from rag_adapter.pdfium_loader import PdfiumLoader
+from rag_adapter.prompting import GroundedAnswerPromptBuilder
 from rag_adapter.settings import (CONFIG_PATH, PROJECT_ROOT, REPORTS_REGISTRY,
                                  index_dir, page_offsets_path)
 
@@ -28,8 +29,10 @@ def build_service(strategy: str = "recursive", mode: str = "vector",
                   use_rerank: bool = False,
                   tenant_id: str = "default") -> RAGService:
     """构建 RAGService；mode 取 vector / bm25 / hybrid。"""
-    return RAGService(config=build_config(), strategy=strategy, mode=mode,
-                      use_rerank=use_rerank, tenant_id=tenant_id)
+    service = RAGService(config=build_config(), strategy=strategy, mode=mode,
+                         use_rerank=use_rerank, tenant_id=tenant_id)
+    service._pipeline.prompt_builder = GroundedAnswerPromptBuilder()  # noqa: SLF001
+    return service
 
 
 def retrieve(service: RAGService, query: str, top_k: int = 5) -> List[Dict]:
@@ -151,11 +154,20 @@ def retrieve_routes_with_evidence(
         if strict_route_filter and not route["unrouted"] and not allowed:
             empty_reason = "no_document_ids"
         else:
-            raw = pipeline._search_all(  # noqa: SLF001
-                query,
-                [query],
-                document_ids=allowed or None,
-            )
+            retriever = getattr(pipeline, "retriever", None)
+            if (pipeline.reranker is None and retriever is not None
+                    and hasattr(retriever, "search")):
+                raw = retriever.search(
+                    query,
+                    top_k=candidate_limit,
+                    document_ids=allowed or None,
+                )
+            else:
+                raw = pipeline._search_all(  # noqa: SLF001
+                    query,
+                    [query],
+                    document_ids=allowed or None,
+                )
             active = pipeline._filter_active_versions(raw)  # noqa: SLF001
             raw_count = len(active)
             for hit in active:

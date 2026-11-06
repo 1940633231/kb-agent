@@ -16,6 +16,10 @@ from agent.grounding import (
     verify_grounding,
 )
 
+METRIC_ALIASES = {
+    "营业收入": ("营业总收入",),
+}
+
 
 def _chunk_facets(chunk: Dict[str, Any]) -> Dict[str, Any]:
     metadata = chunk.get("metadata") or {}
@@ -71,7 +75,14 @@ def _has_metric(question: str, chunks: List[Dict]) -> bool:
     if not keywords:
         return True
     text = normalize(" ".join(chunk.get("content") or "" for chunk in chunks))
-    return any(normalize(keyword) in text for keyword in keywords)
+    for keyword in keywords:
+        normalized = normalize(keyword)
+        if normalized in text:
+            return True
+        if any(normalize(alias) in text
+               for alias in METRIC_ALIASES.get(keyword, ())):
+            return True
+    return False
 
 
 def _derived_supported(claim: AnswerClaim, citations: List[Dict],

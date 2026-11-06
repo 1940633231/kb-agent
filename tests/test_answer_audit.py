@@ -84,6 +84,23 @@ def test_wrong_metric_name_is_hard_violation():
                for item in audit["hard_violations"])
 
 
+def test_top_line_revenue_alias_passes_after_number_and_entity_checks():
+    question = "美的集团2023年的营业收入是多少千元？"
+    item = chunk("美的集团2023年年度报告 营业总收入 373,709,804",
+                 "000333-2023")
+    item["metadata"]["company"] = "美的集团"
+    audit = audit_answer(
+        "美的集团2023年营业收入（原文口径：营业总收入）为 "
+        "373,709,804千元 [1]。",
+        [citation(item)],
+        [item],
+        question,
+    )
+
+    assert audit["hard_gate_passed"] is True
+    assert audit["hard_violations"] == []
+
+
 def test_unit_conversion_is_accepted():
     item = chunk("贵州茅台2023年年度报告 营业收入 147,693,604,994.14")
     audit = audit_answer(
