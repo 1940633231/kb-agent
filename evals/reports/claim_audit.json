@@ -1,5 +1,6 @@
 {
   "generated_at": "2026-11-06T05:49:50.119306+00:00",
+  "model": "rule-based-claim-audit",
   "dataset": {
     "path": "F:\\workSpace\\python\\kb-agent\\evals\\claim_audit_cases.jsonl",
     "sha256": "a0f4560d488dc3230df84fe030162cbc44e57a17e1cf5fd9349adfa92f343e63",

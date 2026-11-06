@@ -1,0 +1,421 @@
+{
+  "generated_at": "2026-11-06T07:23:30.655488+00:00",
+  "model": "deepseek-flash + BAAI/bge-small-zh-v1.5",
+  "elapsed_seconds": 1034.27,
+  "dataset": {
+    "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
+    "manifest": {
+      "dataset_id": "kb-agent-scaled-120",
+      "version": "v1",
+      "generated_at": "2026-11-06T05:57:15.896578+00:00",
+      "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
+      "sha256": "de02bd689ecdfcc900105f1f1be02b7c280c484529e78837c6f73086a611ece3",
+      "corpus_metadata_sha256": "38bbabd11e54afbe1c3a4c5f67112bfb4640c503ad750fc824ebbe06e982deba",
+      "companies": 30,
+      "documents": 90,
+      "counts": {
+        "company": 90,
+        "cross": 15,
+        "refusal": 15,
+        "total": 120
+      }
+    },
+    "evaluated": 120
+  },
+  "config": {
+    "repeats": 3,
+    "top_k": 5,
+    "rule_rewrite": true,
+    "llm_grader": false,
+    "max_retries": 0,
+    "generate": true,
+    "generation_mode": "vector"
+  },
+  "hard_gate": {
+    "source": "claim_audit.json",
+    "precision": 1.0,
+    "recall": 1.0,
+    "false_positive_rate": 0.0
+  },
+  "metrics": {
+    "all_docs_hit@5": {
+      "mean": 0.8476,
+      "stddev": 0.0,
+      "min": 0.8476,
+      "max": 0.8476,
+      "runs": 3
+    },
+    "ambiguous_obligation_rate": {
+      "mean": 0.0,
+      "stddev": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "runs": 3
+    },
+    "answer_tokens_est_mean": {
+      "mean": 84.4111,
+      "stddev": 2.075633,
+      "min": 82.2417,
+      "max": 87.2083,
+      "runs": 3
+    },
+    "answer_value_rate": {
+      "mean": 0.126967,
+      "stddev": 0.004478,
+      "min": 0.1238,
+      "max": 0.1333,
+      "runs": 3
+    },
+    "answer_correctness": {
+      "mean": 0.126967,
+      "stddev": 0.004478,
+      "min": 0.1238,
+      "max": 0.1333,
+      "runs": 3
+    },
+    "answerable_questions": {
+      "mean": 105,
+      "stddev": 0.0,
+      "min": 105,
+      "max": 105,
+      "runs": 3
+    },
+    "citation_coverage": {
+      "mean": 0.9906,
+      "stddev": 0.003879,
+      "min": 0.9859,
+      "max": 0.9954,
+      "runs": 3
+    },
+    "citation_full_coverage_rate": {
+      "mean": 0.981733,
+      "stddev": 0.006178,
+      "min": 0.973,
+      "max": 0.9863,
+      "runs": 3
+    },
+    "citation_full_coverage": {
+      "mean": 0.981733,
+      "stddev": 0.006178,
+      "min": 0.973,
+      "max": 0.9863,
+      "runs": 3
+    },
+    "citation_rate": {
+      "mean": 0.876167,
+      "stddev": 0.013482,
+      "min": 0.8571,
+      "max": 0.8857,
+      "runs": 3
+    },
+    "citation_valid_rate": {
+      "mean": 1.0,
+      "stddev": 0.0,
+      "min": 1.0,
+      "max": 1.0,
+      "runs": 3
+    },
+    "claim_support_rate": {
+      "mean": 0.5953,
+      "stddev": 0.028202,
+      "min": 0.5646,
+      "max": 0.6327,
+      "runs": 3
+    },
+    "context_overflow_rate": {
+      "mean": 0.0,
+      "stddev": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "runs": 3
+    },
+    "doc_mrr": {
+      "mean": 0.9143,
+      "stddev": 0.0,
+      "min": 0.9143,
+      "max": 0.9143,
+      "runs": 3
+    },
+    "doc_recall@5": {
+      "mean": 0.881,
+      "stddev": 0.0,
+      "min": 0.881,
+      "max": 0.881,
+      "runs": 3
+    },
+    "evidence_hit@5": {
+      "mean": 0.2286,
+      "stddev": 0.0,
+      "min": 0.2286,
+      "max": 0.2286,
+      "runs": 3
+    },
+    "evidence_hit_final": {
+      "mean": 0.2286,
+      "stddev": 0.0,
+      "min": 0.2286,
+      "max": 0.2286,
+      "runs": 3
+    },
+    "evidence_obligation_coverage": {
+      "mean": 0.5667,
+      "stddev": 0.0,
+      "min": 0.5667,
+      "max": 0.5667,
+      "runs": 3
+    },
+    "foreign_citation_rate": {
+      "mean": 0.073,
+      "stddev": 0.011893,
+      "min": 0.0571,
+      "max": 0.0857,
+      "runs": 3
+    },
+    "foreign_evidence_rate": {
+      "mean": 0.0857,
+      "stddev": 0.0,
+      "min": 0.0857,
+      "max": 0.0857,
+      "runs": 3
+    },
+    "grounding_verified_rate": {
+      "mean": 0.871733,
+      "stddev": 0.011035,
+      "min": 0.863,
+      "max": 0.8873,
+      "runs": 3
+    },
+    "mean_evidence_count": {
+      "mean": 2.9917,
+      "stddev": 0.0,
+      "min": 2.9917,
+      "max": 2.9917,
+      "runs": 3
+    },
+    "mean_retries": {
+      "mean": 0.0,
+      "stddev": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "runs": 3
+    },
+    "mean_seconds_per_query": {
+      "mean": 2.704,
+      "stddev": 0.047177,
+      "min": 2.6693,
+      "max": 2.7707,
+      "runs": 3
+    },
+    "mean_ungrounded_numbers": {
+      "mean": 0.125,
+      "stddev": 0.024514,
+      "min": 0.0917,
+      "max": 0.15,
+      "runs": 3
+    },
+    "missing_obligation_rate": {
+      "mean": 0.4571,
+      "stddev": 0.0,
+      "min": 0.4571,
+      "max": 0.4571,
+      "runs": 3
+    },
+    "prompt_tokens_est_mean": {
+      "mean": 1908.575,
+      "stddev": 0.0,
+      "min": 1908.575,
+      "max": 1908.575,
+      "runs": 3
+    },
+    "refuse_correct_rate": {
+      "mean": 0.7333,
+      "stddev": 0.0,
+      "min": 0.7333,
+      "max": 0.7333,
+      "runs": 3
+    },
+    "refusal_correctness": {
+      "mean": 0.7333,
+      "stddev": 0.0,
+      "min": 0.7333,
+      "max": 0.7333,
+      "runs": 3
+    },
+    "refuse_flagged_rate": {
+      "mean": 1.0,
+      "stddev": 0.0,
+      "min": 1.0,
+      "max": 1.0,
+      "runs": 3
+    },
+    "repair_rate": {
+      "mean": 0.0,
+      "stddev": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "runs": 3
+    },
+    "retry_rate": {
+      "mean": 0.0,
+      "stddev": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "runs": 3
+    },
+    "route_obligation_coverage": {
+      "mean": 0.5667,
+      "stddev": 0.0,
+      "min": 0.5667,
+      "max": 0.5667,
+      "runs": 3
+    },
+    "tokens_est_total": {
+      "mean": 239158.333333,
+      "stddev": 249.078747,
+      "min": 238898,
+      "max": 239494,
+      "runs": 3
+    },
+    "unsupported_claim_rate": {
+      "mean": 0.4047,
+      "stddev": 0.028202,
+      "min": 0.3673,
+      "max": 0.4354,
+      "runs": 3
+    },
+    "unverified_rate": {
+      "mean": 0.0,
+      "stddev": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "runs": 3
+    }
+  },
+  "runs": [
+    {
+      "metrics": {
+        "answerable_questions": 105,
+        "doc_recall@5": 0.881,
+        "all_docs_hit@5": 0.8476,
+        "doc_mrr": 0.9143,
+        "evidence_hit@5": 0.2286,
+        "evidence_hit_final": 0.2286,
+        "evidence_obligation_coverage": 0.5667,
+        "missing_obligation_rate": 0.4571,
+        "ambiguous_obligation_rate": 0.0,
+        "route_obligation_coverage": 0.5667,
+        "claim_support_rate": 0.5646,
+        "unsupported_claim_rate": 0.4354,
+        "context_overflow_rate": 0.0,
+        "mean_evidence_count": 2.9917,
+        "retry_rate": 0.0,
+        "mean_retries": 0.0,
+        "refuse_flagged_rate": 1.0,
+        "mean_seconds_per_query": 2.7707,
+        "foreign_evidence_rate": 0.0857,
+        "foreign_citation_rate": 0.0857,
+        "grounding_verified_rate": 0.8873,
+        "mean_ungrounded_numbers": 0.0917,
+        "citation_coverage": 0.9859,
+        "citation_full_coverage_rate": 0.9859,
+        "repair_rate": 0.0,
+        "repair_fixed_rate": null,
+        "unverified_rate": 0.0,
+        "prompt_tokens_est_mean": 1908.575,
+        "answer_tokens_est_mean": 82.2417,
+        "tokens_est_total": 238898,
+        "cost_estimate_per_query": null,
+        "answer_value_rate": 0.1238,
+        "citation_rate": 0.8571,
+        "citation_valid_rate": 1.0,
+        "refuse_correct_rate": 0.7333
+      },
+      "elapsed_seconds": null
+    },
+    {
+      "metrics": {
+        "answerable_questions": 105,
+        "doc_recall@5": 0.881,
+        "all_docs_hit@5": 0.8476,
+        "doc_mrr": 0.9143,
+        "evidence_hit@5": 0.2286,
+        "evidence_hit_final": 0.2286,
+        "evidence_obligation_coverage": 0.5667,
+        "missing_obligation_rate": 0.4571,
+        "ambiguous_obligation_rate": 0.0,
+        "route_obligation_coverage": 0.5667,
+        "claim_support_rate": 0.6327,
+        "unsupported_claim_rate": 0.3673,
+        "context_overflow_rate": 0.0,
+        "mean_evidence_count": 2.9917,
+        "retry_rate": 0.0,
+        "mean_retries": 0.0,
+        "refuse_flagged_rate": 1.0,
+        "mean_seconds_per_query": 2.672,
+        "foreign_evidence_rate": 0.0857,
+        "foreign_citation_rate": 0.0762,
+        "grounding_verified_rate": 0.8649,
+        "mean_ungrounded_numbers": 0.15,
+        "citation_coverage": 0.9905,
+        "citation_full_coverage_rate": 0.973,
+        "repair_rate": 0.0,
+        "repair_fixed_rate": null,
+        "unverified_rate": 0.0,
+        "prompt_tokens_est_mean": 1908.575,
+        "answer_tokens_est_mean": 87.2083,
+        "tokens_est_total": 239494,
+        "cost_estimate_per_query": null,
+        "answer_value_rate": 0.1333,
+        "citation_rate": 0.8857,
+        "citation_valid_rate": 1.0,
+        "refuse_correct_rate": 0.7333
+      },
+      "elapsed_seconds": null
+    },
+    {
+      "metrics": {
+        "answerable_questions": 105,
+        "doc_recall@5": 0.881,
+        "all_docs_hit@5": 0.8476,
+        "doc_mrr": 0.9143,
+        "evidence_hit@5": 0.2286,
+        "evidence_hit_final": 0.2286,
+        "evidence_obligation_coverage": 0.5667,
+        "missing_obligation_rate": 0.4571,
+        "ambiguous_obligation_rate": 0.0,
+        "route_obligation_coverage": 0.5667,
+        "claim_support_rate": 0.5886,
+        "unsupported_claim_rate": 0.4114,
+        "context_overflow_rate": 0.0,
+        "mean_evidence_count": 2.9917,
+        "retry_rate": 0.0,
+        "mean_retries": 0.0,
+        "refuse_flagged_rate": 1.0,
+        "mean_seconds_per_query": 2.6693,
+        "foreign_evidence_rate": 0.0857,
+        "foreign_citation_rate": 0.0571,
+        "grounding_verified_rate": 0.863,
+        "mean_ungrounded_numbers": 0.1333,
+        "citation_coverage": 0.9954,
+        "citation_full_coverage_rate": 0.9863,
+        "repair_rate": 0.0,
+        "repair_fixed_rate": null,
+        "unverified_rate": 0.0,
+        "prompt_tokens_est_mean": 1908.575,
+        "answer_tokens_est_mean": 83.7833,
+        "tokens_est_total": 239083,
+        "cost_estimate_per_query": null,
+        "answer_value_rate": 0.1238,
+        "citation_rate": 0.8857,
+        "citation_valid_rate": 1.0,
+        "refuse_correct_rate": 0.7333
+      },
+      "elapsed_seconds": null
+    }
+  ],
+  "failures": {
+    "1": [],
+    "2": [],
+    "3": []
+  }
+}

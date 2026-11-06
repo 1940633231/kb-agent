@@ -160,6 +160,27 @@ def evaluate_layer(layer: str, questions: List[Dict], strategy: str,
         probe_flags = [probe in joined for probe in probes]
         keyword_flags = [normalize(k) in joined for k in item.get("expected_keywords") or []]
 
+        from agent.evidence_contract import (
+            assess_obligations,
+            build_obligations,
+        )
+        required_obligations = item.get("required_evidence")
+        if required_obligations is None:
+            required_obligations = [
+                entry.as_dict() for entry in build_obligations(item["question"])
+            ]
+        obligation_result = assess_obligations(
+            hits, required_obligations, item["question"])
+        required_ids = {
+            entry.get("obligation_id") for entry in required_obligations
+            if entry.get("required", True)
+        }
+        route_covered_ids = set(obligation_result["covered"])
+        route_coverage = (
+            len(required_ids & route_covered_ids) / len(required_ids)
+            if required_ids else None
+        )
+
         if probes:
             evidence_hit = all(probe_flags)
         elif keyword_flags:
@@ -178,6 +199,10 @@ def evaluate_layer(layer: str, questions: List[Dict], strategy: str,
             "value_hit_rate": (sum(value_flags) / len(value_flags)) if values else None,
             "probe_hit_rate": (sum(probe_flags) / len(probe_flags)) if probes else None,
             "evidence_hit": evidence_hit if (values or keyword_flags) else None,
+            "obligation_coverage": (
+                obligation_result["coverage"] if required_ids else None),
+            "missing_obligations": obligation_result["missing"],
+            "route_coverage": route_coverage,
             "top1_score": described[0]["score"] if described else None,
             "retrieved": described,
             "seconds": round(elapsed, 2),
@@ -186,6 +211,9 @@ def evaluate_layer(layer: str, questions: List[Dict], strategy: str,
     answerable = [q for q in per_question if q["doc_recall"] is not None]
     scored = [q for q in per_question if q["evidence_hit"] is not None]
     refuse = [q for q in per_question if q["expected_behavior"] == "refuse"]
+    obligation_rows = [
+        q for q in per_question if q["obligation_coverage"] is not None
+    ]
 
     def mean(values: Sequence[float]) -> Optional[float]:
         values = [v for v in values if v is not None]
@@ -201,6 +229,12 @@ def evaluate_layer(layer: str, questions: List[Dict], strategy: str,
         "value_hit_rate": mean([q["value_hit_rate"] for q in scored]),
         "probe_hit_rate": mean([q["probe_hit_rate"] for q in scored]),
         "evidence_hit@%d" % top_k: mean([1.0 if q["evidence_hit"] else 0.0 for q in scored]),
+        "evidence_obligation_coverage": mean(
+            [q["obligation_coverage"] for q in obligation_rows]),
+        "missing_obligation_rate": mean(
+            [1.0 if q["missing_obligations"] else 0.0
+             for q in obligation_rows]),
+        "route_coverage": mean([q["route_coverage"] for q in obligation_rows]),
         "refuse_top1_score": mean([q["top1_score"] for q in refuse]),
         "refuse_top1_max": max((q["top1_score"] or 0.0) for q in refuse) if refuse else None,
         "mean_seconds_per_query": mean([q["seconds"] for q in per_question]),

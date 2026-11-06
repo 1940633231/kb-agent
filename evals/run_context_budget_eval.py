@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import statistics
 import sys
 import time
+import argparse
 from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
@@ -21,7 +23,8 @@ from agent.evidence_contract import (  # noqa: E402
     build_obligations,
 )
 
-GOLDEN_SET = PROJECT_ROOT / "evals" / "golden_set.jsonl"
+GOLDEN_SET = PROJECT_ROOT / "evals" / "golden_set_scaled_120.jsonl"
+SCALED_MANIFEST = PROJECT_ROOT / "evals" / "golden_set_scaled_120.manifest.json"
 INDEX_METADATA = PROJECT_ROOT / "data" / "index" / "recursive" / "metadata.json"
 REPORT_PATH = PROJECT_ROOT / "evals" / "reports" / "context_budget.json"
 GENERATION_REPORT = (
@@ -43,6 +46,14 @@ def percentile(values, ratio: float) -> float:
     ordered = sorted(values)
     index = min(len(ordered) - 1, int(round((len(ordered) - 1) * ratio)))
     return round(ordered[index], 2)
+
+
+def sha256_of(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
 
 
 def load_questions() -> list[dict]:
@@ -101,7 +112,18 @@ def long_history(index: int) -> list[dict]:
 
 
 def main() -> int:
+    global GOLDEN_SET
+    parser = argparse.ArgumentParser(description="P2/P3 context budget evaluation")
+    parser.add_argument("--golden-set", default=str(GOLDEN_SET))
+    parser.add_argument("--limit", type=int, default=None)
+    args = parser.parse_args()
+    golden_path = Path(args.golden_set)
     questions = load_questions()
+    if golden_path != GOLDEN_SET:
+        GOLDEN_SET = golden_path
+        questions = load_questions()
+    if args.limit:
+        questions = questions[:args.limit]
     by_document = load_chunks()
     counter = CharCounter()
     baseline_manager = ContextManager(
@@ -208,8 +230,16 @@ def main() -> int:
     report = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "dataset": str(GOLDEN_SET),
+        "dataset_version": (
+            "kb-agent-scaled-120-v1"
+            if GOLDEN_SET == SCALED_MANIFEST.with_name(
+                "golden_set_scaled_120.jsonl")
+            else "legacy-golden-set"
+        ),
+        "model": "char-counter + production-rag ContextManager",
         "tokenizer": "char-counter",
         "corpus": str(INDEX_METADATA),
+        "corpus_metadata_sha256": sha256_of(INDEX_METADATA),
         "config": {
             "max_context_tokens": MAX_CONTEXT_TOKENS,
             "reserved_output_tokens": OUTPUT_RESERVED_TOKENS,

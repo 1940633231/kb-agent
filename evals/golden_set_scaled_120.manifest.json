@@ -1,0 +1,16 @@
+{
+  "dataset_id": "kb-agent-scaled-120",
+  "version": "v1",
+  "generated_at": "2026-11-06T05:57:15.896578+00:00",
+  "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
+  "sha256": "de02bd689ecdfcc900105f1f1be02b7c280c484529e78837c6f73086a611ece3",
+  "corpus_metadata_sha256": "38bbabd11e54afbe1c3a4c5f67112bfb4640c503ad750fc824ebbe06e982deba",
+  "companies": 30,
+  "documents": 90,
+  "counts": {
+    "company": 90,
+    "cross": 15,
+    "refusal": 15,
+    "total": 120
+  }
+}

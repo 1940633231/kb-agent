@@ -26,7 +26,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 EVALS_DIR = PROJECT_ROOT / "evals"
@@ -93,8 +93,9 @@ def citation_is_valid(citation: Dict, chunks: List[Dict]) -> bool:
     return citation.get("chunk_id") in chunk_ids
 
 
-def evaluate(questions: List[Dict], args) -> Dict:
-    runtime = default_runtime(generate_answers=args.generate,
+def evaluate(questions: List[Dict], args, service: Optional[Any] = None) -> Dict:
+    runtime = default_runtime(service=service,
+                              generate_answers=args.generate,
                               use_llm_rewrite=not args.rule_rewrite,
                               max_retries=args.max_retries,
                               scope_evidence_enabled=not args.no_scope,
@@ -128,6 +129,8 @@ def evaluate(questions: List[Dict], args) -> Dict:
                 "ungrounded_numbers": [], "llm_review": None, "numbers_total": 0,
                 "citation_coverage": None, "answer": "", "citations": [],
                 "citation_count": 0, "citation_valid": None, "refused": False,
+                "claim_support_rate": None, "unsupported_claim_rate": None,
+                "context_overflow": None,
                 "seconds": round(time.time() - started, 2),
                 "error": "{}: {}".format(type(exc).__name__, str(exc)[:300]),
             })
@@ -200,6 +203,16 @@ def evaluate(questions: List[Dict], args) -> Dict:
                         or doc.split("-")[1] not in wanted_years))
         cited_docs = {c.get("document_id") for c in (result.get("citations") or [])}
         retrieval_score = result.get("retrieval_score") or {}
+        answer_audit = result.get("answer_audit") or {}
+        numeric_claims = [
+            claim for claim in answer_audit.get("claims") or []
+            if claim.get("claim_type") == "numeric"
+        ]
+        supported_claims = [
+            claim for claim in numeric_claims
+            if claim.get("support_status") == "supported"
+        ]
+        prompt_budget = result.get("prompt_budget") or {}
         required_obligations = {
             item.get("obligation_id")
             for item in retrieval_score.get("obligations") or []
@@ -242,6 +255,13 @@ def evaluate(questions: List[Dict], args) -> Dict:
             "route_coverage_rate": route_coverage_rate,
             "retrieval_stats": result.get("retrieval_stats") or {},
             "refusal_expected": retrieval_score.get("refusal_expected"),
+            "claim_support_rate": (
+                len(supported_claims) / len(numeric_claims)
+                if numeric_claims else None),
+            "unsupported_claim_rate": (
+                1.0 - len(supported_claims) / len(numeric_claims)
+                if numeric_claims else None),
+            "context_overflow": prompt_budget.get("budget_overflow"),
             "needs_human_review": result.get("needs_human_review"),
             "status": result.get("status"),
             "repairs": len(result.get("repair_history") or []),
@@ -299,6 +319,15 @@ def evaluate(questions: List[Dict], args) -> Dict:
             [1.0 if r["ambiguous_obligations"] else 0.0 for r in answerable]),
         "route_obligation_coverage": mean(
             [r["route_coverage_rate"] for r in answerable]),
+        "claim_support_rate": mean(
+            [r["claim_support_rate"] for r in rows
+             if r["claim_support_rate"] is not None]),
+        "unsupported_claim_rate": mean(
+            [r["unsupported_claim_rate"] for r in rows
+             if r["unsupported_claim_rate"] is not None]),
+        "context_overflow_rate": mean(
+            [1.0 if r["context_overflow"] else 0.0 for r in rows
+             if r["context_overflow"] is not None]),
         "mean_evidence_count": mean([r["evidence_count"] for r in rows]),
         "retry_rate": round(len(retried) / len(rows), 4) if rows else None,
         "mean_retries": mean([r["retry_count"] for r in rows]),

@@ -1,0 +1,323 @@
+"""Build the 120-question scaled evaluation set from indexed corpus chunks."""
+from __future__ import annotations
+
+import hashlib
+import json
+import re
+from datetime import datetime, timezone
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+REGISTRY_PATH = PROJECT_ROOT / "data" / "docs" / "annual_reports" / "metadata.json"
+INDEX_METADATA_PATH = PROJECT_ROOT / "data" / "index" / "recursive" / "metadata.json"
+PAGE_OFFSETS_PATH = PROJECT_ROOT / "data" / "index" / "recursive" / "page_offsets.json"
+OUTPUT_PATH = PROJECT_ROOT / "evals" / "golden_set_scaled_120.jsonl"
+MANIFEST_PATH = PROJECT_ROOT / "evals" / "golden_set_scaled_120.manifest.json"
+
+PREFERRED_METRICS = (
+    "营业收入",
+    "归属于上市公司股东的净利润",
+    "净利润",
+    "研发费用",
+    "研发投入合计",
+    "销售费用",
+    "经营活动产生的现金流量净额",
+    "总资产",
+)
+NUMBER_AFTER_METRIC = re.compile(
+    r"(?P<number>-?\d[\d,]{3,}(?:\.\d+)?)")
+UNIT_PATTERN = re.compile(r"单位\s*[：:]\s*(亿元|百万元|万元|千元|元)")
+
+
+def sha256_of(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def obligation(company: str, year: int, metric: str) -> dict:
+    return {
+        "obligation_id": None,
+        "company": company,
+        "year": year,
+        "metric": metric,
+        "expected_kind": "single_value",
+        "expected_value": None,
+        "required": True,
+        "source_scope": "annual_report",
+        "route_ids": [],
+    }
+
+
+def extract_fact(chunk: dict) -> tuple[str, str, str] | None:
+    content = chunk.get("content") or ""
+    for metric in PREFERRED_METRICS:
+        metric_index = content.find(metric)
+        if metric_index < 0:
+            continue
+        window = content[metric_index + len(metric):metric_index + len(metric) + 160]
+        literal = None
+        for match in NUMBER_AFTER_METRIC.finditer(window):
+            candidate = match.group("number").rstrip(".")
+            if len(candidate.replace(",", "").replace(".", "").replace("-", "")) < 4:
+                continue
+            if re.fullmatch(r"20\d{2}", candidate):
+                continue
+            literal = candidate
+            break
+        if literal is None:
+            continue
+        unit_match = UNIT_PATTERN.search(content)
+        unit = unit_match.group(1) if unit_match else (
+            "%" if "率" in metric else "元"
+        )
+        return metric, literal, unit
+    return None
+
+
+def page_for_chunk(chunk: dict, page_offsets: dict) -> int:
+    document_id = str(chunk.get("document_id") or "")
+    offset = int(chunk.get("start_offset") or 0)
+    entry = page_offsets.get(document_id) or {}
+    for page, start, end in entry.get("pages") or []:
+        if int(start) <= offset < int(end):
+            return int(page)
+    return 1
+
+
+def fact_record(source: dict, chunk: dict, page_offsets: dict,
+                sequence: int) -> dict:
+    fact = extract_fact(chunk)
+    if fact is None:
+        raise ValueError("no extractable fact in chunk {}".format(
+            chunk.get("chunk_id")))
+    metric, literal, unit = fact
+    document_id = str(chunk.get("document_id"))
+    value = float(literal.replace(",", ""))
+    source_page = page_for_chunk(chunk, page_offsets)
+    obligation_entry = obligation(
+        source["company"], int(source["year"]), metric)
+    obligation_entry["obligation_id"] = "obligation-1"
+    obligation_entry["route_ids"] = ["route-1"]
+    claim = {
+        "claim_id": "claim-1",
+        "claim_type": "numeric",
+        "company": source["company"],
+        "year": int(source["year"]),
+        "metric": metric,
+        "expected_value": value,
+        "unit": unit,
+    }
+    return {
+        "id": "scaled-fact-{:03d}".format(sequence),
+        "dataset_source": "company",
+        "question_type": "table" if sequence % 5 == 0 else "fact",
+        "expected_behavior": "answer",
+        "question": "{}{}年的{}是多少{}？".format(
+            source["company"], source["year"], metric,
+            "" if unit == "%" else unit),
+        "expected_docs": [{
+            "company": source["company"],
+            "year": int(source["year"]),
+            "ts_code": source["ts_code"],
+        }],
+        "expected_keywords": [metric],
+        "expected_values": [{
+            "label": metric,
+            "value": value,
+            "unit": unit,
+            "display": "{}{}".format(literal, "" if unit == "%" else unit),
+        }],
+        "evidence_literals": [literal],
+        "source_pages": [{
+            "doc": document_id,
+            "page": source_page,
+            "chunk_id": chunk.get("chunk_id"),
+        }],
+        "required_evidence": [obligation_entry],
+        "required_claims": [claim],
+        "route_expectations": [{
+            "query_id": "route-1",
+            "required_obligations": ["obligation-1"],
+        }],
+        "notes": "自动抽取自索引 chunk {}".format(chunk.get("chunk_id")),
+    }
+
+
+def combine_cross(records: list[dict], sequence: int) -> dict:
+    left, right = records
+    metrics = [left["expected_keywords"][0], right["expected_keywords"][0]]
+    values = []
+    for record in (left, right):
+        source_value = dict(record["expected_values"][0])
+        source_value["label"] = "{}{}年{}".format(
+            record["expected_docs"][0]["company"],
+            record["expected_docs"][0]["year"],
+            record["expected_keywords"][0],
+        )
+        values.append(source_value)
+    left_company = left["expected_docs"][0]["company"]
+    right_company = right["expected_docs"][0]["company"]
+    left_year = left["expected_docs"][0]["year"]
+    right_year = right["expected_docs"][0]["year"]
+    if left_company != right_company:
+        question = "{}与{}{}年的{}分别是多少？".format(
+            left_company, right_company, left_year, metrics[0])
+    else:
+        question = "{}{}年与{}年的{}分别是多少？".format(
+            left_company, left_year, right_year, metrics[0])
+    obligations = []
+    for index, record in enumerate((left, right), start=1):
+        item = record["required_evidence"][0]
+        item = json.loads(json.dumps(item, ensure_ascii=False))
+        item["obligation_id"] = "obligation-{}".format(index)
+        item["route_ids"] = ["route-{}".format(index)]
+        obligations.append(item)
+    claims = []
+    for index, record in enumerate((left, right), start=1):
+        item = record["required_claims"][0]
+        item = json.loads(json.dumps(item, ensure_ascii=False))
+        item["claim_id"] = "claim-{}".format(index)
+        claims.append(item)
+    return {
+        "id": "scaled-cross-{:03d}".format(sequence),
+        "dataset_source": "cross",
+        "question_type": "cross_document",
+        "expected_behavior": "answer",
+        "question": question,
+        "expected_docs": left["expected_docs"] + right["expected_docs"],
+        "expected_keywords": sorted(set(metrics)),
+        "expected_values": values,
+        "evidence_literals": (
+            left["evidence_literals"] + right["evidence_literals"]),
+        "source_pages": left["source_pages"] + right["source_pages"],
+        "required_evidence": obligations,
+        "required_claims": claims,
+        "route_expectations": [
+            {
+                "query_id": "route-{}".format(index),
+                "required_obligations": ["obligation-{}".format(index)],
+            }
+            for index in (1, 2)
+        ],
+        "notes": "跨文档组合题",
+    }
+
+
+def refusal_records(sequence: int) -> dict:
+    companies = [
+        "贵州茅台", "宁德时代", "招商银行", "比亚迪", "美的集团",
+        "中国平安", "隆基绿能", "海康威视", "迈瑞医疗", "中国神华",
+        "华为", "字节跳动", "苹果公司", "OpenAI", "未收录公司",
+    ]
+    company = companies[(sequence - 1) % len(companies)]
+    unsupported_year = 2026 if sequence % 2 else 2022
+    question = "{}{}年的营业收入是多少元？".format(company, unsupported_year)
+    return {
+        "id": "scaled-refuse-{:03d}".format(sequence),
+        "dataset_source": "refusal",
+        "question_type": "refuse",
+        "expected_behavior": "refuse",
+        "question": question,
+        "expected_docs": [],
+        "expected_keywords": [],
+        "expected_values": [],
+        "evidence_literals": [],
+        "source_pages": [],
+        "required_evidence": [],
+        "required_claims": [],
+        "route_expectations": [],
+        "notes": "超出年报语料公司或年份范围",
+    }
+
+
+def main() -> int:
+    registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    index_metadata = json.loads(INDEX_METADATA_PATH.read_text(encoding="utf-8"))
+    page_offsets = json.loads(PAGE_OFFSETS_PATH.read_text(encoding="utf-8"))
+    by_document: dict[str, list[dict]] = {}
+    for chunk in index_metadata.values():
+        document_id = str(
+            chunk.get("document_id")
+            or (chunk.get("metadata") or {}).get("document_id")
+            or "")
+        if document_id:
+            by_document.setdefault(document_id, []).append(chunk)
+
+    sources = {}
+    for entry in registry.get("documents") or []:
+        key = (str(entry["ts_code"]), int(entry["year"]))
+        sources[key] = entry
+
+    facts = []
+    for source in registry.get("documents") or []:
+        document_id = "{}-{}".format(source["ts_code"], source["year"])
+        selected = None
+        for metric_index, metric in enumerate(PREFERRED_METRICS):
+            candidates = [
+                chunk for chunk in by_document.get(document_id, [])
+                if metric in (chunk.get("content") or "")
+                and extract_fact(chunk) is not None
+            ]
+            if candidates:
+                candidates.sort(key=lambda item: (
+                    abs((item.get("content") or "").find(metric)),
+                    len(item.get("content") or ""),
+                ))
+                selected = candidates[0]
+                break
+        if selected is None:
+            raise RuntimeError("no fact chunk for {}".format(document_id))
+        facts.append(fact_record(source, selected, page_offsets, len(facts) + 1))
+
+    cross_records = []
+    for index in range(8):
+        left = facts[index]
+        right = facts[(index + 30) % len(facts)]
+        cross_records.append(combine_cross([left, right], index + 1))
+    for index in range(7):
+        company_index = index % 30
+        left = facts[company_index * 3]
+        right = facts[company_index * 3 + 1]
+        cross_records.append(combine_cross([left, right], index + 9))
+    refusals = [refusal_records(index + 1) for index in range(15)]
+    records = facts + cross_records + refusals
+    if len(records) != 120:
+        raise RuntimeError("expected 120 records, got {}".format(len(records)))
+
+    OUTPUT_PATH.write_text(
+        "\n".join(json.dumps(item, ensure_ascii=False) for item in records) + "\n",
+        encoding="utf-8",
+    )
+    manifest = {
+        "dataset_id": "kb-agent-scaled-120",
+        "version": "v1",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "path": str(OUTPUT_PATH),
+        "sha256": sha256_of(OUTPUT_PATH),
+        "corpus_metadata_sha256": sha256_of(REGISTRY_PATH),
+        "companies": len({
+            item["expected_docs"][0]["ts_code"]
+            for item in facts
+        }),
+        "documents": len(facts),
+        "counts": {
+            "company": len(facts),
+            "cross": len(cross_records),
+            "refusal": len(refusals),
+            "total": len(records),
+        },
+    }
+    MANIFEST_PATH.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    print("wrote {} records -> {}".format(len(records), OUTPUT_PATH))
+    print("manifest -> {}".format(MANIFEST_PATH))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

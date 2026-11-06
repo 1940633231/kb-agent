@@ -1,0 +1,58 @@
+{
+  "generated_at": "2026-11-06T07:05:56.058622+00:00",
+  "dataset": {
+    "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
+    "manifest": {
+      "dataset_id": "kb-agent-scaled-120",
+      "version": "v1",
+      "generated_at": "2026-11-06T05:57:15.896578+00:00",
+      "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
+      "sha256": "de02bd689ecdfcc900105f1f1be02b7c280c484529e78837c6f73086a611ece3",
+      "corpus_metadata_sha256": "38bbabd11e54afbe1c3a4c5f67112bfb4640c503ad750fc824ebbe06e982deba",
+      "companies": 30,
+      "documents": 90,
+      "counts": {
+        "company": 90,
+        "cross": 15,
+        "refusal": 15,
+        "total": 120
+      }
+    },
+    "evaluated": 120
+  },
+  "model": "BAAI/bge-small-zh-v1.5 + BAAI/bge-reranker-base",
+  "metrics": {
+    "answerable_questions": 105,
+    "doc_recall@5": 1.0,
+    "all_docs_hit@5": 1.0,
+    "doc_mrr": 1.0,
+    "evidence_hit@5": 0.3524,
+    "evidence_hit_final": 0.381,
+    "evidence_obligation_coverage": 0.981,
+    "missing_obligation_rate": 0.0095,
+    "ambiguous_obligation_rate": 0.0095,
+    "route_obligation_coverage": 0.981,
+    "claim_support_rate": null,
+    "unsupported_claim_rate": null,
+    "context_overflow_rate": null,
+    "mean_evidence_count": 5.9833,
+    "retry_rate": 0.25,
+    "mean_retries": 0.4083,
+    "refuse_flagged_rate": 1.0,
+    "mean_seconds_per_query": 30.9103,
+    "foreign_evidence_rate": 0.0,
+    "foreign_citation_rate": 0.0,
+    "grounding_verified_rate": null,
+    "mean_ungrounded_numbers": 0.0,
+    "citation_coverage": null,
+    "citation_full_coverage_rate": null,
+    "repair_rate": 0.0,
+    "repair_fixed_rate": null,
+    "unverified_rate": 0.0,
+    "prompt_tokens_est_mean": 4040.4083,
+    "answer_tokens_est_mean": 2.0,
+    "tokens_est_total": 485089,
+    "cost_estimate_per_query": null
+  },
+  "questions": []
+}

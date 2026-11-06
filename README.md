@@ -19,7 +19,8 @@
 | 第零阶段 | 语料扩展与审计、灌库、golden set、L0 检索基线 | 已完成：30 家 / 90 份年报 / 37,958 chunk；历史 L0 Recall@5=0.882（9 份语料） |
 | P0 | 证据义务契约、逐路覆盖、缺失义务重试 | 已完成：50 题证据义务覆盖率 `0.8333`，文档 Recall@5 `1.0` |
 | P1 | Claim 解析、硬门禁、软提示、定向修复 | 已完成：硬违规召回 `1.0`，正常答案误伤率 `0.0` |
-| P2 | 统一 system/history/query/evidence/output 预算 | 已完成：预算溢出率 `0.0`，端到端估算开销 `0.0074%` |
+| P2 | 统一 system/history/query/evidence/output 预算 | 已完成：预算溢出率 `0.0`，端到端估算开销 `0.0027%` |
+| P3 | 120 题扩展集、重复评测与新指标 | 已完成：结构校验 `120/120`，生成评测三轮均值与标准差已落盘 |
 | 第一阶段 | LangGraph 主图：State / 节点 / 条件边 / 检索子图 / 自纠错重试 | 已完成，见「第一阶段」 |
 | 第二阶段 | Postgres Checkpointer、Store 长期记忆、Interrupt 人工审核 | 已完成，见「第二阶段」 |
 | 第三阶段 | FastAPI + SSE、结构化日志、四场景演示 | 已完成，见「第三阶段」 |
@@ -149,9 +150,20 @@ P1 将答案拆成 `numeric / entity_year / citation / completeness` Claim。硬
 
 P2 统一预算把 system prompt、当前问题、历史对话、必要证据和输出预留放进同一个
 `max_context_tokens` 约束。历史按最近完整回合裁剪；证据义务所需片段优先保留；
-每次生成在 `prompt_budget` 中记录各分量、裁剪数量和溢出状态。45 个 golden case
-预算溢出率为 `0.0`，P95 预算开销约 `4.94ms`，相对既有生成基线约 `0.0074%`。
+每次生成在 `prompt_budget` 中记录各分量、裁剪数量和溢出状态。105 个 scaled case
+预算溢出率为 `0.0`，P95 预算开销约 `1.78ms`，相对既有生成基线约 `0.0027%`。
 报告见 `evals/reports/context_budget.json`。
+
+P3 新增 120 题扩展集：90 道公司题、15 道跨文档题、15 道应拒答题，并附
+dataset manifest、语料 SHA、required evidence、required claims、route
+expectations 与 source pages。确定性检索、L3 编排检索和三轮 vector 生成评测均
+已完成，生成指标按均值和标准差记录，失败样本按轮次保留：
+
+- `evals/reports/scaled_retrieval.json`
+- `evals/reports/scaled_l3.json`
+- `evals/reports/scaled_generation.json`
+- `evals/reports/claim_audit.json`
+- `evals/reports/context_budget.json`
 
 ### 1b. 辅库：LangGraph 官方文档
 
