@@ -62,6 +62,8 @@ def test_grounded_answer_needs_no_repair():
     assert result["status"] == "answered"
     assert len(generator.calls) == 1, "落地通过时不该触发修复"
     assert result["grounding"]["verified"] is True
+    assert result["prompt_budget"]["prompt_token_estimate"] > 0
+    assert result["prompt_budget"]["budget_overflow"] is False
 
 
 def test_ungrounded_number_triggers_repair_and_succeeds():

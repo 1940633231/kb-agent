@@ -1,0 +1,661 @@
+{
+  "generated_at": "2026-11-06T05:54:34.351694+00:00",
+  "dataset": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set.jsonl",
+  "tokenizer": "char-counter",
+  "corpus": "F:\\workSpace\\python\\kb-agent\\data\\index\\recursive\\metadata.json",
+  "config": {
+    "max_context_tokens": 4096,
+    "reserved_output_tokens": 1024
+  },
+  "metrics": {
+    "cases": 45,
+    "budget_overflow_rate": 0.0,
+    "evidence_obligation_context_coverage": 0.637,
+    "mean_prompt_tokens": 3894.38,
+    "mean_skipped_history_turns": 1.47,
+    "latency_p50_ms": {
+      "baseline": 2.09,
+      "with_budget": 3.72,
+      "overhead_pct": 53.42
+    },
+    "latency_p95_ms": {
+      "baseline": 10.83,
+      "with_budget": 15.77,
+      "overhead_pct": 145.93
+    },
+    "latency_p95_overhead_ms": 4.94,
+    "estimated_end_to_end_overhead_pct": 0.007425,
+    "generation_baseline_mean_seconds": 66.536
+  },
+  "questions": [
+    {
+      "id": "ar-fact-001",
+      "baseline_ms": 1.9582999957492575,
+      "budget_ms": 3.555999996024184,
+      "overhead_pct": 81.5860697412521,
+      "prompt_token_estimate": 3886,
+      "budget_overflow": false,
+      "history_tokens": 1270,
+      "evidence_tokens": 1147,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-fact-002",
+      "baseline_ms": 1.5592999989166856,
+      "budget_ms": 2.4788000009721145,
+      "overhead_pct": 58.96876820972526,
+      "prompt_token_estimate": 3866,
+      "budget_overflow": false,
+      "history_tokens": 1280,
+      "evidence_tokens": 1117,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-fact-003",
+      "baseline_ms": 1.8161000043619424,
+      "budget_ms": 2.455599998938851,
+      "overhead_pct": 35.212818294198875,
+      "prompt_token_estimate": 4067,
+      "budget_overflow": false,
+      "history_tokens": 1290,
+      "evidence_tokens": 1307,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-fact-004",
+      "baseline_ms": 3.6582000029738992,
+      "budget_ms": 1.5667000116081908,
+      "overhead_pct": 0.0,
+      "prompt_token_estimate": 3512,
+      "budget_overflow": false,
+      "history_tokens": 1300,
+      "evidence_tokens": 735,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-fact-005",
+      "baseline_ms": 4.733699999633245,
+      "budget_ms": 11.238199993385933,
+      "overhead_pct": 137.40836965284322,
+      "prompt_token_estimate": 4073,
+      "budget_overflow": false,
+      "history_tokens": 1310,
+      "evidence_tokens": 1291,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-table-001",
+      "baseline_ms": 6.641200001467951,
+      "budget_ms": 8.857399996486492,
+      "overhead_pct": 33.37047513293802,
+      "prompt_token_estimate": 3915,
+      "budget_overflow": false,
+      "history_tokens": 1320,
+      "evidence_tokens": 1118,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-table-002",
+      "baseline_ms": 5.5948999943211675,
+      "budget_ms": 9.39700000162702,
+      "overhead_pct": 67.95653204105508,
+      "prompt_token_estimate": 4094,
+      "budget_overflow": false,
+      "history_tokens": 1330,
+      "evidence_tokens": 1288,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-table-003",
+      "baseline_ms": 5.120600006193854,
+      "budget_ms": 9.056700000655837,
+      "overhead_pct": 76.86794496154543,
+      "prompt_token_estimate": 3903,
+      "budget_overflow": false,
+      "history_tokens": 1340,
+      "evidence_tokens": 1094,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-table-004",
+      "baseline_ms": 1.203799998620525,
+      "budget_ms": 1.941899987286888,
+      "overhead_pct": 61.31417091810739,
+      "prompt_token_estimate": 3587,
+      "budget_overflow": false,
+      "history_tokens": 1350,
+      "evidence_tokens": 767,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-cross-001",
+      "baseline_ms": 6.773600005544722,
+      "budget_ms": 6.697000004351139,
+      "overhead_pct": 0.0,
+      "prompt_token_estimate": 3940,
+      "budget_overflow": false,
+      "history_tokens": 1360,
+      "evidence_tokens": 1099,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.5,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-cross-002",
+      "baseline_ms": 6.146100000478327,
+      "budget_ms": 19.015400001080707,
+      "overhead_pct": 209.38969427117704,
+      "prompt_token_estimate": 3548,
+      "budget_overflow": false,
+      "history_tokens": 822,
+      "evidence_tokens": 1250,
+      "skipped_history_turns": 4,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-cross-003",
+      "baseline_ms": 10.826600002474152,
+      "budget_ms": 6.707200009259395,
+      "overhead_pct": 0.0,
+      "prompt_token_estimate": 3967,
+      "budget_overflow": false,
+      "history_tokens": 1380,
+      "evidence_tokens": 1101,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-multi-001",
+      "baseline_ms": 26.39640000415966,
+      "budget_ms": 31.369100004667416,
+      "overhead_pct": 18.838553741131886,
+      "prompt_token_estimate": 4059,
+      "budget_overflow": false,
+      "history_tokens": 278,
+      "evidence_tokens": 2298,
+      "skipped_history_turns": 8,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-multi-002",
+      "baseline_ms": 6.850600009784102,
+      "budget_ms": 9.77410000632517,
+      "overhead_pct": 42.675094040897044,
+      "prompt_token_estimate": 4068,
+      "budget_overflow": false,
+      "history_tokens": 840,
+      "evidence_tokens": 1740,
+      "skipped_history_turns": 4,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-multi-003",
+      "baseline_ms": 22.23940000112634,
+      "budget_ms": 15.773399994941428,
+      "overhead_pct": 0.0,
+      "prompt_token_estimate": 4014,
+      "budget_overflow": false,
+      "history_tokens": 0,
+      "evidence_tokens": 2523,
+      "skipped_history_turns": 10,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-calc-001",
+      "baseline_ms": 1.763699998264201,
+      "budget_ms": 2.7058999985456467,
+      "overhead_pct": 53.42178381860523,
+      "prompt_token_estimate": 3949,
+      "budget_overflow": false,
+      "history_tokens": 1420,
+      "evidence_tokens": 1041,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.5,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-calc-002",
+      "baseline_ms": 7.864400002290495,
+      "budget_ms": 6.092199997510761,
+      "overhead_pct": 0.0,
+      "prompt_token_estimate": 4085,
+      "budget_overflow": false,
+      "history_tokens": 858,
+      "evidence_tokens": 1750,
+      "skipped_history_turns": 4,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-crossco-001",
+      "baseline_ms": 5.525599990505725,
+      "budget_ms": 6.3378000049851835,
+      "overhead_pct": 14.698856520106563,
+      "prompt_token_estimate": 4054,
+      "budget_overflow": false,
+      "history_tokens": 882,
+      "evidence_tokens": 1685,
+      "skipped_history_turns": 4,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-crossco-002",
+      "baseline_ms": 5.369899998186156,
+      "budget_ms": 6.176199996843934,
+      "overhead_pct": 15.015177171458124,
+      "prompt_token_estimate": 4039,
+      "budget_overflow": false,
+      "history_tokens": 1480,
+      "evidence_tokens": 1072,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.5,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-fact-006",
+      "baseline_ms": 1.1095000081695616,
+      "budget_ms": 1.5652000001864508,
+      "overhead_pct": 41.07255418309523,
+      "prompt_token_estimate": 3045,
+      "budget_overflow": false,
+      "history_tokens": 1490,
+      "evidence_tokens": 76,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-fact-007",
+      "baseline_ms": 2.2772999946027994,
+      "budget_ms": 5.012800000258721,
+      "overhead_pct": 120.12031845339027,
+      "prompt_token_estimate": 4052,
+      "budget_overflow": false,
+      "history_tokens": 1500,
+      "evidence_tokens": 1080,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-fact-008",
+      "baseline_ms": 1.8216999887954444,
+      "budget_ms": 2.183999997214414,
+      "overhead_pct": 19.888017272181685,
+      "prompt_token_estimate": 4092,
+      "budget_overflow": false,
+      "history_tokens": 1510,
+      "evidence_tokens": 1106,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-fact-009",
+      "baseline_ms": 0.9151999984169379,
+      "budget_ms": 1.753200005623512,
+      "overhead_pct": 91.56468626050042,
+      "prompt_token_estimate": 3867,
+      "budget_overflow": false,
+      "history_tokens": 1520,
+      "evidence_tokens": 871,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-fact-010",
+      "baseline_ms": 2.0441999949980527,
+      "budget_ms": 5.027199993492104,
+      "overhead_pct": 145.92505654012064,
+      "prompt_token_estimate": 4088,
+      "budget_overflow": false,
+      "history_tokens": 1530,
+      "evidence_tokens": 1088,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-fact-011",
+      "baseline_ms": 1.8497999990358949,
+      "budget_ms": 2.5176000053761527,
+      "overhead_pct": 36.10120049131319,
+      "prompt_token_estimate": 4030,
+      "budget_overflow": false,
+      "history_tokens": 1540,
+      "evidence_tokens": 1016,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-fact-012",
+      "baseline_ms": 1.7700000025797635,
+      "budget_ms": 3.719300002558157,
+      "overhead_pct": 110.12994334109045,
+      "prompt_token_estimate": 4088,
+      "budget_overflow": false,
+      "history_tokens": 1550,
+      "evidence_tokens": 1065,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-table-005",
+      "baseline_ms": 1.6287000034935772,
+      "budget_ms": 2.3059000086504966,
+      "overhead_pct": 41.57917380145631,
+      "prompt_token_estimate": 4091,
+      "budget_overflow": false,
+      "history_tokens": 1560,
+      "evidence_tokens": 1055,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-table-006",
+      "baseline_ms": 1.0747000051196665,
+      "budget_ms": 1.78310000046622,
+      "overhead_pct": 65.91606885380764,
+      "prompt_token_estimate": 3119,
+      "budget_overflow": false,
+      "history_tokens": 1570,
+      "evidence_tokens": 76,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-table-007",
+      "baseline_ms": 1.6544000100111589,
+      "budget_ms": 3.6598000006051734,
+      "overhead_pct": 121.21614956835549,
+      "prompt_token_estimate": 3853,
+      "budget_overflow": false,
+      "history_tokens": 1580,
+      "evidence_tokens": 797,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-table-008",
+      "baseline_ms": 1.0486999963177368,
+      "budget_ms": 2.2154000034788623,
+      "overhead_pct": 111.25202739179154,
+      "prompt_token_estimate": 3871,
+      "budget_overflow": false,
+      "history_tokens": 1590,
+      "evidence_tokens": 797,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-table-009",
+      "baseline_ms": 1.6449999966425821,
+      "budget_ms": 3.112999998847954,
+      "overhead_pct": 89.2401218967499,
+      "prompt_token_estimate": 4043,
+      "budget_overflow": false,
+      "history_tokens": 1600,
+      "evidence_tokens": 970,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-table-010",
+      "baseline_ms": 2.8523000073619187,
+      "budget_ms": 2.687500003958121,
+      "overhead_pct": 0.0,
+      "prompt_token_estimate": 4084,
+      "budget_overflow": false,
+      "history_tokens": 1610,
+      "evidence_tokens": 998,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-cross-004",
+      "baseline_ms": 1.1113999935332686,
+      "budget_ms": 2.392199996393174,
+      "overhead_pct": 115.24203799822732,
+      "prompt_token_estimate": 3176,
+      "budget_overflow": false,
+      "history_tokens": 1620,
+      "evidence_tokens": 76,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.3333,
+      "missing_obligations": [
+        "obligation-2",
+        "obligation-3"
+      ]
+    },
+    {
+      "id": "ar-cross-005",
+      "baseline_ms": 1.6657999949529767,
+      "budget_ms": 5.4146000038599595,
+      "overhead_pct": 225.0450246287104,
+      "prompt_token_estimate": 4089,
+      "budget_overflow": false,
+      "history_tokens": 1630,
+      "evidence_tokens": 983,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.3333,
+      "missing_obligations": [
+        "obligation-1",
+        "obligation-2"
+      ]
+    },
+    {
+      "id": "ar-cross-006",
+      "baseline_ms": 1.8559000018285587,
+      "budget_ms": 2.8710000042337924,
+      "overhead_pct": 54.69583498060716,
+      "prompt_token_estimate": 3989,
+      "budget_overflow": false,
+      "history_tokens": 984,
+      "evidence_tokens": 1528,
+      "skipped_history_turns": 4,
+      "obligation_coverage": 0.6667,
+      "missing_obligations": [
+        "obligation-2"
+      ]
+    },
+    {
+      "id": "ar-cross-007",
+      "baseline_ms": 2.7534999971976504,
+      "budget_ms": 3.254199997172691,
+      "overhead_pct": 18.184129307594823,
+      "prompt_token_estimate": 3664,
+      "budget_overflow": false,
+      "history_tokens": 990,
+      "evidence_tokens": 1189,
+      "skipped_history_turns": 4,
+      "obligation_coverage": 0.3333,
+      "missing_obligations": [
+        "obligation-2",
+        "obligation-3"
+      ]
+    },
+    {
+      "id": "ar-cross-008",
+      "baseline_ms": 2.08829999610316,
+      "budget_ms": 3.828899993095547,
+      "overhead_pct": 83.35009338890038,
+      "prompt_token_estimate": 3656,
+      "budget_overflow": false,
+      "history_tokens": 996,
+      "evidence_tokens": 1176,
+      "skipped_history_turns": 4,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-cross-009",
+      "baseline_ms": 1.7165000026579946,
+      "budget_ms": 3.9935999957378954,
+      "overhead_pct": 132.65948089448406,
+      "prompt_token_estimate": 4066,
+      "budget_overflow": false,
+      "history_tokens": 1002,
+      "evidence_tokens": 1584,
+      "skipped_history_turns": 4,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-multi-004",
+      "baseline_ms": 7.113699990441091,
+      "budget_ms": 9.628899992094375,
+      "overhead_pct": 35.35712786641325,
+      "prompt_token_estimate": 4036,
+      "budget_overflow": false,
+      "history_tokens": 1008,
+      "evidence_tokens": 1550,
+      "skipped_history_turns": 4,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-multi-005",
+      "baseline_ms": 9.994199994252995,
+      "budget_ms": 13.368699990678579,
+      "overhead_pct": 33.764583442056754,
+      "prompt_token_estimate": 4063,
+      "budget_overflow": false,
+      "history_tokens": 1014,
+      "evidence_tokens": 1572,
+      "skipped_history_turns": 4,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-multi-006",
+      "baseline_ms": 8.157899996149354,
+      "budget_ms": 7.460499997250736,
+      "overhead_pct": 0.0,
+      "prompt_token_estimate": 4005,
+      "budget_overflow": false,
+      "history_tokens": 1020,
+      "evidence_tokens": 1506,
+      "skipped_history_turns": 4,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-multi-007",
+      "baseline_ms": 7.458599997335114,
+      "budget_ms": 7.0626000087941065,
+      "overhead_pct": 0.0,
+      "prompt_token_estimate": 4093,
+      "budget_overflow": false,
+      "history_tokens": 1026,
+      "evidence_tokens": 1587,
+      "skipped_history_turns": 4,
+      "obligation_coverage": 1.0,
+      "missing_obligations": []
+    },
+    {
+      "id": "ar-calc-003",
+      "baseline_ms": 1.3178000081097707,
+      "budget_ms": 2.045200002612546,
+      "overhead_pct": 55.19805661149944,
+      "prompt_token_estimate": 3286,
+      "budget_overflow": false,
+      "history_tokens": 1720,
+      "evidence_tokens": 76,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        "obligation-1",
+        "obligation-2"
+      ]
+    },
+    {
+      "id": "ar-calc-004",
+      "baseline_ms": 2.009499992709607,
+      "budget_ms": 3.1617999920854345,
+      "overhead_pct": 57.342622719896994,
+      "prompt_token_estimate": 4089,
+      "budget_overflow": false,
+      "history_tokens": 1730,
+      "evidence_tokens": 880,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    },
+    {
+      "id": "ar-calc-005",
+      "baseline_ms": 3.565899998648092,
+      "budget_ms": 3.3638000022619963,
+      "overhead_pct": 0.0,
+      "prompt_token_estimate": 4086,
+      "budget_overflow": false,
+      "history_tokens": 1740,
+      "evidence_tokens": 869,
+      "skipped_history_turns": 0,
+      "obligation_coverage": 0.5,
+      "missing_obligations": [
+        "obligation-1"
+      ]
+    }
+  ]
+}

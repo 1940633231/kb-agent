@@ -1,6 +1,6 @@
 # kb-agent 数据扩展与可靠性补强计划
 
-> 状态：阶段 0、P0、P1 已完成（2026-11-06），P2 待执行
+> 状态：阶段 0、P0、P1、P2 已完成（2026-11-06），P3 待执行
 > 适用范围：`kb-agent` 为主，阶段 2 可能涉及 `production-rag` 的小幅扩展  
 > 不在本计划内：`sql-mcp-agent` 的 MCP 链路改造；它只作为后续展示材料
 
@@ -16,6 +16,10 @@ Recall@5 为 `1.0`，证据义务覆盖率 `0.8333`，达到 `0.82+` 目标。�
 P1 执行结果：Claim 解析、硬门禁、软提示和文本 span 定向修复已接入；
 100 条离线污染集硬违规召回 `1.0`，正常答案误伤率 `0.0`。报告见
 `evals/reports/claim_audit.json`。
+
+P2 执行结果：system prompt、history、query、evidence 与输出预留已纳入统一预算；
+45 个 golden case 预算溢出率为 `0.0`，P95 预算开销约 `4.94ms`，端到端估算
+开销 `0.0074%`。报告见 `evals/reports/context_budget.json`。
 
 ## 1. 目标与基线
 

@@ -14,6 +14,7 @@ from app.citation.citation import CitationExtractor
 from langgraph.types import interrupt
 
 from agent.answer_audit import audit_answer
+from agent.context_budget import build_context_with_budget
 from agent.grading import extract_facets, grade_evidence, needs_knowledge_base
 from agent.evidence_contract import (
     assess_obligations,
@@ -362,11 +363,20 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
 
         question = state["question"]
         pipeline = runtime.pipeline
-        context_result = pipeline.context_manager.build(question, hits)
-        context = context_result["context"]
-        chunks = context_result["chunks"]
-        messages = pipeline.prompt_builder.build(question, context,
-                                                history=_history(state.get("messages")))
+        history = _history(state.get("messages"))
+        budget_result = build_context_with_budget(
+            pipeline,
+            question,
+            hits,
+            history=history,
+            obligations=state.get("obligations") or [],
+            max_context_tokens=runtime.max_context_tokens,
+            output_reserved_tokens=runtime.output_reserved_tokens,
+        )
+        context = budget_result["context"]
+        chunks = budget_result["chunks"]
+        messages = pipeline.prompt_builder.build(
+            question, context, history=budget_result["history"])
         memory_block = format_memories(state.get("memories") or [])
         if memory_block:
             messages[0] = {
@@ -402,10 +412,19 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             "answer": answer,
             "citations": citations,
             "context_chunks": chunks,
+            "prompt_budget": budget_result["budget"],
             "grounding": grounding,
             "status": "answered",
             "trace": [{"node": "generate_answer", "answer_len": len(answer or ""),
                        "context_chunks": len(chunks),
+                       "prompt_tokens_estimate": budget_result["budget"][
+                           "prompt_token_estimate"],
+                       "history_tokens": budget_result["budget"][
+                           "history_tokens"],
+                       "skipped_history_turns": budget_result["budget"][
+                           "skipped_history_turns"],
+                       "budget_overflow": budget_result["budget"][
+                           "budget_overflow"],
                        "citations": len(citations),
                        "ungrounded": len(grounding.get("ungrounded") or []),
                        "memories_used": len(state.get("memories") or [])}],

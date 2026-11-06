@@ -39,6 +39,9 @@ class AgentRuntime:
     memory_store: Optional[Any] = None   # LangGraph Store（跨会话记忆）
     memory_user_id: str = ""             # 记忆 namespace 里的用户标识
     review_timeout_seconds: Optional[float] = 3600.0  # 审核超时（秒）
+    # P2 统一上下文预算：None 表示沿用 production-rag 的 max_context_tokens。
+    max_context_tokens: Optional[int] = None
+    output_reserved_tokens: int = 1024
     # document_id → {title, company, year, pages}，用于把引用的字符偏移映射回原文页码
     page_offsets: Dict[str, Any] = field(default_factory=dict)
     extra: Dict[str, Any] = field(default_factory=dict)

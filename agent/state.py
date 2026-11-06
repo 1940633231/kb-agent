@@ -29,6 +29,7 @@ class AgentState(TypedDict, total=False):
     retrieved_chunks: List[Dict[str, Any]]
     retrieval_stats: Dict[str, Any]
     retrieval_score: Dict[str, Any]
+    prompt_budget: Dict[str, Any]
     obligations: List[Dict[str, Any]]
     route_hits: List[Dict[str, Any]]
     route_coverage: List[Dict[str, Any]]
@@ -79,6 +80,7 @@ def initial_state(question: str,
         "retrieved_chunks": [],
         "retrieval_stats": {},
         "retrieval_score": {},
+        "prompt_budget": {},
         "obligations": [],
         "route_hits": [],
         "route_coverage": [],
