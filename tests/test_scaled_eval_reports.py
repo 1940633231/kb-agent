@@ -2,10 +2,15 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REPORTS = PROJECT_ROOT / "evals" / "reports"
+
+sys.path.insert(0, str(PROJECT_ROOT / "evals"))
+
+from run_scaled_eval import evaluation_rows  # noqa: E402
 
 
 def load(name: str) -> dict:
@@ -21,6 +26,14 @@ def test_scaled_retrieval_and_l3_report_expected_metrics():
         assert "evidence_obligation_coverage" in metrics
         assert "missing_obligation_rate" in metrics
         assert "route_coverage" in metrics or "route_obligation_coverage" in metrics
+        assert len(report["questions"]) == 120
+
+
+def test_evaluation_rows_supports_agent_and_retrieval_contracts():
+    rows = [{"id": "q1"}]
+    assert evaluation_rows({"rows": rows}) == rows
+    assert evaluation_rows({"questions": rows}) == rows
+    assert evaluation_rows({}) == []
 
 
 def test_scaled_generation_has_three_runs_with_mean_and_stddev():

@@ -71,6 +71,47 @@ class EvidenceObligation:
         )
 
 
+@dataclass(frozen=True)
+class RetrievalRoute:
+    """A pre-retrieval route scoped to one company/year document set."""
+
+    query_id: str
+    query: str
+    obligation_ids: tuple[str, ...] = field(default_factory=tuple)
+    document_ids: tuple[str, ...] = field(default_factory=tuple)
+    company: Optional[str] = None
+    year: Optional[int] = None
+    metrics: tuple[str, ...] = field(default_factory=tuple)
+    #: True only when the question has no company/year facet and falls back to
+    #: the legacy all-corpus query. A routed company/year with no matching
+    #: document is intentionally different: it must not search the whole corpus.
+    unrouted: bool = False
+
+    def as_dict(self) -> Dict[str, Any]:
+        payload = asdict(self)
+        payload["obligation_ids"] = list(self.obligation_ids)
+        payload["document_ids"] = list(self.document_ids)
+        payload["metrics"] = list(self.metrics)
+        return payload
+
+    @classmethod
+    def from_dict(cls, payload: Dict[str, Any]) -> "RetrievalRoute":
+        return cls(
+            query_id=str(payload.get("query_id") or "route-1"),
+            query=str(payload.get("query") or "").strip(),
+            obligation_ids=tuple(
+                str(item) for item in payload.get("obligation_ids") or []
+            ),
+            document_ids=tuple(
+                str(item) for item in payload.get("document_ids") or []
+            ),
+            company=payload.get("company"),
+            year=int(payload["year"]) if payload.get("year") is not None else None,
+            metrics=tuple(str(item) for item in payload.get("metrics") or []),
+            unrouted=bool(payload.get("unrouted", False)),
+        )
+
+
 def _load_document_facets() -> Dict[str, Dict[str, Any]]:
     try:
         registry = json.loads(REPORTS_REGISTRY.read_text(encoding="utf-8"))
@@ -88,6 +129,228 @@ def _load_document_facets() -> Dict[str, Dict[str, Any]]:
 
 
 DOCUMENT_FACETS = _load_document_facets()
+
+
+def _document_ids_for_scope(company: Optional[str],
+                            year: Optional[int]) -> tuple[str, ...]:
+    if company and year is not None:
+        return tuple(sorted(
+            document_id
+            for document_id, facets in DOCUMENT_FACETS.items()
+            if facets.get("company") == company
+            and facets.get("year") is not None
+            and int(facets["year"]) == int(year)
+        ))
+    if company:
+        return tuple(sorted(
+            document_id
+            for document_id, facets in DOCUMENT_FACETS.items()
+            if facets.get("company") == company
+        ))
+    if year is not None:
+        return tuple(sorted(
+            document_id
+            for document_id, facets in DOCUMENT_FACETS.items()
+            if facets.get("year") is not None
+            and int(facets["year"]) == int(year)
+        ))
+    return ()
+
+
+def _route_query(question: str, company: Optional[str], year: Optional[int],
+                 metrics: Sequence[str], *, single_route: bool) -> str:
+    if single_route and question.strip():
+        return question.strip()
+    metric_text = "、".join(metrics)
+    return " ".join(part for part in (
+        company,
+        "{}年".format(year) if year is not None else "",
+        metric_text,
+        "年度报告",
+    ) if part).strip()
+
+
+def build_initial_routes(
+        question: str,
+        obligations: Iterable[EvidenceObligation | Dict[str, Any]],
+        facets: Optional[Dict[str, Any]] = None
+        ) -> List[RetrievalRoute]:
+    """Group non-refusal obligations by company/year and bind document IDs.
+
+    The route order follows the obligation order (company-major, year-minor),
+    which keeps traces deterministic and mirrors the evidence contract.
+    """
+    parsed = [
+        item if isinstance(item, EvidenceObligation)
+        else EvidenceObligation.from_dict(item)
+        for item in obligations or []
+    ]
+    groups: Dict[tuple[Optional[str], Optional[int]],
+                 List[EvidenceObligation]] = {}
+    for obligation in parsed:
+        if obligation.expected_kind == "refusal":
+            continue
+        key = (obligation.company, obligation.year)
+        groups.setdefault(key, []).append(obligation)
+    if not groups:
+        return []
+
+    def group_order(item):
+        company, year = item[0]
+        position = question.find(company) if company else len(question) + 1
+        if position < 0:
+            position = len(question) + 1
+        return position, year if year is not None else 9999
+
+    drafts: List[Dict[str, Any]] = []
+    for (company, year), items in sorted(groups.items(), key=group_order):
+        metrics: List[str] = []
+        for item in items:
+            if item.metric and item.metric not in metrics:
+                metrics.append(item.metric)
+        document_ids = _document_ids_for_scope(company, year)
+        unrouted = company is None and year is None
+        drafts.append({
+            "obligation_ids": tuple(item.obligation_id for item in items),
+            "document_ids": document_ids,
+            "company": company,
+            "year": year,
+            "metrics": tuple(metrics),
+            "unrouted": unrouted,
+        })
+
+    single_route = len(drafts) == 1
+    routes: List[RetrievalRoute] = []
+    for index, draft in enumerate(drafts, start=1):
+        query = _route_query(
+            question,
+            draft["company"],
+            draft["year"],
+            draft["metrics"],
+            single_route=single_route,
+        )
+        routes.append(RetrievalRoute(
+            query_id="route-{}".format(index),
+            query=query,
+            **draft,
+        ))
+    return routes
+
+
+def bind_routes_to_obligations(
+        obligations: Iterable[EvidenceObligation | Dict[str, Any]],
+        routes: Iterable[RetrievalRoute | Dict[str, Any]],
+        ) -> List[Dict[str, Any]]:
+    """Return obligation dicts with their actual route IDs attached."""
+    parsed_routes = [
+        item if isinstance(item, RetrievalRoute)
+        else RetrievalRoute.from_dict(item)
+        for item in routes or []
+    ]
+    route_ids: Dict[str, List[str]] = {}
+    for route in parsed_routes:
+        for obligation_id in route.obligation_ids:
+            route_ids.setdefault(obligation_id, []).append(route.query_id)
+
+    bound: List[Dict[str, Any]] = []
+    for item in obligations or []:
+        obligation = (
+            item if isinstance(item, EvidenceObligation)
+            else EvidenceObligation.from_dict(item)
+        )
+        payload = obligation.as_dict()
+        payload["route_ids"] = route_ids.get(obligation.obligation_id, [])
+        bound.append(payload)
+    return bound
+
+
+def group_obligations_by_document(
+        obligations: Iterable[EvidenceObligation | Dict[str, Any]]
+        ) -> Dict[str, List[EvidenceObligation]]:
+    """Map each mapped annual-report document to its required obligations."""
+    groups: Dict[str, List[EvidenceObligation]] = {}
+    for item in obligations or []:
+        obligation = (
+            item if isinstance(item, EvidenceObligation)
+            else EvidenceObligation.from_dict(item)
+        )
+        if obligation.expected_kind == "refusal":
+            continue
+        for document_id in _document_ids_for_scope(
+                obligation.company, obligation.year):
+            groups.setdefault(document_id, []).append(obligation)
+    return groups
+
+
+def route_for_missing_obligations(
+        question: str,
+        missing_obligations: Iterable[EvidenceObligation | Dict[str, Any]],
+        routes: Iterable[RetrievalRoute | Dict[str, Any]],
+        rewritten_queries: Optional[Sequence[str]] = None,
+        ) -> List[RetrievalRoute]:
+    """Keep the original document scope and retry only missing slots."""
+    missing = [
+        item if isinstance(item, EvidenceObligation)
+        else EvidenceObligation.from_dict(item)
+        for item in missing_obligations or []
+        if (item.get("expected_kind") if isinstance(item, dict)
+            else item.expected_kind) != "refusal"
+    ]
+    if not missing:
+        return []
+    missing_by_id = {item.obligation_id: item for item in missing}
+    missing_ids = set(missing_by_id)
+    parsed_routes = [
+        item if isinstance(item, RetrievalRoute)
+        else RetrievalRoute.from_dict(item)
+        for item in routes or []
+    ]
+    if not parsed_routes:
+        parsed_routes = build_initial_routes(question, missing)
+
+    query_candidates = [
+        str(query).strip() for query in rewritten_queries or []
+        if str(query).strip()
+    ]
+    retry_routes: List[RetrievalRoute] = []
+    for route in parsed_routes:
+        obligation_ids = tuple(
+            obligation_id for obligation_id in route.obligation_ids
+            if obligation_id in missing_ids
+        )
+        if not obligation_ids:
+            continue
+        metrics: List[str] = []
+        for obligation_id in obligation_ids:
+            metric = missing_by_id[obligation_id].metric
+            if metric and metric not in metrics:
+                metrics.append(metric)
+
+        matched_queries = [
+            query for query in query_candidates
+            if (not route.company or route.company in query)
+            and (route.year is None or str(route.year) in query)
+            and (
+                not metrics
+                or any(metric in query for metric in metrics)
+            )
+        ]
+        query = " ".join(dict.fromkeys(matched_queries)).strip()
+        if not query:
+            query = _route_query(
+                question, route.company, route.year, metrics,
+                single_route=False)
+        retry_routes.append(RetrievalRoute(
+            query_id=route.query_id,
+            query=query,
+            obligation_ids=obligation_ids,
+            document_ids=route.document_ids,
+            company=route.company,
+            year=route.year,
+            metrics=tuple(metrics),
+            unrouted=route.unrouted,
+        ))
+    return retry_routes
 
 
 def _kind_for_question(question: str, company_count: int,
@@ -160,6 +423,25 @@ def _known_companies() -> List[str]:
         item.get("company") for item in DOCUMENT_FACETS.values()
         if item.get("company")
     }, key=len, reverse=True)
+
+
+def scope_supported_by_corpus(
+        question: str,
+        facets: Optional[Dict[str, List[str]]] = None
+        ) -> bool:
+    """Whether the named company/year combination exists in the corpus."""
+    facets = facets or extract_facets(question)
+    companies = [str(item) for item in facets.get("companies") or []]
+    years = [int(item) for item in facets.get("years") or []]
+    if not companies:
+        return False
+    company_slots: Sequence[Optional[str]] = companies
+    year_slots: Sequence[Optional[int]] = years or [None]
+    return any(
+        _document_ids_for_scope(company, year)
+        for company in company_slots
+        for year in year_slots
+    )
 
 
 def build_obligations(question: str,
@@ -410,11 +692,27 @@ def assess_route_coverage(
         obligations: Iterable[EvidenceObligation | Dict[str, Any]]
         ) -> List[Dict[str, Any]]:
     coverage: List[Dict[str, Any]] = []
+    parsed_obligations = [
+        item if isinstance(item, EvidenceObligation)
+        else EvidenceObligation.from_dict(item)
+        for item in obligations or []
+    ]
     for route in route_hits or []:
-        result = assess_obligations(route.get("hits") or [], obligations)
+        route_obligation_ids = {
+            str(item) for item in route.get("obligation_ids") or []
+        }
+        scoped_obligations = (
+            [
+                item for item in parsed_obligations
+                if item.obligation_id in route_obligation_ids
+            ]
+            if route_obligation_ids else parsed_obligations
+        )
+        result = assess_obligations(route.get("hits") or [], scoped_obligations)
         coverage.append({
             "query_id": route.get("query_id"),
             "query": route.get("query"),
+            "obligation_ids": sorted(route_obligation_ids),
             "returned": len(route.get("hits") or []),
             "covered": result["covered"],
             "missing": result["missing"],

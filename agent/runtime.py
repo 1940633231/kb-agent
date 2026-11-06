@@ -22,6 +22,12 @@ class AgentRuntime:
     widened_top_k: int = 15
     #: facet 证据裁剪开关（默认开）；关掉可用于消融对比"裁剪到底值多少"
     scope_evidence_enabled: bool = True
+    #: 检索前公司/年份硬路由；关闭时完全回退旧的全库多查询路径。
+    enable_pre_retrieval_routing: bool = True
+    #: route 只允许命中自己的 document_ids；连后置 scope 也不得回退全库。
+    strict_route_filter: bool = True
+    #: 每条 route 在统一 rerank 前保留的候选上限。
+    route_candidate_limit: int = 50
     #: 规则评分通过后再做一次 LLM 语义复核（抓"规则假通过"，方案 §4.1）
     llm_grader: Optional[Any] = None
     #: P1 hard gate 默认开启；只拦截 Claim 级硬违规，不触发生成式重写。

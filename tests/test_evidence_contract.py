@@ -12,6 +12,7 @@ from agent.evidence_contract import (  # noqa: E402
     assess_obligations,
     assess_route_coverage,
     build_obligations,
+    scope_supported_by_corpus,
 )
 from fakes import make_hit  # noqa: E402
 
@@ -151,6 +152,14 @@ def test_unknown_company_produces_refusal_obligation():
     assert obligations[0].expected_kind == "refusal"
     assert result["refusal_expected"] is True
     assert result["passed"] is False
+
+
+def test_known_company_with_unsupported_year_is_outside_corpus_scope():
+    question = "贵州茅台2026年的营业收入是多少元？"
+    obligations = build_obligations(question)
+
+    assert obligations
+    assert scope_supported_by_corpus(question) is False
 
 
 def test_cross_company_metrics_follow_each_company_clause():

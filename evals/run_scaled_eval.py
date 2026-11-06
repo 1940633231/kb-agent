@@ -67,6 +67,11 @@ def write_report(name: str, payload: dict) -> Path:
     return path
 
 
+def evaluation_rows(report: dict) -> list[dict]:
+    """Return per-question rows across the agent/retrieval report contracts."""
+    return report.get("rows") or report.get("questions") or []
+
+
 def dataset_meta(questions: list[dict]) -> dict:
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     return {
@@ -98,6 +103,9 @@ def run_l3_retrieval(questions: list[dict], top_k: int = 5) -> dict:
         rule_rewrite=True,
         max_retries=2,
         no_scope=False,
+        no_pre_retrieval_routing=False,
+        no_strict_route_filter=False,
+        route_candidate_limit=50,
         no_llm_grade=True,
         strategy="recursive",
         top_k=top_k,
@@ -108,7 +116,7 @@ def run_l3_retrieval(questions: list[dict], top_k: int = 5) -> dict:
         "dataset": dataset_meta(questions),
         "model": "BAAI/bge-small-zh-v1.5 + BAAI/bge-reranker-base",
         "metrics": report.get("metrics") or {},
-        "questions": report.get("questions") or [],
+        "questions": evaluation_rows(report),
     }
     write_report("scaled_l3.json", payload)
     return payload
@@ -130,6 +138,9 @@ def run_generation(questions: list[dict], repeats: int,
             rule_rewrite=True,
             max_retries=0,
             no_scope=False,
+            no_pre_retrieval_routing=False,
+            no_strict_route_filter=False,
+            route_candidate_limit=50,
             no_llm_grade=True,
             strategy="recursive",
             top_k=top_k,
@@ -155,7 +166,7 @@ def run_generation(questions: list[dict], repeats: int,
                     for item in row.get("missing_obligations") or []
                 ],
             }
-            for row in report.get("questions") or []
+            for row in evaluation_rows(report)
             if row.get("status") in {
                 "error", "answer_hard_gate_failed",
                 "answered_unverified", "refused_no_evidence",

@@ -18,9 +18,12 @@ from agent.context_budget import build_context_with_budget
 from agent.grading import extract_facets, grade_evidence, needs_knowledge_base
 from agent.evidence_contract import (
     assess_obligations,
+    bind_routes_to_obligations,
     build_evidence_contract,
+    build_initial_routes,
     obligation_query,
     preserve_obligation_evidence,
+    route_for_missing_obligations,
 )
 from agent.evidence import scope_evidence
 from agent.grounding import verify_grounding
@@ -108,6 +111,14 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         question = (state.get("question") or "").strip()
         facets = extract_facets(question)
         contract = build_evidence_contract(question, facets=facets)
+        obligations = contract["obligations"]
+        routes: List[Dict[str, Any]] = []
+        if runtime.enable_pre_retrieval_routing:
+            planned_routes = build_initial_routes(
+                question, obligations, facets=facets)
+            obligations = bind_routes_to_obligations(
+                obligations, planned_routes)
+            routes = [route.as_dict() for route in planned_routes]
         # 跨会话记忆：先召回该用户已存的偏好/约定（namespace 隔离在 memory.py）
         memories: List[Dict[str, Any]] = []
         if runtime.memory_store is not None and runtime.memory_user_id:
@@ -124,21 +135,38 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         return {
             "question": question,
             "rewritten_query": question,
-            "sub_queries": [question],
+            "sub_queries": (
+                [route["query"] for route in routes] if routes else (
+                    [question] if not runtime.enable_pre_retrieval_routing else []
+                )
+            ),
+            "routes": routes,
+            "route_history": ([{
+                "retry": 0,
+                "phase": "planned",
+                "routes": routes,
+            }] if runtime.enable_pre_retrieval_routing else []),
             "facets": facets,
-            "obligations": contract["obligations"],
+            "obligations": obligations,
             "needs_retrieval": needs_retrieval,
             "memories": memories,
             "status": status,
             "trace": [{"node": "understand_query", "facets": facets,
                        "needs_retrieval": needs_retrieval,
                        "obligations": len(contract["obligations"]),
+                       "routes": len(routes),
+                       "route_documents": sum(
+                           len(route.get("document_ids") or [])
+                           for route in routes
+                       ),
                        "refusal_expected": contract["refusal_expected"],
                        "memory_request": bool(memory_request),
                        "recalled_memories": len(memories)}],
         }
 
     def retrieve_knowledge(state: Dict[str, Any]) -> Dict[str, Any]:
+        routing_enabled = bool(runtime.enable_pre_retrieval_routing)
+        routes = state.get("routes") or []
         queries = state.get("sub_queries") or [state.get("rewritten_query")
                                                or state["question"]]
         retry = int(state.get("retry_count") or 0)
@@ -146,6 +174,20 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         obligations = state.get("obligations") or []
         result = subgraph.invoke({
             "queries": queries,
+            "routes": routes,
+            "routing_enabled": routing_enabled,
+            "strict_route_filter": bool(runtime.strict_route_filter),
+            "route_candidate_limit": int(runtime.route_candidate_limit),
+            "route_document_ids": {
+                str(route.get("query_id")): list(
+                    route.get("document_ids") or [])
+                for route in routes
+            },
+            "route_obligations": {
+                str(route.get("query_id")): list(
+                    route.get("obligation_ids") or [])
+                for route in routes
+            },
             "top_k": budget,
             "anchor": state["question"],
             "obligations": obligations,
@@ -182,7 +224,10 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         if runtime.scope_evidence_enabled:
             candidates, scope_stats = scope_evidence(
                 state["question"], candidates,
-                year_window=int(runtime.extra.get("year_window", 0)))
+                year_window=int(runtime.extra.get("year_window", 0)),
+                allow_fallback=not (
+                    routing_enabled and runtime.strict_route_filter),
+            )
         else:
             scope_stats = {"scoped": False, "reason": "disabled",
                            "kept": len(candidates), "dropped": 0}
@@ -190,16 +235,16 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             candidates, obligations, state["question"])
         route_coverage = (list(state.get("route_coverage") or [])
                           + list(result.get("route_coverage") or []))
-        current_routes = result.get("route_coverage") or []
-        covered_obligations = sorted({
-            obligation_id
-            for route in current_routes
-            for obligation_id in route.get("covered") or []
+        covered_obligations = post_scope_obligations["covered"]
+        missing_obligations = post_scope_obligations["missing"]
+        route_filter_missing = sorted(set(
+            result.get("stats", {}).get("route_filter_missing") or []
+        ) | {
+            str(obligation_id)
+            for route in routes
+            if not route.get("unrouted") and not route.get("document_ids")
+            for obligation_id in route.get("obligation_ids") or []
         })
-        required_obligations = [
-            item.get("obligation_id") for item in obligations
-            if item.get("required", True)
-        ]
         return {
             "retrieved_chunks": candidates,
             "route_hits": route_hits,
@@ -207,10 +252,10 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             "retrieval_stats": dict(result.get("stats") or {},
                                     accumulated=len(candidates), budget=budget,
                                     scope=scope_stats,
+                                    scope_degraded=bool(
+                                        scope_stats.get("scope_degraded")),
                                     obligations_covered=covered_obligations,
-                                    obligations_missing=sorted(
-                                        set(required_obligations)
-                                        - set(covered_obligations)),
+                                    obligations_missing=missing_obligations,
                                     obligation_fills=obligation_fills,
                                     obligation_fill_chunks=[
                                         hit.get("chunk_id")
@@ -220,9 +265,16 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
                                     pre_scope_missing=pre_scope_obligations[
                                         "missing"],
                                     post_scope_missing=post_scope_obligations[
-                                        "missing"]),
+                                        "missing"],
+                                    route_filter_missing=route_filter_missing,
+                                    strict_route_filter=(
+                                        routing_enabled
+                                        and runtime.strict_route_filter
+                                    )),
             "status": "retrieving",
             "trace": [{"node": "retrieve_knowledge", "queries": list(queries),
+                       "routes": result.get("stats", {}).get(
+                           "routes_planned", 0),
                        "candidate_count": len(candidates),
                        "budget": budget,
                        "scoped_out": scope_stats.get("dropped", 0),
@@ -318,9 +370,23 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             queries = [
                 obligation_query(item) for item in missing
             ] or [state["question"]]
+        retry_routes: List[Dict[str, Any]] = []
+        if runtime.enable_pre_retrieval_routing:
+            retry_routes = [
+                route.as_dict() for route in route_for_missing_obligations(
+                    state["question"],
+                    missing,
+                    state.get("routes") or [],
+                    rewritten_queries=queries,
+                )
+            ]
+            if retry_routes:
+                queries = [route["query"] for route in retry_routes]
         return {
             "rewritten_query": queries[0],
             "sub_queries": queries,
+            "routes": retry_routes if runtime.enable_pre_retrieval_routing
+            else state.get("routes") or [],
             "retry_count": retry_count,
             "rewrite_history": [{
                 "retry": retry_count,
@@ -329,11 +395,21 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
                 "obligations": [
                     item.get("obligation_id") for item in missing
                 ],
+                "routes": retry_routes,
                 "source": getattr(rewriter, "last_source", "rule"),
             }],
+            "route_history": ([{
+                "retry": retry_count,
+                "phase": "retry_planned",
+                "missing_obligations": [
+                    item.get("obligation_id") for item in missing
+                ],
+                "routes": retry_routes,
+            }] if runtime.enable_pre_retrieval_routing else []),
             "status": "rewritten",
             "trace": [{"node": "rewrite_query", "retry": retry_count,
                        "queries": queries,
+                       "routes": len(retry_routes),
                        "missing_obligations": [
                            item.get("obligation_id") for item in missing
                        ],

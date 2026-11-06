@@ -132,6 +132,7 @@ def grade_evidence(question: str, hits: List[Dict],
     from agent.evidence_contract import (
         assess_obligations,
         build_obligations,
+        scope_supported_by_corpus,
     )
 
     facets = extract_facets(question)
@@ -140,6 +141,7 @@ def grade_evidence(question: str, hits: List[Dict],
     if obligations is None:
         obligations = [item.as_dict() for item in build_obligations(question, facets)]
     obligation_result = assess_obligations(hits, obligations, question)
+    scope_supported = scope_supported_by_corpus(question, facets)
 
     years_in_evidence = set()
     for document_id in documents:
@@ -169,8 +171,11 @@ def grade_evidence(question: str, hits: List[Dict],
     if obligation_result["ambiguous"]:
         reasons.append("证据义务存在多口径歧义: {}".format(
             ",".join(obligation_result["ambiguous"])))
+    if not scope_supported:
+        reasons.append("语料中没有问题点名的公司/年份年报")
 
-    passed = (not reasons and not obligation_result["refusal_expected"]
+    passed = (scope_supported and not reasons
+              and not obligation_result["refusal_expected"]
               and obligation_result["passed"])
 
     return {
@@ -190,7 +195,9 @@ def grade_evidence(question: str, hits: List[Dict],
             item for item in obligation_result["results"]
             if item["obligation_id"] in obligation_result["ambiguous"]
         ],
-        "refusal_expected": obligation_result["refusal_expected"],
+        "refusal_expected": (
+            obligation_result["refusal_expected"] or not scope_supported
+        ),
         "route_coverage": route_coverage or [],
         "keyword_hits": keyword_hits,
         "missing_years": missing_years,

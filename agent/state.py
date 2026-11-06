@@ -24,6 +24,8 @@ class AgentState(TypedDict, total=False):
     rewritten_query: str
     sub_queries: List[str]
     rewrite_history: Annotated[List[Dict[str, Any]], operator.add]
+    routes: List[Dict[str, Any]]
+    route_history: Annotated[List[Dict[str, Any]], operator.add]
 
     # 当前证据与评分（覆盖写：只反映"当前这轮"）
     retrieved_chunks: List[Dict[str, Any]]
@@ -77,6 +79,8 @@ def initial_state(question: str,
         "rewritten_query": question,
         "sub_queries": [],
         "rewrite_history": [],
+        "routes": [],
+        "route_history": [],
         "retrieved_chunks": [],
         "retrieval_stats": {},
         "retrieval_score": {},

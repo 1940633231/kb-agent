@@ -90,6 +90,41 @@ def test_subgraph_reports_per_query_stats_and_obligation_coverage():
     assert result["route_coverage"][1]["covered"] == ["obligation-2"]
 
 
+def test_route_coverage_uses_final_selected_evidence():
+    question = "贵州茅台2023年的营业收入是多少元？"
+    obligations = [item.as_dict() for item in build_obligations(question)]
+    ambiguous = make_hit(
+        "600519-2023",
+        "贵州茅台2023年年度报告 合并营业收入 100 母公司营业收入 200",
+        score=0.9,
+    )
+    clean = make_hit(
+        "600519-2023",
+        "贵州茅台2023年年度报告 营业收入 300",
+        score=0.99,
+    )
+    service = FakeService(lambda query: [ambiguous, clean])
+    runtime = SimpleNamespace(service=service, top_k=1)
+    graph = build_retrieval_subgraph(runtime)
+
+    result = graph.invoke({
+        "queries": [question],
+        "routes": [{
+            "query_id": "route-1",
+            "query": question,
+            "obligation_ids": ["obligation-1"],
+            "document_ids": ["600519-2023"],
+        }],
+        "obligations": obligations,
+        "routing_enabled": True,
+        "top_k": 1,
+        "anchor": question,
+    })
+
+    assert result["route_coverage"][0]["covered"] == ["obligation-1"]
+    assert result["route_coverage"][0]["ambiguous"] == []
+
+
 def test_merged_candidates_do_not_hide_missing_year():
     service = FakeService(lambda query: [
         hit("贵州茅台", "600519", 2023),
@@ -173,13 +208,17 @@ def test_preserve_replaces_same_chunk_with_stale_metadata():
 
 
 def test_retry_targets_only_the_missing_obligation():
-    calls = {"count": 0}
+    calls = {"2024": 0}
 
     def resolver(query: str):
-        calls["count"] += 1
-        if calls["count"] == 1:
-            return [hit("贵州茅台", "600519", 2023)]
-        return [hit("贵州茅台", "600519", 2024)]
+        if "2024" in query:
+            calls["2024"] += 1
+            # First attempt violates the route contract. FakeRetriever drops
+            # it; the retry for route-2 then returns the in-scope document.
+            if calls["2024"] == 1:
+                return [hit("贵州茅台", "600519", 2023)]
+            return [hit("贵州茅台", "600519", 2024)]
+        return [hit("贵州茅台", "600519", 2023)]
 
     service = FakeService(resolver)
     runtime = AgentRuntime(
@@ -209,6 +248,24 @@ def test_unknown_company_refuses_without_wasting_retries():
 
     result = agent_graph.ask(
         graph, "华为2024年的研发投入是多少？", thread_id="p0-refusal")
+
+    assert result["retrieval_score"]["refusal_expected"] is True
+    assert result["retry_count"] == 0
+    assert result["status"] == "refused_no_evidence"
+
+
+def test_known_company_with_unsupported_year_refuses_without_retries():
+    service = FakeService(lambda query: [hit("贵州茅台", "600519", 2025)])
+    runtime = AgentRuntime(
+        service=service, generate_answers=False, rewriter=RuleRewriter(),
+        max_retries=2,
+    )
+    graph = agent_graph.build_graph(runtime)
+
+    result = agent_graph.ask(
+        graph, "贵州茅台2026年的营业收入是多少元？",
+        thread_id="p0-future-year-refusal",
+    )
 
     assert result["retrieval_score"]["refusal_expected"] is True
     assert result["retry_count"] == 0

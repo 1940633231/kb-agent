@@ -99,6 +99,11 @@ def evaluate(questions: List[Dict], args, service: Optional[Any] = None) -> Dict
                               use_llm_rewrite=not args.rule_rewrite,
                               max_retries=args.max_retries,
                               scope_evidence_enabled=not args.no_scope,
+                              enable_pre_retrieval_routing=(
+                                  not args.no_pre_retrieval_routing),
+                              strict_route_filter=(
+                                  not args.no_strict_route_filter),
+                              route_candidate_limit=args.route_candidate_limit,
                               use_llm_grader=not args.no_llm_grade)
     graph = build_graph(runtime)
     offsets = base.rag.load_page_offsets(args.strategy)
@@ -254,6 +259,19 @@ def evaluate(questions: List[Dict], args, service: Optional[Any] = None) -> Dict
             "ambiguous_obligations": retrieval_score.get("ambiguous_obligations") or [],
             "route_coverage_rate": route_coverage_rate,
             "retrieval_stats": result.get("retrieval_stats") or {},
+            "routes_planned": (
+                result.get("retrieval_stats") or {}
+            ).get("routes_planned", 0),
+            "routes_empty": (
+                result.get("retrieval_stats") or {}
+            ).get("routes_empty", 0),
+            "route_filter_degraded": bool(
+                (result.get("retrieval_stats") or {}).get(
+                    "route_filter_degraded", False)
+            ),
+            "route_filter_missing": (
+                result.get("retrieval_stats") or {}
+            ).get("route_filter_missing") or [],
             "refusal_expected": retrieval_score.get("refusal_expected"),
             "claim_support_rate": (
                 len(supported_claims) / len(numeric_claims)
@@ -336,8 +354,17 @@ def evaluate(questions: List[Dict], args, service: Optional[Any] = None) -> Dict
         "mean_seconds_per_query": mean([r["seconds"] for r in rows]),
         "foreign_evidence_rate": mean(
             [1.0 if r["foreign_evidence_docs"] else 0.0 for r in answerable]),
+        "cross_document_contamination_rate": mean(
+            [1.0 if r["foreign_evidence_docs"] else 0.0 for r in answerable]),
         "foreign_citation_rate": mean(
             [1.0 if r["foreign_cited_docs"] else 0.0 for r in answerable]),
+        "routes_planned_mean": mean([r["routes_planned"] for r in rows]),
+        "route_empty_rate": mean(
+            [1.0 if r["routes_empty"] else 0.0 for r in rows]),
+        "route_filter_degraded_rate": mean(
+            [1.0 if r["route_filter_degraded"] else 0.0 for r in rows]),
+        "route_filter_missing_rate": mean(
+            [1.0 if r["route_filter_missing"] else 0.0 for r in rows]),
         "grounding_verified_rate": mean(
             [1.0 if r["grounding_verified"] else 0.0
              for r in rows if r["grounding_checked"]]),
@@ -389,6 +416,12 @@ def main() -> int:
                         help="改写只用规则兜底（不调 LLM）")
     parser.add_argument("--no-scope", action="store_true",
                         help="关闭 facet 证据裁剪（消融对比用）")
+    parser.add_argument("--no-pre-retrieval-routing", action="store_true",
+                        help="关闭检索前公司/年份路由（L2/回滚消融）")
+    parser.add_argument("--no-strict-route-filter", action="store_true",
+                        help="允许 route 外候选进入合并池（仅消融）")
+    parser.add_argument("--route-candidate-limit", type=int, default=50,
+                        help="每条 route 在统一 rerank 前的候选上限")
     parser.add_argument("--no-llm-grade", action="store_true",
                         help="关闭 LLM 语义复核（消融对比用；默认开启）")
     parser.add_argument("--generate", action="store_true",
@@ -409,14 +442,28 @@ def main() -> int:
     print()
     print(json.dumps(outcome["metrics"], ensure_ascii=False, indent=2))
 
+    if args.no_pre_retrieval_routing:
+        layer = "L2" if args.max_retries == 0 else "L3-legacy"
+        label = "hybrid + rerank，无预路由"
+    elif args.max_retries == 0:
+        layer = "L3a"
+        label = "L2 + 检索前公司/年份路由"
+    else:
+        layer = "L3b"
+        label = "L3a + 缺失义务定向重试"
     report = {
-        "layer": "L3",
-        "label": "+自纠错重试（本项目）",
+        "layer": layer,
+        "label": label,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "config": {"mode": "hybrid", "use_rerank": True, "top_k": args.top_k,
                    "strategy": args.strategy, "max_retries": args.max_retries,
                    "generate": args.generate,
-                   "llm_rewrite": not args.rule_rewrite},
+                   "llm_rewrite": not args.rule_rewrite,
+                   "enable_pre_retrieval_routing":
+                       not args.no_pre_retrieval_routing,
+                   "strict_route_filter":
+                       not args.no_strict_route_filter,
+                   "route_candidate_limit": args.route_candidate_limit},
         "metrics": outcome["metrics"],
         "questions": outcome["rows"],
         "elapsed_seconds": round(time.time() - started, 1),
