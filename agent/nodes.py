@@ -8,11 +8,12 @@ rewrite_query）全部在主图，检索子图只负责取回候选；所有重�
 from __future__ import annotations
 
 import inspect
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from app.citation.citation import CitationExtractor
 from langgraph.types import interrupt
 
+from agent.answer_audit import audit_answer
 from agent.grading import extract_facets, grade_evidence, needs_knowledge_base
 from agent.evidence_contract import (
     assess_obligations,
@@ -22,8 +23,7 @@ from agent.evidence_contract import (
 )
 from agent.evidence import scope_evidence
 from agent.grounding import verify_grounding
-from agent.grounding import detect_ambiguous_metric, has_statement_label
-from agent.repair import repair_answer
+from agent.repair import repair_claims
 from agent.memory import extract_memory, format_memories, recall, remember
 from agent.review import build_review_payload
 from agent.retrieval_subgraph import build_retrieval_subgraph
@@ -440,88 +440,135 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         return update
 
     def verify_answer(state: Dict[str, Any]) -> Dict[str, Any]:
-        """生成后复核：数字能否逐字定位 + 指标口径是否消歧；必要时修复一轮。
-
-        诊断依据：LLM 复核判定 `ar-fact-001/004` 的证据"够"是对的，错误发生在生成侧
-        （拿母公司口径的数、换算出错、多值题漏答）。所以修复放在生成之后、定稿之前，
-        而不是让检索层再重试。
-        """
+        """Audit claims after generation and repair only hard-violation spans."""
         answer = state.get("answer")
         citations = state.get("citations") or []
         chunks = state.get("context_chunks") or []
         question = state["question"]
         attempts = len(state.get("repair_history") or [])
-
-        def audit(text: str):
-            return (verify_grounding(text, citations, chunks, question),
-                    detect_ambiguous_metric(question, chunks))
-
-        if not (isinstance(answer, str) and answer.strip()) or not chunks \
-                or not runtime.enable_answer_repair:
+        if not (isinstance(answer, str) and answer.strip()) or not chunks:
             grounding = state.get("grounding") or {}
-            return {"status": state.get("status"),
-                    "trace": [{"node": "verify_answer", "skipped": True,
-                               "ungrounded": len(grounding.get("ungrounded") or [])}]}
+            return {
+                "status": state.get("status"),
+                "claims": [],
+                "answer_audit": {},
+                "trace": [{"node": "verify_answer", "skipped": True,
+                           "ungrounded": len(grounding.get("ungrounded") or [])}],
+            }
 
-        grounding, ambiguity = audit(answer)
-        ambiguous_unlabeled = (ambiguity.get("ambiguous")
-                               and not has_statement_label(answer))
-        if not grounding["ungrounded"] and not ambiguous_unlabeled:
-            return {"grounding": grounding, "ambiguity": ambiguity,
-                    "status": "answered",
-                    "trace": [{"node": "verify_answer", "grounded": len(grounding["grounded"]),
-                               "derived": len(grounding["derived"]),
-                               "ungrounded": 0, "ambiguous": ambiguity.get("ambiguous"),
-                               "repairs": 0}]}
+        obligations = state.get("obligations") or []
+        audit = audit_answer(
+            answer, citations, chunks, question, obligations=obligations)
+        hard = audit.get("hard_violations") or []
+        soft = audit.get("soft_issues") or []
+        effective_repair = (
+            runtime.enable_claim_repair or runtime.enable_answer_repair)
+        repair_result: Optional[Dict[str, Any]] = None
 
-        record: Dict[str, Any] = {
-            "round": attempts + 1,
-            "ungrounded_before": grounding["ungrounded"],
-            "ambiguous": bool(ambiguity.get("ambiguous")),
-        }
-        repaired = None
-        if attempts < runtime.max_repair_rounds:
+        if hard and effective_repair and attempts < runtime.max_repair_rounds:
+            claims_by_id = {
+                str(item.get("claim_id")): item
+                for item in audit.get("claims") or []
+            }
+            target_claims = [
+                claims_by_id[claim_id]
+                for claim_id in audit.get("repairable_claim_ids") or []
+                if claim_id in claims_by_id
+            ]
             evidence_text = "\n".join(
-                "[{}] {}".format(index + 1, (chunk.get("content") or "")[:600])
-                for index, chunk in enumerate(chunks[:6]))
-            repaired = repair_answer(runtime.pipeline.generator, question,
-                                     evidence_text, answer,
-                                     grounding["ungrounded"], ambiguity)
+                "[{}] {}".format(index + 1, (chunk.get("content") or "")[:700])
+                for index, chunk in enumerate(chunks[:8]))
+            if target_claims:
+                repair_result = repair_claims(
+                    runtime.pipeline.generator,
+                    question,
+                    evidence_text,
+                    answer,
+                    target_claims,
+                    audit.get("missing_obligations") or [],
+                )
+            repaired = (repair_result or {}).get("answer")
+            if repaired:
+                citations_after = [
+                    enrich_citation(citation, runtime.page_offsets, chunks)
+                    for citation in CitationExtractor().extract(repaired, chunks)
+                ]
+                audit_after = audit_answer(
+                    repaired, citations_after, chunks, question,
+                    obligations=obligations)
+                record = {
+                    "round": attempts + 1,
+                    "applied_claim_ids": (
+                        repair_result or {}).get("applied_claim_ids") or [],
+                    "hard_before": [item.get("code") for item in hard],
+                    "hard_after": [
+                        item.get("code")
+                        for item in audit_after.get("hard_violations") or []
+                    ],
+                    "fixed": bool(audit_after.get("hard_gate_passed")),
+                }
+                if audit_after.get("hard_gate_passed"):
+                    return {
+                        "answer": repaired,
+                        "citations": citations_after,
+                        "claims": audit_after.get("claims") or [],
+                        "answer_audit": audit_after,
+                        "grounding": verify_grounding(
+                            repaired, citations_after, chunks, question),
+                        "needs_human_review": bool(
+                            audit_after.get("soft_issues")),
+                        "repair_history": [record],
+                        "status": "answered_repaired",
+                        "trace": [{
+                            "node": "verify_answer",
+                            "repairs": 1,
+                            "fixed": True,
+                            "applied_claims": record["applied_claim_ids"],
+                            "soft_issues": len(
+                                audit_after.get("soft_issues") or []),
+                        }],
+                    }
+                repair_result = dict(repair_result or {})
+                repair_result["rejected_answer"] = repaired
 
-        if repaired and repaired != answer:
-            grounding_after, ambiguity_after = audit(repaired)
-            still_bad = bool(grounding_after["ungrounded"]) or (
-                ambiguity_after.get("ambiguous")
-                and not has_statement_label(repaired))
-            # 修复稿通常更好（至少数字是逐字的），失败时也保留它并标记待审
-            citations_after = [
-                enrich_citation(citation, runtime.page_offsets, chunks)
-                for citation in CitationExtractor().extract(repaired, chunks)]
-            record.update({"fixed": not still_bad,
-                           "ungrounded_after": grounding_after["ungrounded"]})
-            if not still_bad:
-                return {"answer": repaired, "citations": citations_after,
-                        "grounding": grounding_after, "ambiguity": ambiguity_after,
-                        "repair_history": [record], "status": "answered_repaired",
-                        "trace": [{"node": "verify_answer", "repairs": 1,
-                                   "fixed": True,
-                                   "grounded": len(grounding_after["grounded"]),
-                                   "derived": len(grounding_after["derived"])}]}
-            answer, citations, grounding, ambiguity = (repaired, citations_after,
-                                                      grounding_after, ambiguity_after)
-
-        record["fixed"] = False
-        record["ungrounded_after"] = grounding["ungrounded"]
-        caveat = "（注：以下数字无法在引用片段中逐字定位：{}，已标记人工复核）".format(
-            "、".join(grounding["ungrounded"]) or "口径歧义未消解")
-        return {"answer": "{}\n\n{}".format(answer, caveat), "citations": citations,
-                "grounding": grounding, "ambiguity": ambiguity,
-                "needs_human_review": True, "repair_history": [record],
-                "status": "answered_unverified",
-                "trace": [{"node": "verify_answer", "repairs": 1 if repaired else 0,
-                           "fixed": False,
-                           "ungrounded": len(grounding["ungrounded"]),
-                           "ambiguous": ambiguity.get("ambiguous")}]}
+        hard_enforced = bool(runtime.enable_claim_hard_gate and hard)
+        soft_review = bool(runtime.enable_claim_soft_warnings and soft)
+        needs_review = hard_enforced or soft_review
+        record = {
+            "round": attempts + 1,
+            "applied_claim_ids": (
+                repair_result or {}).get("applied_claim_ids") or [],
+            "hard_before": [item.get("code") for item in hard],
+            "fixed": False,
+        }
+        update: Dict[str, Any] = {
+            "claims": audit.get("claims") or [],
+            "answer_audit": audit,
+            "needs_human_review": needs_review,
+            "status": (
+                "answer_hard_gate_failed" if hard_enforced
+                else "answered_soft_warnings" if soft_review
+                else "answered"
+            ),
+            "trace": [{
+                "node": "verify_answer",
+                "hard_violations": len(hard),
+                "soft_issues": len(soft),
+                "repairs": 1 if repair_result else 0,
+                "fixed": False,
+            }],
+        }
+        if repair_result:
+            repair_result = dict(repair_result)
+            update["repair_history"] = [record]
+        if hard_enforced:
+            codes = "、".join(sorted({
+                str(item.get("code")) for item in hard
+            }))
+            update["answer"] = (
+                "{}\n\n（注：答案未通过 Claim 硬门禁：{}，已标记人工复核）"
+            ).format(answer, codes)
+        return update
 
     def human_review(state: Dict[str, Any]) -> Dict[str, Any]:
         """人工审核：interrupt 暂停，等 Command(resume=...) 带回审核结果。

@@ -18,6 +18,7 @@
 |---|---|---|
 | 第零阶段 | 语料扩展与审计、灌库、golden set、L0 检索基线 | 已完成：30 家 / 90 份年报 / 37,958 chunk；历史 L0 Recall@5=0.882（9 份语料） |
 | P0 | 证据义务契约、逐路覆盖、缺失义务重试 | 已完成：50 题证据义务覆盖率 `0.8333`，文档 Recall@5 `1.0` |
+| P1 | Claim 解析、硬门禁、软提示、定向修复 | 已完成：硬违规召回 `1.0`，正常答案误伤率 `0.0` |
 | 第一阶段 | LangGraph 主图：State / 节点 / 条件边 / 检索子图 / 自纠错重试 | 已完成，见「第一阶段」 |
 | 第二阶段 | Postgres Checkpointer、Store 长期记忆、Interrupt 人工审核 | 已完成，见「第二阶段」 |
 | 第三阶段 | FastAPI + SSE、结构化日志、四场景演示 | 已完成，见「第三阶段」 |
@@ -137,6 +138,13 @@ P0 完成后，原 50 题 L3 确定性回归结果为：文档 Recall@5 `1.0`、
 `evals/reports/p0_l3_evidence.json`。逐路统计包括 `per_query_returned`、
 `per_query_documents`、`route_coverage`、`obligations_covered` 和
 `obligations_missing`，并由缺失义务定向生成重试查询。
+
+P1 将答案拆成 `numeric / entity_year / citation / completeness` Claim。硬违规包括
+数字不在被引片段、公司或年份错绑、指标错配、计算输入或完整性义务缺失；
+引用覆盖不足与多口径未说明只作为软问题交人工审核。自动修复默认关闭，开启后
+只替换硬违规 Claim 的文本 span，不重写整段答案。100 条离线污染集结果为：
+硬违规召回 `1.0`、正常答案误伤率 `0.0`，报告见
+`evals/reports/claim_audit.json`。
 
 ### 1b. 辅库：LangGraph 官方文档
 
