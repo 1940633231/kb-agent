@@ -129,6 +129,7 @@ def main() -> int:
     }
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "model": "rule-based-claim-audit",
         "dataset": {
             "path": str(CASES_PATH),
             "sha256": sha256_of(CASES_PATH),
