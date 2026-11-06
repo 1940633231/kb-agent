@@ -62,3 +62,21 @@ def test_claim_and_budget_reports_meet_p1_p2_gates():
     assert budget["metrics"]["cases"] == 105
     assert budget["dataset_version"]
     assert budget["metrics"]["budget_overflow_rate"] == 0.0
+
+
+def test_reports_are_marked_stale_when_dataset_sha_changed():
+    manifest_sha = json.loads(
+        (PROJECT_ROOT / "evals" / "golden_set_scaled_120.manifest.json")
+        .read_text(encoding="utf-8")
+    )["sha256"]
+    for name in (
+        "scaled_retrieval.json",
+        "scaled_l3.json",
+        "scaled_generation.json",
+    ):
+        report = load(name)
+        report_sha = (
+            report.get("dataset", {}).get("manifest", {}).get("sha256")
+        )
+        if report_sha and report_sha != manifest_sha:
+            assert report["status"] == "stale_dataset_manifest_mismatch"

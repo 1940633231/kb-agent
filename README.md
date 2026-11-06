@@ -19,8 +19,8 @@
 | 第零阶段 | 语料扩展与审计、灌库、golden set、L0 检索基线 | 已完成：30 家 / 90 份年报 / 37,958 chunk；历史 L0 Recall@5=0.882（9 份语料） |
 | P0 | 证据义务契约、逐路覆盖、缺失义务重试 | 已完成：50 题证据义务覆盖率 `0.8333`，文档 Recall@5 `1.0` |
 | P1 | Claim 解析、硬门禁、软提示、定向修复 | 已完成：硬违规召回 `1.0`，正常答案误伤率 `0.0` |
-| P2 | 统一 system/history/query/evidence/output 预算 | 已完成：预算溢出率 `0.0`，端到端估算开销 `0.0027%` |
-| P3 | 120 题扩展集、重复评测与新指标 | 已完成：结构校验 `120/120`，生成评测三轮均值与标准差已落盘 |
+| P2 | 统一 system/history/query/evidence/output 预算 | 已完成：预算溢出率 `0.0`；scaled 报告待数据集定稿后重跑 |
+| P3 | 120 题扩展集、重复评测与新指标 | 数据集已修正并通过 `120/120` 源文审计；模型评测待重跑 |
 | 第一阶段 | LangGraph 主图：State / 节点 / 条件边 / 检索子图 / 自纠错重试 | 已完成，见「第一阶段」 |
 | 第二阶段 | Postgres Checkpointer、Store 长期记忆、Interrupt 人工审核 | 已完成，见「第二阶段」 |
 | 第三阶段 | FastAPI + SSE、结构化日志、四场景演示 | 已完成，见「第三阶段」 |
@@ -164,6 +164,11 @@ expectations 与 source pages。确定性检索、L3 编排检索和三轮 vecto
 - `evals/reports/scaled_generation.json`
 - `evals/reports/claim_audit.json`
 - `evals/reports/context_budget.json`
+
+评测集已完成自动源文核验：`120/120` 通过，人工复核短名单为空。此前基于旧版
+120 题生成的 `scaled_retrieval.json`、`scaled_l3.json`、
+`scaled_generation.json` 和 `context_budget.json` 已标记为
+`stale_dataset_manifest_mismatch`，不得继续作为当前指标引用。数据集定稿后再统一重跑。
 
 ### 1b. 辅库：LangGraph 官方文档
 

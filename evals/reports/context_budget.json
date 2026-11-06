@@ -1,5 +1,6 @@
 {
   "generated_at": "2026-11-06T07:24:21.780769+00:00",
+  "status": "stale_dataset_manifest_mismatch",
   "dataset": "evals\\golden_set_scaled_120.jsonl",
   "dataset_version": "legacy-golden-set",
   "model": "char-counter + production-rag ContextManager",

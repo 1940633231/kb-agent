@@ -1,0 +1,2944 @@
+{
+  "generated_at": "2026-11-06T08:33:52.597677+00:00",
+  "dataset": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
+  "manifest": {
+    "dataset_id": "kb-agent-scaled-120",
+    "version": "v1",
+    "generated_at": "2026-11-06T08:33:01.706287+00:00",
+    "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
+    "sha256": "805751e132a5f94f7b80015ac232180d3480876cfdddf74360ddbda41eb895a1",
+    "corpus_metadata_sha256": "38bbabd11e54afbe1c3a4c5f67112bfb4640c503ad750fc824ebbe06e982deba",
+    "companies": 30,
+    "documents": 90,
+    "counts": {
+      "company": 90,
+      "cross": 15,
+      "refusal": 15,
+      "total": 120
+    }
+  },
+  "summary": {
+    "records": 120,
+    "normal": 120,
+    "review": 0,
+    "high_risk": 0,
+    "fail": 0,
+    "manual_review_shortlist": 0
+  },
+  "shortlist": [],
+  "records": [
+    {
+      "id": "scaled-fact-001",
+      "question": "中联重科2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000157-2023": true,
+        "pdf_page_exists_000157-2023_166": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000157": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000157-2023",
+          "page": 166
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-002",
+      "question": "中联重科2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000157-2024": true,
+        "pdf_page_exists_000157-2024_172": true,
+        "known_chunk_000157-2024_chunk_249": true,
+        "page_matches_000157-2024_chunk_249": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000157": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000157-2024",
+          "page": 172,
+          "chunk_id": "000157-2024_chunk_249"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-003",
+      "question": "中联重科2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000157-2025": true,
+        "pdf_page_exists_000157-2025_128": true,
+        "known_chunk_000157-2025_chunk_193": true,
+        "page_matches_000157-2025_chunk_193": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000157": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000157-2025",
+          "page": 128,
+          "chunk_id": "000157-2025_chunk_193"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-004",
+      "question": "美的集团2023年的营业收入是多少千元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000333-2023": true,
+        "pdf_page_exists_000333-2023_161": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000333": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000333-2023",
+          "page": 161
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-005",
+      "question": "美的集团2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000333-2024": true,
+        "pdf_page_exists_000333-2024_20": true,
+        "known_chunk_000333-2024_chunk_28": true,
+        "page_matches_000333-2024_chunk_28": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000333": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000333-2024",
+          "page": 20,
+          "chunk_id": "000333-2024_chunk_28"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-006",
+      "question": "美的集团2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000333-2025": true,
+        "pdf_page_exists_000333-2025_20": true,
+        "known_chunk_000333-2025_chunk_26": true,
+        "page_matches_000333-2025_chunk_26": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000333": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000333-2025",
+          "page": 20,
+          "chunk_id": "000333-2025_chunk_26"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-007",
+      "question": "泸州老窖2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000568-2023": true,
+        "pdf_page_exists_000568-2023_87": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000568": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000568-2023",
+          "page": 87
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-008",
+      "question": "泸州老窖2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000568-2024": true,
+        "pdf_page_exists_000568-2024_90": true,
+        "known_chunk_000568-2024_chunk_141": true,
+        "page_matches_000568-2024_chunk_141": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000568": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000568-2024",
+          "page": 90,
+          "chunk_id": "000568-2024_chunk_141"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-009",
+      "question": "泸州老窖2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000568-2025": true,
+        "pdf_page_exists_000568-2025_7": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000568": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000568-2025",
+          "page": 7
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-010",
+      "question": "京东方A2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000725-2023": true,
+        "pdf_page_exists_000725-2023_11": true,
+        "known_chunk_000725-2023_chunk_15": true,
+        "page_matches_000725-2023_chunk_15": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000725": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000725-2023",
+          "page": 11,
+          "chunk_id": "000725-2023_chunk_15"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-011",
+      "question": "京东方A2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000725-2024": true,
+        "pdf_page_exists_000725-2024_11": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000725": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000725-2024",
+          "page": 11
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-012",
+      "question": "京东方A2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000725-2025": true,
+        "pdf_page_exists_000725-2025_12": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000725": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000725-2025",
+          "page": 12
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-013",
+      "question": "五粮液2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000858-2023": true,
+        "pdf_page_exists_000858-2023_57": true,
+        "known_chunk_000858-2023_chunk_93": true,
+        "page_matches_000858-2023_chunk_93": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000858": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000858-2023",
+          "page": 57,
+          "chunk_id": "000858-2023_chunk_93"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-014",
+      "question": "五粮液2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000858-2024": true,
+        "pdf_page_exists_000858-2024_60": true,
+        "known_chunk_000858-2024_chunk_99": true,
+        "page_matches_000858-2024_chunk_99": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000858": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000858-2024",
+          "page": 60,
+          "chunk_id": "000858-2024_chunk_99"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-015",
+      "question": "五粮液2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000858-2025": true,
+        "pdf_page_exists_000858-2025_56": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_000858": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000858-2025",
+          "page": 56
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-016",
+      "question": "科大讯飞2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002230-2023": true,
+        "pdf_page_exists_002230-2023_131": true,
+        "known_chunk_002230-2023_chunk_240": true,
+        "page_matches_002230-2023_chunk_240": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002230": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002230-2023",
+          "page": 131,
+          "chunk_id": "002230-2023_chunk_240"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-017",
+      "question": "科大讯飞2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002230-2024": true,
+        "pdf_page_exists_002230-2024_119": true,
+        "known_chunk_002230-2024_chunk_220": true,
+        "page_matches_002230-2024_chunk_220": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002230": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002230-2024",
+          "page": 119,
+          "chunk_id": "002230-2024_chunk_220"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-018",
+      "question": "科大讯飞2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002230-2025": true,
+        "pdf_page_exists_002230-2025_7": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002230": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002230-2025",
+          "page": 7
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-019",
+      "question": "顺丰控股2023年的营业收入是多少千元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002352-2023": true,
+        "pdf_page_exists_002352-2023_14": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002352": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002352-2023",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-020",
+      "question": "顺丰控股2024年的营业收入是多少千元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002352-2024": true,
+        "pdf_page_exists_002352-2024_15": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002352": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002352-2024",
+          "page": 15
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-021",
+      "question": "顺丰控股2025年的营业收入是多少千元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002352-2025": true,
+        "pdf_page_exists_002352-2025_228": true,
+        "known_chunk_002352-2025_chunk_329": true,
+        "page_matches_002352-2025_chunk_329": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002352": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002352-2025",
+          "page": 228,
+          "chunk_id": "002352-2025_chunk_329"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-022",
+      "question": "海康威视2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002415-2023": true,
+        "pdf_page_exists_002415-2023_10": true,
+        "known_chunk_002415-2023_chunk_13": true,
+        "page_matches_002415-2023_chunk_13": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002415": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002415-2023",
+          "page": 10,
+          "chunk_id": "002415-2023_chunk_13"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-023",
+      "question": "海康威视2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002415-2024": true,
+        "pdf_page_exists_002415-2024_9": true,
+        "known_chunk_002415-2024_chunk_11": true,
+        "page_matches_002415-2024_chunk_11": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002415": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002415-2024",
+          "page": 9,
+          "chunk_id": "002415-2024_chunk_11"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-024",
+      "question": "海康威视2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002415-2025": true,
+        "pdf_page_exists_002415-2025_9": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002415": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002415-2025",
+          "page": 9
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-025",
+      "question": "立讯精密2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002475-2023": true,
+        "pdf_page_exists_002475-2023_121": true,
+        "known_chunk_002475-2023_chunk_207": true,
+        "page_matches_002475-2023_chunk_207": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002475": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002475-2023",
+          "page": 121,
+          "chunk_id": "002475-2023_chunk_207"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-026",
+      "question": "立讯精密2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002475-2024": true,
+        "pdf_page_exists_002475-2024_126": true,
+        "known_chunk_002475-2024_chunk_234": true,
+        "page_matches_002475-2024_chunk_234": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002475": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002475-2024",
+          "page": 126,
+          "chunk_id": "002475-2024_chunk_234"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-027",
+      "question": "立讯精密2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002475-2025": true,
+        "pdf_page_exists_002475-2025_120": true,
+        "known_chunk_002475-2025_chunk_235": true,
+        "page_matches_002475-2025_chunk_235": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002475": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002475-2025",
+          "page": 120,
+          "chunk_id": "002475-2025_chunk_235"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-028",
+      "question": "比亚迪2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002594-2023": true,
+        "pdf_page_exists_002594-2023_11": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002594": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002594-2023",
+          "page": 11
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-029",
+      "question": "比亚迪2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002594-2024": true,
+        "pdf_page_exists_002594-2024_10": true,
+        "known_chunk_002594-2024_chunk_11": true,
+        "page_matches_002594-2024_chunk_11": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002594": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002594-2024",
+          "page": 10,
+          "chunk_id": "002594-2024_chunk_11"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-030",
+      "question": "比亚迪2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002594-2025": true,
+        "pdf_page_exists_002594-2025_11": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_002594": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002594-2025",
+          "page": 11
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-031",
+      "question": "东方财富2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300059-2023": true,
+        "pdf_page_exists_300059-2023_7": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300059": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300059-2023",
+          "page": 7
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-032",
+      "question": "东方财富2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300059-2024": true,
+        "pdf_page_exists_300059-2024_7": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300059": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300059-2024",
+          "page": 7
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-033",
+      "question": "东方财富2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300059-2025": true,
+        "pdf_page_exists_300059-2025_7": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300059": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300059-2025",
+          "page": 7
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-034",
+      "question": "汇川技术2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300124-2023": true,
+        "pdf_page_exists_300124-2023_124": true,
+        "known_chunk_300124-2023_chunk_248": true,
+        "page_matches_300124-2023_chunk_248": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300124": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300124-2023",
+          "page": 124,
+          "chunk_id": "300124-2023_chunk_248"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-035",
+      "question": "汇川技术2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300124-2024": true,
+        "pdf_page_exists_300124-2024_120": true,
+        "known_chunk_300124-2024_chunk_244": true,
+        "page_matches_300124-2024_chunk_244": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300124": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300124-2024",
+          "page": 120,
+          "chunk_id": "300124-2024_chunk_244"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-036",
+      "question": "汇川技术2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300124-2025": true,
+        "pdf_page_exists_300124-2025_120": true,
+        "known_chunk_300124-2025_chunk_244": true,
+        "page_matches_300124-2025_chunk_244": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300124": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300124-2025",
+          "page": 120,
+          "chunk_id": "300124-2025_chunk_244"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-037",
+      "question": "阳光电源2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300274-2023": true,
+        "pdf_page_exists_300274-2023_100": true,
+        "known_chunk_300274-2023_chunk_170": true,
+        "page_matches_300274-2023_chunk_170": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300274": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300274-2023",
+          "page": 100,
+          "chunk_id": "300274-2023_chunk_170"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-038",
+      "question": "阳光电源2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300274-2024": true,
+        "pdf_page_exists_300274-2024_107": true,
+        "known_chunk_300274-2024_chunk_175": true,
+        "page_matches_300274-2024_chunk_175": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300274": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300274-2024",
+          "page": 107,
+          "chunk_id": "300274-2024_chunk_175"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-039",
+      "question": "阳光电源2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300274-2025": true,
+        "pdf_page_exists_300274-2025_110": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300274": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300274-2025",
+          "page": 110
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-040",
+      "question": "宁德时代2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300750-2023": true,
+        "pdf_page_exists_300750-2023_7": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300750": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300750-2023",
+          "page": 7
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-041",
+      "question": "宁德时代2024年的营业收入是多少千元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300750-2024": true,
+        "pdf_page_exists_300750-2024_119": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300750": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300750-2024",
+          "page": 119
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-042",
+      "question": "宁德时代2025年的营业收入是多少千元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300750-2025": true,
+        "pdf_page_exists_300750-2025_116": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300750": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300750-2025",
+          "page": 116
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-043",
+      "question": "迈瑞医疗2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300760-2023": true,
+        "pdf_page_exists_300760-2023_229": true,
+        "known_chunk_300760-2023_chunk_338": true,
+        "page_matches_300760-2023_chunk_338": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300760": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300760-2023",
+          "page": 229,
+          "chunk_id": "300760-2023_chunk_338"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-044",
+      "question": "迈瑞医疗2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300760-2024": true,
+        "pdf_page_exists_300760-2024_200": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300760": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300760-2024",
+          "page": 200
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-045",
+      "question": "迈瑞医疗2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_300760-2025": true,
+        "pdf_page_exists_300760-2025_20": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_300760": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "300760-2025",
+          "page": 20
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-046",
+      "question": "中信证券2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600030-2023": true,
+        "pdf_page_exists_600030-2023_178": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600030": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600030-2023",
+          "page": 178
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-047",
+      "question": "中信证券2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600030-2024": true,
+        "pdf_page_exists_600030-2024_169": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600030": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600030-2024",
+          "page": 169
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-048",
+      "question": "中信证券2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600030-2025": true,
+        "pdf_page_exists_600030-2025_182": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600030": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600030-2025",
+          "page": 182
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-049",
+      "question": "三一重工2023年的营业收入是多少千元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600031-2023": true,
+        "pdf_page_exists_600031-2023_95": true,
+        "known_chunk_600031-2023_chunk_140": true,
+        "page_matches_600031-2023_chunk_140": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600031": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600031-2023",
+          "page": 95,
+          "chunk_id": "600031-2023_chunk_140"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-050",
+      "question": "三一重工2024年的营业收入是多少千元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600031-2024": true,
+        "pdf_page_exists_600031-2024_94": true,
+        "known_chunk_600031-2024_chunk_129": true,
+        "page_matches_600031-2024_chunk_129": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600031": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600031-2024",
+          "page": 94,
+          "chunk_id": "600031-2024_chunk_129"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-051",
+      "question": "三一重工2025年的营业收入是多少千元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600031-2025": true,
+        "pdf_page_exists_600031-2025_89": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600031": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600031-2025",
+          "page": 89
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-052",
+      "question": "招商银行2023年的营业收入是多少百万元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600036-2023": true,
+        "pdf_page_exists_600036-2023_136": true,
+        "known_chunk_600036-2023_chunk_246": true,
+        "page_matches_600036-2023_chunk_246": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600036": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600036-2023",
+          "page": 136,
+          "chunk_id": "600036-2023_chunk_246"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-053",
+      "question": "招商银行2024年的营业收入是多少百万元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600036-2024": true,
+        "pdf_page_exists_600036-2024_138": true,
+        "known_chunk_600036-2024_chunk_253": true,
+        "page_matches_600036-2024_chunk_253": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600036": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600036-2024",
+          "page": 138,
+          "chunk_id": "600036-2024_chunk_253"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-054",
+      "question": "招商银行2025年的营业收入是多少百万元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600036-2025": true,
+        "pdf_page_exists_600036-2025_131": true,
+        "known_chunk_600036-2025_chunk_255": true,
+        "page_matches_600036-2025_chunk_255": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600036": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600036-2025",
+          "page": 131,
+          "chunk_id": "600036-2025_chunk_255"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-055",
+      "question": "恒瑞医药2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600276-2023": true,
+        "pdf_page_exists_600276-2023_147": true,
+        "known_chunk_600276-2023_chunk_233": true,
+        "page_matches_600276-2023_chunk_233": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600276": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600276-2023",
+          "page": 147,
+          "chunk_id": "600276-2023_chunk_233"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-056",
+      "question": "恒瑞医药2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600276-2024": true,
+        "pdf_page_exists_600276-2024_146": true,
+        "known_chunk_600276-2024_chunk_216": true,
+        "page_matches_600276-2024_chunk_216": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600276": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600276-2024",
+          "page": 146,
+          "chunk_id": "600276-2024_chunk_216"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-057",
+      "question": "恒瑞医药2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600276-2025": true,
+        "pdf_page_exists_600276-2025_135": true,
+        "known_chunk_600276-2025_chunk_208": true,
+        "page_matches_600276-2025_chunk_208": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600276": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600276-2025",
+          "page": 135,
+          "chunk_id": "600276-2025_chunk_208"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-058",
+      "question": "贵州茅台2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600519-2023": true,
+        "pdf_page_exists_600519-2023_63": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600519": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600519-2023",
+          "page": 63
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-059",
+      "question": "贵州茅台2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600519-2024": true,
+        "pdf_page_exists_600519-2024_63": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600519": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600519-2024",
+          "page": 63
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-060",
+      "question": "贵州茅台2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600519-2025": true,
+        "pdf_page_exists_600519-2025_61": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600519": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600519-2025",
+          "page": 61
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-061",
+      "question": "海尔智家2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600690-2023": true,
+        "pdf_page_exists_600690-2023_113": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600690": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600690-2023",
+          "page": 113
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-062",
+      "question": "海尔智家2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600690-2024": true,
+        "pdf_page_exists_600690-2024_121": true,
+        "known_chunk_600690-2024_chunk_184": true,
+        "page_matches_600690-2024_chunk_184": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600690": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600690-2024",
+          "page": 121,
+          "chunk_id": "600690-2024_chunk_184"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-063",
+      "question": "海尔智家2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600690-2025": true,
+        "pdf_page_exists_600690-2025_12": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600690": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600690-2025",
+          "page": 12
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-064",
+      "question": "伊利股份2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600887-2023": true,
+        "pdf_page_exists_600887-2023_88": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600887": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600887-2023",
+          "page": 88
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-065",
+      "question": "伊利股份2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600887-2024": true,
+        "pdf_page_exists_600887-2024_91": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600887": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600887-2024",
+          "page": 91
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-066",
+      "question": "伊利股份2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600887-2025": true,
+        "pdf_page_exists_600887-2025_35": true,
+        "known_chunk_600887-2025_chunk_56": true,
+        "page_matches_600887-2025_chunk_56": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600887": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600887-2025",
+          "page": 35,
+          "chunk_id": "600887-2025_chunk_56"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-067",
+      "question": "长江电力2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600900-2023": true,
+        "pdf_page_exists_600900-2023_92": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600900": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600900-2023",
+          "page": 92
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-068",
+      "question": "长江电力2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600900-2024": true,
+        "pdf_page_exists_600900-2024_92": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600900": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600900-2024",
+          "page": 92
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-069",
+      "question": "长江电力2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_600900-2025": true,
+        "pdf_page_exists_600900-2025_84": true,
+        "known_chunk_600900-2025_chunk_131": true,
+        "page_matches_600900-2025_chunk_131": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_600900": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "600900-2025",
+          "page": 84,
+          "chunk_id": "600900-2025_chunk_131"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-070",
+      "question": "隆基绿能2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_601012-2023": true,
+        "pdf_page_exists_601012-2023_127": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_601012": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "601012-2023",
+          "page": 127
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-071",
+      "question": "隆基绿能2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_601012-2024": true,
+        "pdf_page_exists_601012-2024_124": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_601012": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "601012-2024",
+          "page": 124
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-072",
+      "question": "隆基绿能2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_601012-2025": true,
+        "pdf_page_exists_601012-2025_125": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_601012": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "601012-2025",
+          "page": 125
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-073",
+      "question": "中国神华2023年的营业收入是多少百万元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_601088-2023": true,
+        "pdf_page_exists_601088-2023_7": true,
+        "known_chunk_601088-2023_chunk_9": true,
+        "page_matches_601088-2023_chunk_9": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_601088": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "601088-2023",
+          "page": 7,
+          "chunk_id": "601088-2023_chunk_9"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-074",
+      "question": "中国神华2024年的营业收入是多少百万元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_601088-2024": true,
+        "pdf_page_exists_601088-2024_7": true,
+        "known_chunk_601088-2024_chunk_9": true,
+        "page_matches_601088-2024_chunk_9": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_601088": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "601088-2024",
+          "page": 7,
+          "chunk_id": "601088-2024_chunk_9"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-075",
+      "question": "中国神华2025年的营业收入是多少百万元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_601088-2025": true,
+        "pdf_page_exists_601088-2025_8": true,
+        "known_chunk_601088-2025_chunk_9": true,
+        "page_matches_601088-2025_chunk_9": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_601088": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "601088-2025",
+          "page": 8,
+          "chunk_id": "601088-2025_chunk_9"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-076",
+      "question": "兴业银行2023年的营业收入是多少百万元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_601166-2023": true,
+        "pdf_page_exists_601166-2023_199": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_601166": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "601166-2023",
+          "page": 199
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-077",
+      "question": "兴业银行2024年的营业收入是多少百万元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_601166-2024": true,
+        "pdf_page_exists_601166-2024_24": true,
+        "known_chunk_601166-2024_chunk_29": true,
+        "page_matches_601166-2024_chunk_29": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_601166": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "601166-2024",
+          "page": 24,
+          "chunk_id": "601166-2024_chunk_29"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-078",
+      "question": "兴业银行2025年的营业收入是多少百万元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_601166-2025": true,
+        "pdf_page_exists_601166-2025_191": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_601166": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "601166-2025",
+          "page": 191
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-079",
+      "question": "中国平安2023年的营业收入是多少百万元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_601318-2023": true,
+        "pdf_page_exists_601318-2023_148": true,
+        "known_chunk_601318-2023_chunk_270": true,
+        "page_matches_601318-2023_chunk_270": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_601318": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "601318-2023",
+          "page": 148,
+          "chunk_id": "601318-2023_chunk_270"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-080",
+      "question": "中国平安2024年的营业收入是多少百万元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_601318-2024": true,
+        "pdf_page_exists_601318-2024_158": true,
+        "known_chunk_601318-2024_chunk_258": true,
+        "page_matches_601318-2024_chunk_258": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_601318": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "601318-2024",
+          "page": 158,
+          "chunk_id": "601318-2024_chunk_258"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-081",
+      "question": "中国平安2025年的营业收入是多少百万元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_601318-2025": true,
+        "pdf_page_exists_601318-2025_190": true,
+        "known_chunk_601318-2025_chunk_266": true,
+        "page_matches_601318-2025_chunk_266": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_601318": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "601318-2025",
+          "page": 190,
+          "chunk_id": "601318-2025_chunk_266"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-082",
+      "question": "药明康德2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_603259-2023": true,
+        "pdf_page_exists_603259-2023_140": true,
+        "known_chunk_603259-2023_chunk_230": true,
+        "page_matches_603259-2023_chunk_230": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_603259": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "603259-2023",
+          "page": 140,
+          "chunk_id": "603259-2023_chunk_230"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-083",
+      "question": "药明康德2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_603259-2024": true,
+        "pdf_page_exists_603259-2024_136": true,
+        "known_chunk_603259-2024_chunk_223": true,
+        "page_matches_603259-2024_chunk_223": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_603259": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "603259-2024",
+          "page": 136,
+          "chunk_id": "603259-2024_chunk_223"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-084",
+      "question": "药明康德2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_603259-2025": true,
+        "pdf_page_exists_603259-2025_90": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_603259": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "603259-2025",
+          "page": 90
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-085",
+      "question": "海天味业2023年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_603288-2023": true,
+        "pdf_page_exists_603288-2023_79": true,
+        "known_chunk_603288-2023_chunk_111": true,
+        "page_matches_603288-2023_chunk_111": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_603288": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "603288-2023",
+          "page": 79,
+          "chunk_id": "603288-2023_chunk_111"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-086",
+      "question": "海天味业2024年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_603288-2024": true,
+        "pdf_page_exists_603288-2024_81": true,
+        "known_chunk_603288-2024_chunk_123": true,
+        "page_matches_603288-2024_chunk_123": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_603288": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "603288-2024",
+          "page": 81,
+          "chunk_id": "603288-2024_chunk_123"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-087",
+      "question": "海天味业2025年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_603288-2025": true,
+        "pdf_page_exists_603288-2025_90": true,
+        "known_chunk_603288-2025_chunk_125": true,
+        "page_matches_603288-2025_chunk_125": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_603288": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "603288-2025",
+          "page": 90,
+          "chunk_id": "603288-2025_chunk_125"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-088",
+      "question": "中芯国际2023年的营业收入是多少千元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_688981-2023": true,
+        "pdf_page_exists_688981-2023_9": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_688981": true,
+        "question_has_year_2023": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "688981-2023",
+          "page": 9
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-089",
+      "question": "中芯国际2024年的营业收入是多少千元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_688981-2024": true,
+        "pdf_page_exists_688981-2024_8": true,
+        "known_chunk_688981-2024_chunk_8": true,
+        "page_matches_688981-2024_chunk_8": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_688981": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "688981-2024",
+          "page": 8,
+          "chunk_id": "688981-2024_chunk_8"
+        }
+      ]
+    },
+    {
+      "id": "scaled-fact-090",
+      "question": "中芯国际2025年的营业收入是多少千元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_688981-2025": true,
+        "pdf_page_exists_688981-2025_8": true,
+        "known_chunk_688981-2025_chunk_10": true,
+        "page_matches_688981-2025_chunk_10": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_营业收入": true,
+        "question_has_company_688981": true,
+        "question_has_year_2025": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "688981-2025",
+          "page": 8,
+          "chunk_id": "688981-2025_chunk_10"
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-001",
+      "question": "中联重科与美的集团2023年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000157-2023": true,
+        "pdf_page_exists_000157-2023_166": true,
+        "known_document_000333-2023": true,
+        "pdf_page_exists_000333-2023_161": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_中联重科2023年营业收入": true,
+        "value_parse_美的集团2023年营业收入": true,
+        "question_has_company_000157": true,
+        "question_has_year_2023": true,
+        "question_has_company_000333": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000157-2023",
+          "page": 166
+        },
+        {
+          "doc": "000333-2023",
+          "page": 161
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-002",
+      "question": "中联重科与泸州老窖2023年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000157-2023": true,
+        "pdf_page_exists_000157-2023_166": true,
+        "known_document_000568-2023": true,
+        "pdf_page_exists_000568-2023_87": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_中联重科2023年营业收入": true,
+        "value_parse_泸州老窖2023年营业收入": true,
+        "question_has_company_000157": true,
+        "question_has_year_2023": true,
+        "question_has_company_000568": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000157-2023",
+          "page": 166
+        },
+        {
+          "doc": "000568-2023",
+          "page": 87
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-003",
+      "question": "中联重科与京东方A2023年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000157-2023": true,
+        "pdf_page_exists_000157-2023_166": true,
+        "known_document_000725-2023": true,
+        "pdf_page_exists_000725-2023_11": true,
+        "known_chunk_000725-2023_chunk_15": true,
+        "page_matches_000725-2023_chunk_15": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_中联重科2023年营业收入": true,
+        "value_parse_京东方A2023年营业收入": true,
+        "question_has_company_000157": true,
+        "question_has_year_2023": true,
+        "question_has_company_000725": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000157-2023",
+          "page": 166
+        },
+        {
+          "doc": "000725-2023",
+          "page": 11,
+          "chunk_id": "000725-2023_chunk_15"
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-004",
+      "question": "中联重科与五粮液2023年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000157-2023": true,
+        "pdf_page_exists_000157-2023_166": true,
+        "known_document_000858-2023": true,
+        "pdf_page_exists_000858-2023_57": true,
+        "known_chunk_000858-2023_chunk_93": true,
+        "page_matches_000858-2023_chunk_93": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_中联重科2023年营业收入": true,
+        "value_parse_五粮液2023年营业收入": true,
+        "question_has_company_000157": true,
+        "question_has_year_2023": true,
+        "question_has_company_000858": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000157-2023",
+          "page": 166
+        },
+        {
+          "doc": "000858-2023",
+          "page": 57,
+          "chunk_id": "000858-2023_chunk_93"
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-005",
+      "question": "中联重科与科大讯飞2023年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000157-2023": true,
+        "pdf_page_exists_000157-2023_166": true,
+        "known_document_002230-2023": true,
+        "pdf_page_exists_002230-2023_131": true,
+        "known_chunk_002230-2023_chunk_240": true,
+        "page_matches_002230-2023_chunk_240": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_中联重科2023年营业收入": true,
+        "value_parse_科大讯飞2023年营业收入": true,
+        "question_has_company_000157": true,
+        "question_has_year_2023": true,
+        "question_has_company_002230": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000157-2023",
+          "page": 166
+        },
+        {
+          "doc": "002230-2023",
+          "page": 131,
+          "chunk_id": "002230-2023_chunk_240"
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-006",
+      "question": "中联重科与顺丰控股2023年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000157-2023": true,
+        "pdf_page_exists_000157-2023_166": true,
+        "known_document_002352-2023": true,
+        "pdf_page_exists_002352-2023_14": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_中联重科2023年营业收入": true,
+        "value_parse_顺丰控股2023年营业收入": true,
+        "question_has_company_000157": true,
+        "question_has_year_2023": true,
+        "question_has_company_002352": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000157-2023",
+          "page": 166
+        },
+        {
+          "doc": "002352-2023",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-007",
+      "question": "中联重科与海康威视2023年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000157-2023": true,
+        "pdf_page_exists_000157-2023_166": true,
+        "known_document_002415-2023": true,
+        "pdf_page_exists_002415-2023_10": true,
+        "known_chunk_002415-2023_chunk_13": true,
+        "page_matches_002415-2023_chunk_13": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_中联重科2023年营业收入": true,
+        "value_parse_海康威视2023年营业收入": true,
+        "question_has_company_000157": true,
+        "question_has_year_2023": true,
+        "question_has_company_002415": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000157-2023",
+          "page": 166
+        },
+        {
+          "doc": "002415-2023",
+          "page": 10,
+          "chunk_id": "002415-2023_chunk_13"
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-008",
+      "question": "中联重科与立讯精密2023年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000157-2023": true,
+        "pdf_page_exists_000157-2023_166": true,
+        "known_document_002475-2023": true,
+        "pdf_page_exists_002475-2023_121": true,
+        "known_chunk_002475-2023_chunk_207": true,
+        "page_matches_002475-2023_chunk_207": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_中联重科2023年营业收入": true,
+        "value_parse_立讯精密2023年营业收入": true,
+        "question_has_company_000157": true,
+        "question_has_year_2023": true,
+        "question_has_company_002475": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000157-2023",
+          "page": 166
+        },
+        {
+          "doc": "002475-2023",
+          "page": 121,
+          "chunk_id": "002475-2023_chunk_207"
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-009",
+      "question": "中联重科2023年与2024年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000157-2023": true,
+        "pdf_page_exists_000157-2023_166": true,
+        "known_document_000157-2024": true,
+        "pdf_page_exists_000157-2024_172": true,
+        "known_chunk_000157-2024_chunk_249": true,
+        "page_matches_000157-2024_chunk_249": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_中联重科2023年营业收入": true,
+        "value_parse_中联重科2024年营业收入": true,
+        "question_has_company_000157": true,
+        "question_has_year_2023": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000157-2023",
+          "page": 166
+        },
+        {
+          "doc": "000157-2024",
+          "page": 172,
+          "chunk_id": "000157-2024_chunk_249"
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-010",
+      "question": "美的集团2023年与2024年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000333-2023": true,
+        "pdf_page_exists_000333-2023_161": true,
+        "known_document_000333-2024": true,
+        "pdf_page_exists_000333-2024_20": true,
+        "known_chunk_000333-2024_chunk_28": true,
+        "page_matches_000333-2024_chunk_28": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_美的集团2023年营业收入": true,
+        "value_parse_美的集团2024年营业收入": true,
+        "question_has_company_000333": true,
+        "question_has_year_2023": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000333-2023",
+          "page": 161
+        },
+        {
+          "doc": "000333-2024",
+          "page": 20,
+          "chunk_id": "000333-2024_chunk_28"
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-011",
+      "question": "泸州老窖2023年与2024年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000568-2023": true,
+        "pdf_page_exists_000568-2023_87": true,
+        "known_document_000568-2024": true,
+        "pdf_page_exists_000568-2024_90": true,
+        "known_chunk_000568-2024_chunk_141": true,
+        "page_matches_000568-2024_chunk_141": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_泸州老窖2023年营业收入": true,
+        "value_parse_泸州老窖2024年营业收入": true,
+        "question_has_company_000568": true,
+        "question_has_year_2023": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000568-2023",
+          "page": 87
+        },
+        {
+          "doc": "000568-2024",
+          "page": 90,
+          "chunk_id": "000568-2024_chunk_141"
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-012",
+      "question": "京东方A2023年与2024年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000725-2023": true,
+        "pdf_page_exists_000725-2023_11": true,
+        "known_chunk_000725-2023_chunk_15": true,
+        "page_matches_000725-2023_chunk_15": true,
+        "known_document_000725-2024": true,
+        "pdf_page_exists_000725-2024_11": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_京东方A2023年营业收入": true,
+        "value_parse_京东方A2024年营业收入": true,
+        "question_has_company_000725": true,
+        "question_has_year_2023": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000725-2023",
+          "page": 11,
+          "chunk_id": "000725-2023_chunk_15"
+        },
+        {
+          "doc": "000725-2024",
+          "page": 11
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-013",
+      "question": "五粮液2023年与2024年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_000858-2023": true,
+        "pdf_page_exists_000858-2023_57": true,
+        "known_chunk_000858-2023_chunk_93": true,
+        "page_matches_000858-2023_chunk_93": true,
+        "known_document_000858-2024": true,
+        "pdf_page_exists_000858-2024_60": true,
+        "known_chunk_000858-2024_chunk_99": true,
+        "page_matches_000858-2024_chunk_99": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_五粮液2023年营业收入": true,
+        "value_parse_五粮液2024年营业收入": true,
+        "question_has_company_000858": true,
+        "question_has_year_2023": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "000858-2023",
+          "page": 57,
+          "chunk_id": "000858-2023_chunk_93"
+        },
+        {
+          "doc": "000858-2024",
+          "page": 60,
+          "chunk_id": "000858-2024_chunk_99"
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-014",
+      "question": "科大讯飞2023年与2024年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002230-2023": true,
+        "pdf_page_exists_002230-2023_131": true,
+        "known_chunk_002230-2023_chunk_240": true,
+        "page_matches_002230-2023_chunk_240": true,
+        "known_document_002230-2024": true,
+        "pdf_page_exists_002230-2024_119": true,
+        "known_chunk_002230-2024_chunk_220": true,
+        "page_matches_002230-2024_chunk_220": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_科大讯飞2023年营业收入": true,
+        "value_parse_科大讯飞2024年营业收入": true,
+        "question_has_company_002230": true,
+        "question_has_year_2023": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002230-2023",
+          "page": 131,
+          "chunk_id": "002230-2023_chunk_240"
+        },
+        {
+          "doc": "002230-2024",
+          "page": 119,
+          "chunk_id": "002230-2024_chunk_220"
+        }
+      ]
+    },
+    {
+      "id": "scaled-cross-015",
+      "question": "顺丰控股2023年与2024年的营业收入分别是多少？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "source_docs_match_expected": true,
+        "known_document_002352-2023": true,
+        "pdf_page_exists_002352-2023_14": true,
+        "known_document_002352-2024": true,
+        "pdf_page_exists_002352-2024_15": true,
+        "keywords_in_question": true,
+        "evidence_literals_present_in_source": true,
+        "value_parse_顺丰控股2023年营业收入": true,
+        "value_parse_顺丰控股2024年营业收入": true,
+        "question_has_company_002352": true,
+        "question_has_year_2023": true,
+        "question_has_year_2024": true
+      },
+      "risks": [],
+      "source_pages": [
+        {
+          "doc": "002352-2023",
+          "page": 14
+        },
+        {
+          "doc": "002352-2024",
+          "page": 15
+        }
+      ]
+    },
+    {
+      "id": "scaled-refuse-001",
+      "question": "贵州茅台2026年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-002",
+      "question": "宁德时代2022年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-003",
+      "question": "招商银行2026年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-004",
+      "question": "比亚迪2022年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-005",
+      "question": "美的集团2026年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-006",
+      "question": "中国平安2022年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-007",
+      "question": "隆基绿能2026年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-008",
+      "question": "海康威视2022年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-009",
+      "question": "迈瑞医疗2026年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-010",
+      "question": "中国神华2022年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-011",
+      "question": "华为2026年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-012",
+      "question": "字节跳动2022年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-013",
+      "question": "苹果公司2026年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-014",
+      "question": "OpenAI2022年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    },
+    {
+      "id": "scaled-refuse-015",
+      "question": "未收录公司2026年的营业收入是多少元？",
+      "bucket": "normal",
+      "risk_score": 0,
+      "checks": {
+        "no_required_evidence": true,
+        "no_expected_docs": true,
+        "no_expected_values": true
+      },
+      "risks": [],
+      "source_pages": []
+    }
+  ]
+}

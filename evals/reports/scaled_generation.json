@@ -1,5 +1,6 @@
 {
   "generated_at": "2026-11-06T07:23:30.655488+00:00",
+  "status": "stale_dataset_manifest_mismatch",
   "model": "deepseek-flash + BAAI/bge-small-zh-v1.5",
   "elapsed_seconds": 1034.27,
   "dataset": {
