@@ -7,12 +7,19 @@ rewrite_query）全部在主图，检索子图只负责取回候选；所有重�
 """
 from __future__ import annotations
 
+import inspect
 from typing import Any, Dict, List
 
 from app.citation.citation import CitationExtractor
 from langgraph.types import interrupt
 
 from agent.grading import extract_facets, grade_evidence, needs_knowledge_base
+from agent.evidence_contract import (
+    assess_obligations,
+    build_evidence_contract,
+    obligation_query,
+    preserve_obligation_evidence,
+)
 from agent.evidence import scope_evidence
 from agent.grounding import verify_grounding
 from agent.grounding import detect_ambiguous_metric, has_statement_label
@@ -21,7 +28,11 @@ from agent.memory import extract_memory, format_memories, recall, remember
 from agent.review import build_review_payload
 from agent.retrieval_subgraph import build_retrieval_subgraph
 from agent.rewriter import RuleRewriter
-from rag_adapter.rag import accumulate_evidence, enrich_citation
+from rag_adapter.rag import (
+    accumulate_evidence,
+    cap_evidence_preserving,
+    enrich_citation,
+)
 
 REFUSAL_NO_EVIDENCE = (
     "根据现有检索结果无法回答该问题：知识库中没有检索到覆盖该问题的证据，"
@@ -79,6 +90,13 @@ def _stream_writer(runtime: Any):
         return None
 
 
+def _accepts_parameter(function: Any, name: str) -> bool:
+    try:
+        return name in inspect.signature(function).parameters
+    except (TypeError, ValueError):
+        return False
+
+
 def build_nodes(runtime: Any) -> Dict[str, Any]:
     """按运行时依赖构造节点函数集合。"""
 
@@ -88,6 +106,7 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
     def understand_query(state: Dict[str, Any]) -> Dict[str, Any]:
         question = (state.get("question") or "").strip()
         facets = extract_facets(question)
+        contract = build_evidence_contract(question, facets=facets)
         # 跨会话记忆：先召回该用户已存的偏好/约定（namespace 隔离在 memory.py）
         memories: List[Dict[str, Any]] = []
         if runtime.memory_store is not None and runtime.memory_user_id:
@@ -106,11 +125,14 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             "rewritten_query": question,
             "sub_queries": [question],
             "facets": facets,
+            "obligations": contract["obligations"],
             "needs_retrieval": needs_retrieval,
             "memories": memories,
             "status": status,
             "trace": [{"node": "understand_query", "facets": facets,
                        "needs_retrieval": needs_retrieval,
+                       "obligations": len(contract["obligations"]),
+                       "refusal_expected": contract["refusal_expected"],
                        "memory_request": bool(memory_request),
                        "recalled_memories": len(memories)}],
         }
@@ -120,12 +142,41 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
                                                or state["question"]]
         retry = int(state.get("retry_count") or 0)
         budget = runtime.top_k if retry == 0 else runtime.widened_top_k
-        result = subgraph.invoke({"queries": queries, "top_k": budget,
-                                  "anchor": state["question"]})
+        obligations = state.get("obligations") or []
+        result = subgraph.invoke({
+            "queries": queries,
+            "top_k": budget,
+            "anchor": state["question"],
+            "obligations": obligations,
+            "route_prefix": "r{}-".format(retry),
+        })
         # 自纠错只做加法：重试把新候选追加到已有证据之后，不推翻上一轮（见 rag.py）
-        candidates = accumulate_evidence(state.get("retrieved_chunks") or [],
-                                        result.get("candidates") or [],
-                                        runtime.evidence_limit)
+        previous_candidates = state.get("retrieved_chunks") or []
+        incoming_candidates = result.get("candidates") or []
+        current_route_hits = result.get("route_hits") or []
+        route_hits = (list(state.get("route_hits") or [])
+                      + list(current_route_hits))
+        candidates = accumulate_evidence(
+            previous_candidates, incoming_candidates,
+            len(previous_candidates) + len(incoming_candidates) + 1)
+        candidates, obligation_fills = preserve_obligation_evidence(
+            candidates, route_hits, obligations)
+        pre_cap_obligations = assess_obligations(
+            candidates, obligations, state["question"])
+        protected_keys = {
+            str(hit.get("chunk_id") or hit.get("vector_id"))
+            for hit in candidates if hit.get("obligation_fill")
+        }
+        protected_keys.update(
+            str(chunk_id)
+            for item in pre_cap_obligations["results"]
+            if item["status"] == "covered"
+            for chunk_id in (item.get("matched_chunks") or [])[:1]
+        )
+        candidates = cap_evidence_preserving(
+            candidates, runtime.evidence_limit, protected_keys)
+        pre_scope_obligations = assess_obligations(
+            candidates, obligations, state["question"])
         # facet 裁剪：去掉问题没点名的公司/年份片段（重试只追加的代价是污染也会留）
         if runtime.scope_evidence_enabled:
             candidates, scope_stats = scope_evidence(
@@ -134,11 +185,41 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         else:
             scope_stats = {"scoped": False, "reason": "disabled",
                            "kept": len(candidates), "dropped": 0}
+        post_scope_obligations = assess_obligations(
+            candidates, obligations, state["question"])
+        route_coverage = (list(state.get("route_coverage") or [])
+                          + list(result.get("route_coverage") or []))
+        current_routes = result.get("route_coverage") or []
+        covered_obligations = sorted({
+            obligation_id
+            for route in current_routes
+            for obligation_id in route.get("covered") or []
+        })
+        required_obligations = [
+            item.get("obligation_id") for item in obligations
+            if item.get("required", True)
+        ]
         return {
             "retrieved_chunks": candidates,
+            "route_hits": route_hits,
+            "route_coverage": route_coverage,
             "retrieval_stats": dict(result.get("stats") or {},
                                     accumulated=len(candidates), budget=budget,
-                                    scope=scope_stats),
+                                    scope=scope_stats,
+                                    obligations_covered=covered_obligations,
+                                    obligations_missing=sorted(
+                                        set(required_obligations)
+                                        - set(covered_obligations)),
+                                    obligation_fills=obligation_fills,
+                                    obligation_fill_chunks=[
+                                        hit.get("chunk_id")
+                                        for hit in candidates
+                                        if hit.get("obligation_fill")
+                                    ],
+                                    pre_scope_missing=pre_scope_obligations[
+                                        "missing"],
+                                    post_scope_missing=post_scope_obligations[
+                                        "missing"]),
             "status": "retrieving",
             "trace": [{"node": "retrieve_knowledge", "queries": list(queries),
                        "candidate_count": len(candidates),
@@ -150,11 +231,24 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
     def grade_retrieval(state: Dict[str, Any]) -> Dict[str, Any]:
         hits = state.get("retrieved_chunks") or []
         score = grade_evidence(state["question"], hits,
-                               min_coverage=runtime.min_coverage)
+                               min_coverage=runtime.min_coverage,
+                               obligations=state.get("obligations") or [],
+                               route_coverage=state.get("route_coverage") or [])
         # 规则说"够"才值得复核："规则假通过"会变成沉默的错答（贵且危险），
         # "规则假不通过"只是多一次重试（便宜，已用关键词修复与 facet 裁剪压掉）
         if score["passed"] and runtime.llm_grader is not None:
-            review = runtime.llm_grader.grade(state["question"], hits)
+            grade_kwargs = {}
+            if _accepts_parameter(runtime.llm_grader.grade, "obligations"):
+                grade_kwargs["obligations"] = score.get("obligations") or []
+            if _accepts_parameter(runtime.llm_grader.grade,
+                                  "missing_obligations"):
+                grade_kwargs["missing_obligations"] = (
+                    score.get("missing_obligations") or [])
+            if _accepts_parameter(runtime.llm_grader.grade, "route_coverage"):
+                grade_kwargs["route_coverage"] = (
+                    state.get("route_coverage") or [])
+            review = runtime.llm_grader.grade(
+                state["question"], hits, **grade_kwargs)
             score["llm_review"] = review
             if review.get("judgment") == "insufficient" and review.get("source") == "llm":
                 score["passed"] = False
@@ -167,6 +261,9 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             "trace": [{"node": "grade_retrieval", "passed": score["passed"],
                        "reason": score["reason"],
                        "coverage": score["coverage"],
+                       "obligation_coverage": score.get("obligation_coverage"),
+                       "missing_obligations": score.get("missing_obligations"),
+                       "ambiguous_obligations": score.get("ambiguous_obligations"),
                        "llm_review": (score.get("llm_review") or {}).get("judgment"),
                        "documents": score["documents"]}],
         }
@@ -177,12 +274,17 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         retry_count = int(state.get("retry_count") or 0)
         low_confidence = not score.get("passed")
 
-        if score.get("passed"):
+        if score.get("refusal_expected"):
+            action, status = "finalize", "refused_no_evidence"
+        elif score.get("passed"):
             action, status = "generate", "evidence_ok"
         elif retry_count < runtime.max_retries:
             action, status = "retrieve", "retry"
         elif not hits:
             action, status = "finalize", "refused_no_evidence"
+        elif score.get("ambiguous_obligations"):
+            action, status = "generate", "ambiguous_evidence"
+            low_confidence = True
         else:
             # 证据不足但仍有候选：基于现有证据作答并声明不确定；
             # 是否交人工审核由 generate_answer 之后的条件边决定（先出草稿再人审）
@@ -194,6 +296,8 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             "status": status,
             "trace": [{"node": "decide_next_step", "action": action,
                        "retry_count": retry_count,
+                       "missing_obligations": score.get("missing_obligations"),
+                       "ambiguous_obligations": score.get("ambiguous_obligations"),
                        "reason": score.get("reason", "")}],
         }
 
@@ -203,9 +307,16 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         retry_count = int(state.get("retry_count") or 0) + 1
         previous = [state.get("rewritten_query") or state["question"]]
         previous.extend(state.get("sub_queries") or [])
-        queries = rewriter.rewrite(state["question"], reason, previous)
+        missing = score.get("missing_obligations") or []
+        rewrite_kwargs = {}
+        if _accepts_parameter(rewriter.rewrite, "obligations"):
+            rewrite_kwargs["obligations"] = missing
+        queries = rewriter.rewrite(
+            state["question"], reason, previous, **rewrite_kwargs)
         if not queries:
-            queries = [state["question"]]
+            queries = [
+                obligation_query(item) for item in missing
+            ] or [state["question"]]
         return {
             "rewritten_query": queries[0],
             "sub_queries": queries,
@@ -214,11 +325,17 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
                 "retry": retry_count,
                 "reason": reason,
                 "queries": queries,
+                "obligations": [
+                    item.get("obligation_id") for item in missing
+                ],
                 "source": getattr(rewriter, "last_source", "rule"),
             }],
             "status": "rewritten",
             "trace": [{"node": "rewrite_query", "retry": retry_count,
                        "queries": queries,
+                       "missing_obligations": [
+                           item.get("obligation_id") for item in missing
+                       ],
                        "source": getattr(rewriter, "last_source", "rule"),
                        "reason": reason}],
         }
@@ -235,7 +352,11 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         if not runtime.generate_answers:
             return {
                 "answer": None,
-                "status": "retrieval_only",
+                "status": (
+                    "ambiguous_evidence"
+                    if state.get("status") == "ambiguous_evidence"
+                    else "retrieval_only"
+                ),
                 "trace": [{"node": "generate_answer", "skipped": "retrieval_only"}],
             }
 

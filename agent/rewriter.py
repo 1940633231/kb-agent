@@ -12,6 +12,7 @@ import json
 import re
 from typing import Any, Dict, List, Optional, Sequence
 
+from agent.evidence_contract import obligation_query
 from agent.grading import extract_facets
 
 REWRITE_SYSTEM_PROMPT = (
@@ -29,12 +30,24 @@ class RuleRewriter:
     """不调用 LLM 的兜底改写：按缺失要素补关键词，或按年份/公司拆子问题。"""
 
     def rewrite(self, question: str, reason: str,
-                previous_queries: Sequence[str] = ()) -> List[str]:
+                previous_queries: Sequence[str] = (),
+                obligations: Optional[Sequence[Dict[str, Any]]] = None
+                ) -> List[str]:
         facets = extract_facets(question)
         companies = facets["companies"]
         years = facets["years"]
         metric = " ".join(facets["keywords"][:3])
         self.last_source = "rule"
+
+        if obligations:
+            targeted = [
+                obligation_query(item) for item in obligations
+                if obligation_query(item)
+            ]
+            fresh = [query for query in targeted
+                     if query not in previous_queries]
+            if fresh:
+                return fresh[:6]
 
         if len(years) > 1 or len(companies) > 1:
             queries: List[str] = []
@@ -68,14 +81,26 @@ class LLMRewriter:
         self.last_source = ""
 
     def rewrite(self, question: str, reason: str,
-                previous_queries: Sequence[str] = ()) -> List[str]:
+                previous_queries: Sequence[str] = (),
+                obligations: Optional[Sequence[Dict[str, Any]]] = None
+                ) -> List[str]:
+        obligation_block = "\n".join(
+            "- {} {} {}".format(
+                item.get("company") or "",
+                "{}年".format(item.get("year")) if item.get("year") else "",
+                item.get("metric") or "",
+            ).strip()
+            for item in obligations or []
+        ) or "无逐项义务信息"
         user_prompt = (
             "原始问题：{question}\n"
             "已尝试的查询：{previous}\n"
+            "缺失证据义务：\n{obligations}\n"
             "未通过的原因：{reason}\n"
             "请输出改写后的查询 JSON。"
         ).format(question=question,
                  previous=json.dumps(list(previous_queries), ensure_ascii=False),
+                 obligations=obligation_block,
                  reason=reason or "检索证据不足")
         queries: List[str] = []
         try:
@@ -92,7 +117,8 @@ class LLMRewriter:
             self.last_source = "llm"
             return fresh[:self.max_queries]
         self.last_source = "rule"
-        return self.fallback.rewrite(question, reason, previous_queries)
+        return self.fallback.rewrite(
+            question, reason, previous_queries, obligations=obligations)
 
     def _parse(self, answer: Optional[str]) -> List[str]:
         if not answer:

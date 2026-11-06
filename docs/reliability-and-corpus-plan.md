@@ -1,6 +1,6 @@
 # kb-agent 数据扩展与可靠性补强计划
 
-> 状态：阶段 0 已完成（2026-11-06），P0 待执行  
+> 状态：阶段 0 与 P0 已完成（2026-11-06），P1 待执行  
 > 适用范围：`kb-agent` 为主，阶段 2 可能涉及 `production-rag` 的小幅扩展  
 > 不在本计划内：`sql-mcp-agent` 的 MCP 链路改造；它只作为后续展示材料
 
@@ -8,6 +8,10 @@
 生成回归可完整运行。报告见 `evals/reports/corpus_audit.json`、
 `evals/reports/stage0_expanded_retrieval.json` 与
 `evals/reports/stage0_expanded_generation.json`。
+
+P0 执行结果：证据义务契约、逐路覆盖与缺失义务定向重试已接入；50 题文档
+Recall@5 为 `1.0`，证据义务覆盖率 `0.8333`，达到 `0.82+` 目标。报告见
+`evals/reports/p0_l3_evidence.json`。
 
 ## 1. 目标与基线
 

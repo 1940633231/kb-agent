@@ -1,0 +1,5857 @@
+{
+  "layer": "L3",
+  "label": "+自纠错重试（本项目）",
+  "generated_at": "2026-11-06T03:10:57.795281+00:00",
+  "config": {
+    "mode": "hybrid",
+    "use_rerank": true,
+    "top_k": 5,
+    "strategy": "recursive",
+    "max_retries": 2,
+    "generate": false,
+    "llm_rewrite": false
+  },
+  "metrics": {
+    "answerable_questions": 45,
+    "doc_recall@5": 1.0,
+    "all_docs_hit@5": 1.0,
+    "doc_mrr": 0.9889,
+    "evidence_hit@5": 0.5556,
+    "evidence_hit_final": 0.6444,
+    "evidence_obligation_coverage": 0.8333,
+    "missing_obligation_rate": 0.1556,
+    "ambiguous_obligation_rate": 0.0222,
+    "route_obligation_coverage": 0.8333,
+    "mean_evidence_count": 5.78,
+    "retry_rate": 0.3,
+    "mean_retries": 0.56,
+    "refuse_flagged_rate": 0.6,
+    "mean_seconds_per_query": 31.4486,
+    "foreign_evidence_rate": 0.0222,
+    "foreign_citation_rate": 0.0,
+    "grounding_verified_rate": null,
+    "mean_ungrounded_numbers": 0.0,
+    "citation_coverage": null,
+    "citation_full_coverage_rate": null,
+    "repair_rate": 0.0,
+    "repair_fixed_rate": null,
+    "unverified_rate": 0.0,
+    "prompt_tokens_est_mean": 4192.72,
+    "answer_tokens_est_mean": 0.96,
+    "tokens_est_total": 209684,
+    "cost_estimate_per_query": null
+  },
+  "questions": [
+    {
+      "id": "ar-fact-001",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2023"
+      ],
+      "retrieved_docs": [
+        "600519-2023"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 2,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2023年的营业收入是多少元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "贵州茅台2023年的营业收入是多少元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.023171285779191277,
+        "accumulated": 2,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 2,
+          "dropped": 3,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2023
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 1375,
+      "answer_tokens_est": 0,
+      "seconds": 30.42
+    },
+    {
+      "id": "ar-fact-002",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2024"
+      ],
+      "retrieved_docs": [
+        "600036-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2024年的不良贷款率是多少？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600036-2023",
+            "600036-2024",
+            "600036-2025",
+            "601166-2024",
+            "601318-2024",
+            "601318-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2024年的不良贷款率是多少？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.026494565217391304,
+        "accumulated": 3,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 3,
+          "dropped": 2,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2049,
+      "answer_tokens_est": 0,
+      "seconds": 26.02
+    },
+    {
+      "id": "ar-fact-003",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "宁德时代2025年的营业收入是多少千元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "300750-2023",
+            "300750-2024",
+            "300750-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "宁德时代2025年的营业收入是多少千元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.02564935064935065,
+        "accumulated": 4,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 1,
+          "companies": [
+            "300750"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2783,
+      "answer_tokens_est": 0,
+      "seconds": 23.23
+    },
+    {
+      "id": "ar-fact-004",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2025年归属于上市公司股东的净利润是多少元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000333-2024",
+            "000333-2025",
+            "600519-2023",
+            "600519-2024",
+            "600519-2025",
+            "688981-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "贵州茅台2025年归属于上市公司股东的净利润是多少元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.029116045245077504,
+        "accumulated": 5,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 5,
+          "dropped": 0,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3386,
+      "answer_tokens_est": 0,
+      "seconds": 13.74
+    },
+    {
+      "id": "ar-fact-005",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2025"
+      ],
+      "retrieved_docs": [
+        "600036-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2025年的非利息净收入是多少亿元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600036-2023",
+            "600036-2024",
+            "600036-2025",
+            "601166-2023",
+            "601166-2024",
+            "601166-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2025年的非利息净收入是多少亿元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.031746031746031744,
+        "accumulated": 3,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 3,
+          "dropped": 2,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2125,
+      "answer_tokens_est": 0,
+      "seconds": 15.31
+    },
+    {
+      "id": "ar-table-001",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2024"
+      ],
+      "retrieved_docs": [
+        "300750-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "宁德时代2024年研发费用明细中，职工薪酬是多少千元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000333-2023",
+            "002352-2023",
+            "002352-2024",
+            "002352-2025",
+            "300750-2023",
+            "300750-2024",
+            "300750-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "宁德时代2024年研发费用明细中，职工薪酬是多少千元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.02946236559139785,
+        "accumulated": 3,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 3,
+          "dropped": 2,
+          "companies": [
+            "300750"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2233,
+      "answer_tokens_est": 0,
+      "seconds": 13.68
+    },
+    {
+      "id": "ar-table-002",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2024"
+      ],
+      "retrieved_docs": [
+        "600036-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2024年本集团实现的净利息收入是多少亿元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600036-2023",
+            "600036-2024",
+            "600036-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2024年本集团实现的净利息收入是多少亿元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.031754032258064516,
+        "accumulated": 4,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 1,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2994,
+      "answer_tokens_est": 0,
+      "seconds": 13.76
+    },
+    {
+      "id": "ar-table-003",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2024"
+      ],
+      "retrieved_docs": [
+        "600519-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2024年的销售费用是多少元？"
+        ],
+        "returned": 6,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "贵州茅台2024年的销售费用是多少元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.021776814734561216,
+        "accumulated": 3,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 3,
+          "dropped": 3,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [
+          "600519-2024_chunk_12"
+        ],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2093,
+      "answer_tokens_est": 0,
+      "seconds": 13.39
+    },
+    {
+      "id": "ar-table-004",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2023"
+      ],
+      "retrieved_docs": [
+        "600519-2023"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 3,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 研发投入合计；缺少证据义务: obligation-1",
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        {
+          "obligation_id": "obligation-1",
+          "company": "贵州茅台",
+          "year": 2023,
+          "metric": "研发投入合计",
+          "expected_kind": "single_value",
+          "expected_value": null,
+          "required": true,
+          "source_scope": "annual_report",
+          "route_ids": [
+            "route-1"
+          ],
+          "status": "missing",
+          "matched_chunks": [],
+          "matched_documents": [],
+          "routes": [],
+          "reason": "missing evidence slot"
+        }
+      ],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 0.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2023年研发投入合计是多少元？ 研发投入合计"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "000333-2023",
+            "000333-2024",
+            "000333-2025",
+            "000568-2023",
+            "000568-2024",
+            "000725-2023",
+            "000725-2024",
+            "002475-2023",
+            "300059-2023",
+            "600276-2023",
+            "600519-2023",
+            "600519-2024",
+            "600519-2025",
+            "600690-2023",
+            "601088-2023",
+            "601088-2024",
+            "601088-2025",
+            "603288-2025",
+            "688981-2023"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "贵州茅台2023年研发投入合计是多少元？ 研发投入合计",
+            "returned": 50,
+            "covered": [],
+            "missing": [
+              "obligation-1"
+            ],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.026373626373626377,
+        "accumulated": 3,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 3,
+          "dropped": 13,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2023
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [],
+        "obligations_missing": [
+          "obligation-1"
+        ],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [
+          "obligation-1"
+        ],
+        "post_scope_missing": [
+          "obligation-1"
+        ]
+      },
+      "refusal_expected": false,
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 1987,
+      "answer_tokens_est": 0,
+      "seconds": 67.14
+    },
+    {
+      "id": "ar-cross-001",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2023"
+      ],
+      "retrieved_docs": [
+        "600036-2023"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2023年零售贷款不良率与信用卡贷款不良率分别是多少？"
+        ],
+        "returned": 6,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600036-2023",
+            "600036-2024",
+            "600036-2025",
+            "601166-2024",
+            "601166-2025",
+            "601318-2024"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2023年零售贷款不良率与信用卡贷款不良率分别是多少？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.03252247488101534,
+        "accumulated": 4,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 2,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2023
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [
+          "600036-2023_chunk_93"
+        ],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3125,
+      "answer_tokens_est": 0,
+      "seconds": 12.99
+    },
+    {
+      "id": "ar-cross-002",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2024"
+      ],
+      "retrieved_docs": [
+        "600519-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2024年的销售费用与财务费用分别是多少元？"
+        ],
+        "returned": 6,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "贵州茅台2024年的销售费用与财务费用分别是多少元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.023514696685428396,
+        "accumulated": 4,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 2,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [
+          "600519-2024_chunk_12"
+        ],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2858,
+      "answer_tokens_est": 0,
+      "seconds": 14.13
+    },
+    {
+      "id": "ar-cross-003",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2023"
+      ],
+      "retrieved_docs": [
+        "600036-2023"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2023年房地产业不良贷款率是多少，较上年末上升了多少个百分点？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600036-2023",
+            "600036-2024",
+            "600036-2025",
+            "601166-2024",
+            "601318-2024",
+            "601318-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2023年房地产业不良贷款率是多少，较上年末上升了多少个百分点？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.031746031746031744,
+        "accumulated": 4,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 1,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2023
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3121,
+      "answer_tokens_est": 0,
+      "seconds": 15.7
+    },
+    {
+      "id": "ar-multi-001",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2023",
+        "600519-2024",
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2023",
+        "600519-2024",
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2023年、2024年、2025年的营业收入分别是多少元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000333-2023",
+            "000333-2024",
+            "000333-2025",
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "贵州茅台2023年、2024年、2025年的营业收入分别是多少元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2",
+              "obligation-3"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.021469584754930514,
+        "accumulated": 5,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 5,
+          "dropped": 0,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2023,
+            2024,
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2",
+          "obligation-3"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3696,
+      "answer_tokens_est": 0,
+      "seconds": 16.47
+    },
+    {
+      "id": "ar-multi-002",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2023",
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2023",
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "宁德时代2023年与2025年的营业收入分别是多少（注意两年披露单位不同）？"
+        ],
+        "returned": 6,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "300750-2023",
+            "300750-2024",
+            "300750-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "宁德时代2023年与2025年的营业收入分别是多少（注意两年披露单位不同）？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.026860955056179775,
+        "accumulated": 5,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 5,
+          "dropped": 1,
+          "companies": [
+            "300750"
+          ],
+          "years": [
+            2023,
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [
+          "300750-2023_chunk_339"
+        ],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3453,
+      "answer_tokens_est": 0,
+      "seconds": 16.79
+    },
+    {
+      "id": "ar-multi-003",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2023",
+        "600036-2024",
+        "600036-2025"
+      ],
+      "retrieved_docs": [
+        "600036-2023",
+        "600036-2024",
+        "600036-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2023年、2024年、2025年归属于本行股东的净利润分别是多少百万元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600036-2023",
+            "600036-2024",
+            "600036-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2023年、2024年、2025年归属于本行股东的净利润分别是多少百万元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2",
+              "obligation-3",
+              "obligation-4",
+              "obligation-5",
+              "obligation-6"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.028474711270410194,
+        "accumulated": 5,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 5,
+          "dropped": 0,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2023,
+            2024,
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2",
+          "obligation-3",
+          "obligation-4",
+          "obligation-5",
+          "obligation-6"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3940,
+      "answer_tokens_est": 0,
+      "seconds": 15.97
+    },
+    {
+      "id": "ar-calc-001",
+      "question_type": "calc",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 2,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2025年研发投入合计占营业收入的比例约为多少（%，保留两位小数）？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "300124-2025",
+            "600276-2023",
+            "600276-2024",
+            "600276-2025",
+            "600519-2023",
+            "600519-2024",
+            "600519-2025",
+            "601088-2024",
+            "601088-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "贵州茅台2025年研发投入合计占营业收入的比例约为多少（%，保留两位小数）？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.02832415420928403,
+        "accumulated": 2,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 2,
+          "dropped": 3,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 1572,
+      "answer_tokens_est": 0,
+      "seconds": 15.13
+    },
+    {
+      "id": "ar-calc-002",
+      "question_type": "calc",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2024",
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2024",
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "宁德时代2025年营业收入较2024年增加约多少亿元？"
+        ],
+        "returned": 6,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000333-2024",
+            "000333-2025",
+            "002352-2024",
+            "002352-2025",
+            "300750-2023",
+            "300750-2024",
+            "300750-2025",
+            "601318-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "宁德时代2025年营业收入较2024年增加约多少亿元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.024606872451951076,
+        "accumulated": 5,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 5,
+          "dropped": 1,
+          "companies": [
+            "300750"
+          ],
+          "years": [
+            2024,
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [
+          "300750-2024_chunk_179"
+        ],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3688,
+      "answer_tokens_est": 0,
+      "seconds": 14.41
+    },
+    {
+      "id": "ar-refuse-001",
+      "question_type": "refuse",
+      "expected_behavior": "refuse",
+      "wanted_docs": [],
+      "retrieved_docs": [
+        "002594-2024"
+      ],
+      "doc_recall": null,
+      "all_docs_hit": null,
+      "first_relevant_rank_top5": null,
+      "evidence_hit_top5": null,
+      "evidence_hit_final": null,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "比亚迪2024年的营业收入是多少？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000333-2024",
+            "002594-2023",
+            "002594-2024",
+            "002594-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "比亚迪2024年的营业收入是多少？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.02392671588733935,
+        "accumulated": 4,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 1,
+          "companies": [
+            "002594"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [
+        "002594-2024"
+      ],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2498,
+      "answer_tokens_est": 0,
+      "seconds": 13.74
+    },
+    {
+      "id": "ar-refuse-002",
+      "question_type": "refuse",
+      "expected_behavior": "refuse",
+      "wanted_docs": [],
+      "retrieved_docs": [
+        "000333-2024",
+        "002352-2024",
+        "601088-2024"
+      ],
+      "doc_recall": null,
+      "all_docs_hit": null,
+      "first_relevant_rank_top5": null,
+      "evidence_hit_top5": null,
+      "evidence_hit_final": null,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 华为",
+      "obligation_coverage": 0.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 0.0,
+      "retrieval_stats": {
+        "queries": [
+          "华为2024年的研发投入是多少？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000157-2023",
+            "000333-2024",
+            "000333-2025",
+            "000725-2025",
+            "002230-2023",
+            "002230-2024",
+            "002230-2025",
+            "002352-2024",
+            "002352-2025",
+            "002415-2024",
+            "002415-2025",
+            "002475-2025",
+            "002594-2023",
+            "002594-2025",
+            "300059-2023",
+            "300059-2025",
+            "300124-2025",
+            "300274-2025",
+            "601012-2023",
+            "601088-2024",
+            "688981-2023"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "华为2024年的研发投入是多少？",
+            "returned": 25,
+            "covered": [],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.02362531085935341,
+        "accumulated": 3,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 3,
+          "dropped": 2,
+          "companies": [],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [],
+        "obligations_missing": [
+          "obligation-1"
+        ],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": true,
+      "needs_human_review": true,
+      "status": "refused_no_evidence",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [
+        "000333-2024",
+        "002352-2024",
+        "601088-2024"
+      ],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "根据现有检索结果无法回答该问题：知识库中没有检索到覆盖该问题的证据，因此不做推测性回答。",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": true,
+      "prompt_tokens_est": 2169,
+      "answer_tokens_est": 48,
+      "seconds": 13.81
+    },
+    {
+      "id": "ar-refuse-003",
+      "question_type": "refuse",
+      "expected_behavior": "refuse",
+      "wanted_docs": [],
+      "retrieved_docs": [
+        "600030-2025",
+        "600036-2023",
+        "600036-2024",
+        "600036-2025"
+      ],
+      "doc_recall": null,
+      "all_docs_hit": null,
+      "first_relevant_rank_top5": null,
+      "evidence_hit_top5": null,
+      "evidence_hit_final": null,
+      "evidence_count": 18,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": false,
+      "graded_reason": "证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 上半年；缺少证据义务: obligation-1",
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        {
+          "obligation_id": "obligation-1",
+          "company": "招商银行",
+          "year": 2026,
+          "metric": "上半年 + 营业收入",
+          "expected_kind": "multi_value",
+          "expected_value": null,
+          "required": true,
+          "source_scope": "annual_report",
+          "route_ids": [
+            "route-1"
+          ],
+          "status": "missing",
+          "matched_chunks": [],
+          "matched_documents": [],
+          "routes": [],
+          "reason": "missing evidence slot"
+        }
+      ],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 0.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行 2026年 上半年 营业收入 年度报告"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "000333-2025",
+            "002230-2023",
+            "002230-2024",
+            "002230-2025",
+            "600030-2025",
+            "600036-2023",
+            "600036-2024",
+            "600036-2025",
+            "600276-2025",
+            "601012-2025",
+            "601088-2025",
+            "603259-2023"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "招商银行 2026年 上半年 营业收入 年度报告",
+            "returned": 50,
+            "covered": [],
+            "missing": [
+              "obligation-1"
+            ],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.02564102564102564,
+        "accumulated": 18,
+        "budget": 15,
+        "scope": {
+          "scoped": false,
+          "reason": "裁剪后为空，回退原集合",
+          "kept": 18,
+          "dropped": 0
+        },
+        "obligations_covered": [],
+        "obligations_missing": [
+          "obligation-1"
+        ],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [
+          "obligation-1"
+        ],
+        "post_scope_missing": [
+          "obligation-1"
+        ]
+      },
+      "refusal_expected": false,
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [
+        "600030-2025",
+        "600036-2023",
+        "600036-2024",
+        "600036-2025"
+      ],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 12906,
+      "answer_tokens_est": 0,
+      "seconds": 69.51
+    },
+    {
+      "id": "ar-crossco-001",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2023",
+        "600519-2023"
+      ],
+      "retrieved_docs": [
+        "600036-2023",
+        "600519-2023"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 9,
+      "retry_count": 1,
+      "rewrite_sources": [
+        "rule"
+      ],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行 2023年 营业收入 年度报告"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r1-route-1": 50
+        },
+        "per_query_candidates": {
+          "r1-route-1": 50
+        },
+        "per_query_documents": {
+          "r1-route-1": [
+            "002352-2024",
+            "002594-2023",
+            "300274-2024",
+            "600036-2023",
+            "600036-2024",
+            "600036-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r1-route-1",
+            "query": "招商银行 2023年 营业收入 年度报告",
+            "returned": 50,
+            "covered": [
+              "obligation-2"
+            ],
+            "missing": [
+              "obligation-1"
+            ],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.028612012987012988,
+        "accumulated": 9,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 9,
+          "dropped": 7,
+          "companies": [
+            "600036",
+            "600519"
+          ],
+          "years": [
+            2023
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-2"
+        ],
+        "obligations_missing": [
+          "obligation-1"
+        ],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 6952,
+      "answer_tokens_est": 0,
+      "seconds": 43.04
+    },
+    {
+      "id": "ar-crossco-002",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2024",
+        "600519-2024"
+      ],
+      "retrieved_docs": [
+        "300750-2024",
+        "600519-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": true,
+      "evidence_count": 13,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台 2024年 研发费用 研发投入合计 年度报告",
+          "宁德时代 2024年 研发费用 研发投入合计 年度报告"
+        ],
+        "returned": 16,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50,
+          "r2-route-2": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50,
+          "r2-route-2": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "000333-2025",
+            "000568-2023",
+            "600276-2024",
+            "600519-2023",
+            "600519-2024",
+            "600519-2025",
+            "601012-2023",
+            "601088-2024",
+            "603259-2024",
+            "603288-2025",
+            "688981-2023"
+          ],
+          "r2-route-2": [
+            "000333-2025",
+            "000725-2025",
+            "002415-2023",
+            "300750-2023",
+            "300750-2024",
+            "300750-2025",
+            "600276-2023",
+            "600276-2024",
+            "600519-2023",
+            "601012-2023",
+            "601088-2024",
+            "603259-2023",
+            "603259-2024",
+            "603259-2025",
+            "603288-2025",
+            "688981-2023",
+            "688981-2024"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "贵州茅台 2024年 研发费用 研发投入合计 年度报告",
+            "returned": 50,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [
+              "obligation-2"
+            ],
+            "ambiguous": []
+          },
+          {
+            "query_id": "r2-route-2",
+            "query": "宁德时代 2024年 研发费用 研发投入合计 年度报告",
+            "returned": 50,
+            "covered": [
+              "obligation-2"
+            ],
+            "missing": [
+              "obligation-1"
+            ],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.02938045560996381,
+        "accumulated": 13,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 13,
+          "dropped": 7,
+          "companies": [
+            "300750",
+            "600519"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [
+          "600519-2024_chunk_17"
+        ],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 8772,
+      "answer_tokens_est": 0,
+      "seconds": 95.42
+    },
+    {
+      "id": "ar-fact-006",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2025年茅台酒（分产品口径）的营业收入是多少元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "贵州茅台2025年茅台酒（分产品口径）的营业收入是多少元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.02195225916453538,
+        "accumulated": 5,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 5,
+          "dropped": 0,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3656,
+      "answer_tokens_est": 0,
+      "seconds": 13.81
+    },
+    {
+      "id": "ar-fact-007",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 7,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 末国内经销商数量；缺少证据义务: obligation-1",
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        {
+          "obligation_id": "obligation-1",
+          "company": "贵州茅台",
+          "year": 2025,
+          "metric": "末国内经销商数量",
+          "expected_kind": "single_value",
+          "expected_value": null,
+          "required": true,
+          "source_scope": "annual_report",
+          "route_ids": [
+            "route-1"
+          ],
+          "status": "missing",
+          "matched_chunks": [],
+          "matched_documents": [],
+          "routes": [],
+          "reason": "missing evidence slot"
+        }
+      ],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 0.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2025年末国内经销商数量是多少个？ 末国内经销商数量"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "000333-2025",
+            "000568-2023",
+            "000858-2023",
+            "000858-2024",
+            "000858-2025",
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "贵州茅台2025年末国内经销商数量是多少个？ 末国内经销商数量",
+            "returned": 50,
+            "covered": [],
+            "missing": [
+              "obligation-1"
+            ],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.021563814866760168,
+        "accumulated": 7,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 7,
+          "dropped": 8,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [],
+        "obligations_missing": [
+          "obligation-1"
+        ],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [
+          "obligation-1"
+        ],
+        "post_scope_missing": [
+          "obligation-1"
+        ]
+      },
+      "refusal_expected": false,
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 5283,
+      "answer_tokens_est": 0,
+      "seconds": 71.3
+    },
+    {
+      "id": "ar-fact-008",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2024"
+      ],
+      "retrieved_docs": [
+        "600519-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 10,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 报告期末在职员工数量合计；缺少证据义务: obligation-1",
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        {
+          "obligation_id": "obligation-1",
+          "company": "贵州茅台",
+          "year": 2024,
+          "metric": "报告期末在职员工数量合计",
+          "expected_kind": "single_value",
+          "expected_value": null,
+          "required": true,
+          "source_scope": "annual_report",
+          "route_ids": [
+            "route-1"
+          ],
+          "status": "missing",
+          "matched_chunks": [],
+          "matched_documents": [],
+          "routes": [],
+          "reason": "missing evidence slot"
+        }
+      ],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 0.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2024年报告期末在职员工数量合计是多少人？ 报告期末在职员工数量合计"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "000157-2025",
+            "000568-2023",
+            "000568-2025",
+            "000725-2024",
+            "000858-2023",
+            "000858-2024",
+            "000858-2025",
+            "002230-2024",
+            "002230-2025",
+            "002352-2024",
+            "002415-2023",
+            "002415-2024",
+            "002415-2025",
+            "002475-2024",
+            "002475-2025",
+            "002594-2024",
+            "002594-2025",
+            "300059-2023",
+            "300059-2025",
+            "300124-2023",
+            "300124-2025",
+            "300274-2024",
+            "600519-2023",
+            "600519-2024",
+            "600519-2025",
+            "600900-2024"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "贵州茅台2024年报告期末在职员工数量合计是多少人？ 报告期末在职员工数量合计",
+            "returned": 50,
+            "covered": [],
+            "missing": [
+              "obligation-1"
+            ],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.022886949116457313,
+        "accumulated": 10,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 10,
+          "dropped": 10,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [],
+        "obligations_missing": [
+          "obligation-1"
+        ],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [
+          "obligation-1"
+        ],
+        "post_scope_missing": [
+          "obligation-1"
+        ]
+      },
+      "refusal_expected": false,
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 7340,
+      "answer_tokens_est": 0,
+      "seconds": 74.59
+    },
+    {
+      "id": "ar-fact-009",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2024"
+      ],
+      "retrieved_docs": [
+        "300750-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 7,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 报告期末在职员工数量合计；缺少证据义务: obligation-1",
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        {
+          "obligation_id": "obligation-1",
+          "company": "宁德时代",
+          "year": 2024,
+          "metric": "报告期末在职员工数量合计",
+          "expected_kind": "single_value",
+          "expected_value": null,
+          "required": true,
+          "source_scope": "annual_report",
+          "route_ids": [
+            "route-1"
+          ],
+          "status": "missing",
+          "matched_chunks": [],
+          "matched_documents": [],
+          "routes": [],
+          "reason": "missing evidence slot"
+        }
+      ],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 0.0,
+      "retrieval_stats": {
+        "queries": [
+          "宁德时代2024年报告期末在职员工数量合计是多少人？ 报告期末在职员工数量合计"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "000157-2025",
+            "000568-2025",
+            "000725-2024",
+            "000858-2023",
+            "000858-2024",
+            "000858-2025",
+            "002230-2024",
+            "002352-2023",
+            "002352-2024",
+            "002352-2025",
+            "002415-2023",
+            "002415-2024",
+            "002415-2025",
+            "002475-2024",
+            "002475-2025",
+            "002594-2024",
+            "002594-2025",
+            "300059-2023",
+            "300059-2025",
+            "300124-2023",
+            "300124-2025",
+            "300274-2024",
+            "300750-2023",
+            "300750-2024",
+            "300750-2025",
+            "300760-2023",
+            "600030-2023",
+            "600031-2024",
+            "600900-2024",
+            "601088-2023"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "宁德时代2024年报告期末在职员工数量合计是多少人？ 报告期末在职员工数量合计",
+            "returned": 50,
+            "covered": [],
+            "missing": [
+              "obligation-1"
+            ],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.031054405392392875,
+        "accumulated": 7,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 7,
+          "dropped": 11,
+          "companies": [
+            "300750"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [],
+        "obligations_missing": [
+          "obligation-1"
+        ],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [
+          "obligation-1"
+        ],
+        "post_scope_missing": [
+          "obligation-1"
+        ]
+      },
+      "refusal_expected": false,
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 5061,
+      "answer_tokens_est": 0,
+      "seconds": 73.67
+    },
+    {
+      "id": "ar-fact-010",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 13,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "宁德时代2025年的研发费用是多少千元？ 研发费用"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "000157-2023",
+            "000333-2023",
+            "000333-2024",
+            "000333-2025",
+            "002352-2023",
+            "002352-2025",
+            "300750-2023",
+            "300750-2024",
+            "300750-2025",
+            "601012-2023"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "宁德时代2025年的研发费用是多少千元？ 研发费用",
+            "returned": 50,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.027598020555767037,
+        "accumulated": 13,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 13,
+          "dropped": 7,
+          "companies": [
+            "300750"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 8645,
+      "answer_tokens_est": 0,
+      "seconds": 65.31
+    },
+    {
+      "id": "ar-fact-011",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2025"
+      ],
+      "retrieved_docs": [
+        "600036-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2025年末的核心一级资本充足率是多少？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600036-2023",
+            "600036-2024",
+            "600036-2025",
+            "601166-2023",
+            "601166-2024",
+            "601166-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2025年末的核心一级资本充足率是多少？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.03177805800756621,
+        "accumulated": 5,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 5,
+          "dropped": 0,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3754,
+      "answer_tokens_est": 0,
+      "seconds": 13.82
+    },
+    {
+      "id": "ar-fact-012",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2023"
+      ],
+      "retrieved_docs": [
+        "600036-2023"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2023年服务的零售客户数是多少亿户？"
+        ],
+        "returned": 6,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600036-2023",
+            "600036-2024",
+            "600036-2025",
+            "601166-2024",
+            "601166-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2023年服务的零售客户数是多少亿户？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.032018442622950824,
+        "accumulated": 3,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 3,
+          "dropped": 3,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2023
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [
+          "600036-2023_chunk_7"
+        ],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2506,
+      "answer_tokens_est": 0,
+      "seconds": 14.91
+    },
+    {
+      "id": "ar-table-005",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2023"
+      ],
+      "retrieved_docs": [
+        "600519-2023"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 4,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 末合并资产负债表；缺少证据义务: obligation-1",
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        {
+          "obligation_id": "obligation-1",
+          "company": "贵州茅台",
+          "year": 2023,
+          "metric": "末合并资产负债表 + 存货",
+          "expected_kind": "multi_value",
+          "expected_value": null,
+          "required": true,
+          "source_scope": "annual_report",
+          "route_ids": [
+            "route-1"
+          ],
+          "status": "missing",
+          "matched_chunks": [],
+          "matched_documents": [],
+          "routes": [],
+          "reason": "missing evidence slot"
+        }
+      ],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 0.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台 2023年 末合并资产负债表 存货 年度报告"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "贵州茅台 2023年 末合并资产负债表 存货 年度报告",
+            "returned": 50,
+            "covered": [],
+            "missing": [
+              "obligation-1"
+            ],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.032266458495966696,
+        "accumulated": 4,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 11,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2023
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [],
+        "obligations_missing": [
+          "obligation-1"
+        ],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [
+          "obligation-1"
+        ],
+        "post_scope_missing": [
+          "obligation-1"
+        ]
+      },
+      "refusal_expected": false,
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3085,
+      "answer_tokens_est": 0,
+      "seconds": 71.5
+    },
+    {
+      "id": "ar-table-006",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2025年茅台酒的毛利率是多少（%）？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "贵州茅台2025年茅台酒的毛利率是多少（%）？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.02821939586645469,
+        "accumulated": 3,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 3,
+          "dropped": 2,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2238,
+      "answer_tokens_est": 0,
+      "seconds": 14.9
+    },
+    {
+      "id": "ar-table-007",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2024"
+      ],
+      "retrieved_docs": [
+        "300750-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": true,
+      "evidence_count": 7,
+      "retry_count": 1,
+      "rewrite_sources": [
+        "rule"
+      ],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "宁德时代 2024年 前五名客户合计销售金额 年度报告"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r1-route-1": 50
+        },
+        "per_query_candidates": {
+          "r1-route-1": 50
+        },
+        "per_query_documents": {
+          "r1-route-1": [
+            "000157-2023",
+            "000333-2023",
+            "000333-2025",
+            "000568-2024",
+            "000725-2024",
+            "000725-2025",
+            "000858-2024",
+            "002230-2024",
+            "002352-2023",
+            "002352-2025",
+            "002415-2024",
+            "002475-2025",
+            "300059-2024",
+            "300059-2025",
+            "300124-2024",
+            "300124-2025",
+            "300274-2025",
+            "300750-2023",
+            "300750-2024",
+            "300750-2025",
+            "300760-2023",
+            "300760-2025",
+            "600690-2025",
+            "603259-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r1-route-1",
+            "query": "宁德时代 2024年 前五名客户合计销售金额 年度报告",
+            "returned": 50,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.029957522915269395,
+        "accumulated": 7,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 7,
+          "dropped": 10,
+          "companies": [
+            "300750"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 4691,
+      "answer_tokens_est": 0,
+      "seconds": 43.95
+    },
+    {
+      "id": "ar-table-008",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2024"
+      ],
+      "retrieved_docs": [
+        "300750-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 1,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "宁德时代2024年前五名客户合计销售金额占年度销售总额的比例是多少？"
+        ],
+        "returned": 6,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000157-2023",
+            "000333-2023",
+            "000333-2024",
+            "000333-2025",
+            "000568-2024",
+            "000858-2024",
+            "002230-2024",
+            "002352-2023",
+            "002352-2025",
+            "002415-2023",
+            "002415-2024",
+            "002594-2024",
+            "300059-2024",
+            "300124-2024",
+            "300124-2025",
+            "300274-2025",
+            "300750-2023",
+            "300750-2024",
+            "300750-2025",
+            "300760-2023",
+            "300760-2025",
+            "600690-2025",
+            "600900-2024",
+            "603259-2025",
+            "603288-2023"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "宁德时代2024年前五名客户合计销售金额占年度销售总额的比例是多少？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.03128054740957967,
+        "accumulated": 1,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 1,
+          "dropped": 5,
+          "companies": [
+            "300750"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [
+          "300750-2024_chunk_33"
+        ],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 721,
+      "answer_tokens_est": 0,
+      "seconds": 14.63
+    },
+    {
+      "id": "ar-table-009",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2025"
+      ],
+      "retrieved_docs": [
+        "600036-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2025年末的客户存款总额是多少亿元？"
+        ],
+        "returned": 6,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000333-2025",
+            "600036-2023",
+            "600036-2024",
+            "600036-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2025年末的客户存款总额是多少亿元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.025206087507926443,
+        "accumulated": 4,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 2,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [
+          "600036-2025_chunk_45"
+        ],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3155,
+      "answer_tokens_est": 0,
+      "seconds": 13.81
+    },
+    {
+      "id": "ar-table-010",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "宁德时代2025年研发费用明细中职工薪酬是多少千元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000333-2023",
+            "002352-2025",
+            "300750-2023",
+            "300750-2024",
+            "300750-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "宁德时代2025年研发费用明细中职工薪酬是多少千元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.031544957774465976,
+        "accumulated": 4,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 1,
+          "companies": [
+            "300750"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2854,
+      "answer_tokens_est": 0,
+      "seconds": 13.7
+    },
+    {
+      "id": "ar-cross-004",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 2,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2025年茅台酒与其他系列酒的营业收入分别是多少元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "贵州茅台2025年茅台酒与其他系列酒的营业收入分别是多少元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2",
+              "obligation-3"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.028588564574170333,
+        "accumulated": 2,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 2,
+          "dropped": 3,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2",
+          "obligation-3"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 1532,
+      "answer_tokens_est": 0,
+      "seconds": 14.39
+    },
+    {
+      "id": "ar-cross-005",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2025年国内与国外的营业收入分别是多少元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "贵州茅台2025年国内与国外的营业收入分别是多少元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2",
+              "obligation-3"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.030886196246139225,
+        "accumulated": 3,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 3,
+          "dropped": 2,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2",
+          "obligation-3"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2281,
+      "answer_tokens_est": 0,
+      "seconds": 13.33
+    },
+    {
+      "id": "ar-cross-006",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "宁德时代2025年境内与境外的营业收入分别是多少千元？"
+        ],
+        "returned": 6,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "300750-2023",
+            "300750-2024",
+            "300750-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "宁德时代2025年境内与境外的营业收入分别是多少千元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2",
+              "obligation-3"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.029030910609857977,
+        "accumulated": 3,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 3,
+          "dropped": 3,
+          "companies": [
+            "300750"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2",
+          "obligation-3"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [
+          "300750-2025_chunk_252"
+        ],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2386,
+      "answer_tokens_est": 0,
+      "seconds": 14.11
+    },
+    {
+      "id": "ar-cross-007",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2024"
+      ],
+      "retrieved_docs": [
+        "600036-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 2,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2024年营业收入中净利息收入与非利息净收入的占比分别是多少？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600036-2023",
+            "600036-2024",
+            "600036-2025",
+            "601166-2023",
+            "601166-2024",
+            "601166-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2024年营业收入中净利息收入与非利息净收入的占比分别是多少？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2",
+              "obligation-3"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.032266458495966696,
+        "accumulated": 2,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 2,
+          "dropped": 3,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2",
+          "obligation-3"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 1657,
+      "answer_tokens_est": 0,
+      "seconds": 14.79
+    },
+    {
+      "id": "ar-cross-008",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2024"
+      ],
+      "retrieved_docs": [
+        "600036-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2024年末的核心一级资本充足率与一级资本充足率分别是多少？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "600036-2023",
+            "600036-2024",
+            "600036-2025",
+            "601166-2024",
+            "601166-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2024年末的核心一级资本充足率与一级资本充足率分别是多少？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.030886196246139225,
+        "accumulated": 4,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 1,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3024,
+      "answer_tokens_est": 0,
+      "seconds": 13.6
+    },
+    {
+      "id": "ar-cross-009",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 2,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2025年茅台酒与系列酒的基酒设计产能分别是多少吨？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000568-2024",
+            "000858-2023",
+            "000858-2024",
+            "000858-2025",
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "贵州茅台2025年茅台酒与系列酒的基酒设计产能分别是多少吨？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2",
+              "obligation-3"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.032266458495966696,
+        "accumulated": 2,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 2,
+          "dropped": 3,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2",
+          "obligation-3"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 1666,
+      "answer_tokens_est": 0,
+      "seconds": 13.55
+    },
+    {
+      "id": "ar-multi-004",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2024",
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2024",
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": true,
+      "evidence_count": 18,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": false,
+      "graded_reason": "证据义务存在多口径歧义: obligation-1",
+      "obligation_coverage": 0.5,
+      "missing_obligations": [],
+      "ambiguous_obligations": [
+        {
+          "obligation_id": "obligation-1",
+          "company": "宁德时代",
+          "year": 2024,
+          "metric": "销售费用",
+          "expected_kind": "multi_value",
+          "expected_value": null,
+          "required": true,
+          "source_scope": "annual_report",
+          "route_ids": [
+            "route-1"
+          ],
+          "status": "ambiguous",
+          "matched_chunks": [
+            "300750-2024_chunk_34",
+            "300750-2024_chunk_253"
+          ],
+          "matched_documents": [
+            "300750-2024"
+          ],
+          "routes": [
+            "r2-route-1"
+          ],
+          "reason": "same document has multiple candidate values for this metric"
+        }
+      ],
+      "route_coverage_rate": 0.5,
+      "retrieval_stats": {
+        "queries": [
+          "宁德时代2024年与2025年的销售费用分别是多少千元？ 销售费用"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "000333-2023",
+            "000333-2024",
+            "000333-2025",
+            "002352-2025",
+            "300750-2023",
+            "300750-2024",
+            "300750-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "宁德时代2024年与2025年的销售费用分别是多少千元？ 销售费用",
+            "returned": 50,
+            "covered": [
+              "obligation-2"
+            ],
+            "missing": [],
+            "ambiguous": [
+              "obligation-1"
+            ]
+          }
+        ],
+        "top_score": 0.026151315789473682,
+        "accumulated": 18,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 18,
+          "dropped": 2,
+          "companies": [
+            "300750"
+          ],
+          "years": [
+            2024,
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-2"
+        ],
+        "obligations_missing": [
+          "obligation-1"
+        ],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": true,
+      "status": "ambiguous_evidence",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 11879,
+      "answer_tokens_est": 0,
+      "seconds": 74.71
+    },
+    {
+      "id": "ar-multi-005",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2023",
+        "600519-2024"
+      ],
+      "retrieved_docs": [
+        "600519-2023",
+        "600519-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": true,
+      "evidence_count": 17,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台2023年与2024年的销售费用分别是多少元？ 销售费用"
+        ],
+        "returned": 16,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "000333-2023",
+            "000333-2024",
+            "000333-2025",
+            "000568-2024",
+            "000858-2023",
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "贵州茅台2023年与2024年的销售费用分别是多少元？ 销售费用",
+            "returned": 50,
+            "covered": [
+              "obligation-1",
+              "obligation-2"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.022202129797066504,
+        "accumulated": 17,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 17,
+          "dropped": 3,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2023,
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [
+          "600519-2024_chunk_12"
+        ],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 12646,
+      "answer_tokens_est": 0,
+      "seconds": 71.65
+    },
+    {
+      "id": "ar-multi-006",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2023",
+        "600036-2024"
+      ],
+      "retrieved_docs": [
+        "600036-2023",
+        "600036-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2023年末与2024年末的拨备覆盖率分别是多少？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000333-2024",
+            "600036-2023",
+            "600036-2024",
+            "600036-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2023年末与2024年末的拨备覆盖率分别是多少？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.024568668046928914,
+        "accumulated": 4,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 1,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2023,
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3063,
+      "answer_tokens_est": 0,
+      "seconds": 14.39
+    },
+    {
+      "id": "ar-multi-007",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2024",
+        "600036-2025"
+      ],
+      "retrieved_docs": [
+        "600036-2024",
+        "600036-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2024年与2025年的非利息净收入分别是多少亿元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000333-2024",
+            "000333-2025",
+            "600036-2023",
+            "600036-2024",
+            "600036-2025",
+            "601166-2023",
+            "601166-2024",
+            "601166-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2024年与2025年的非利息净收入分别是多少亿元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.030090497737556562,
+        "accumulated": 3,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 3,
+          "dropped": 2,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2024,
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2177,
+      "answer_tokens_est": 0,
+      "seconds": 16.07
+    },
+    {
+      "id": "ar-calc-003",
+      "question_type": "calc",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 11,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 茅台酒营业收入,分产品小计；缺少证据义务: obligation-1,obligation-2",
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        {
+          "obligation_id": "obligation-1",
+          "company": "贵州茅台",
+          "year": 2025,
+          "metric": "茅台酒营业收入",
+          "expected_kind": "calculation_input",
+          "expected_value": null,
+          "required": true,
+          "source_scope": "annual_report",
+          "route_ids": [
+            "route-1"
+          ],
+          "status": "missing",
+          "matched_chunks": [],
+          "matched_documents": [],
+          "routes": [],
+          "reason": "missing evidence slot"
+        },
+        {
+          "obligation_id": "obligation-2",
+          "company": "贵州茅台",
+          "year": 2025,
+          "metric": "分产品小计",
+          "expected_kind": "calculation_input",
+          "expected_value": null,
+          "required": true,
+          "source_scope": "annual_report",
+          "route_ids": [
+            "route-2"
+          ],
+          "status": "missing",
+          "matched_chunks": [],
+          "matched_documents": [],
+          "routes": [],
+          "reason": "missing evidence slot"
+        }
+      ],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 0.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台 2025年 茅台酒营业收入 分产品小计 年度报告"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "贵州茅台 2025年 茅台酒营业收入 分产品小计 年度报告",
+            "returned": 50,
+            "covered": [],
+            "missing": [
+              "obligation-1",
+              "obligation-2"
+            ],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.026500526500526502,
+        "accumulated": 11,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 11,
+          "dropped": 6,
+          "companies": [
+            "600519"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [],
+        "obligations_missing": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "post_scope_missing": [
+          "obligation-1",
+          "obligation-2"
+        ]
+      },
+      "refusal_expected": false,
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 8568,
+      "answer_tokens_est": 0,
+      "seconds": 78.07
+    },
+    {
+      "id": "ar-calc-004",
+      "question_type": "calc",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 9,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 境内营业收入比境外营业收入多约；缺少证据义务: obligation-1",
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        {
+          "obligation_id": "obligation-1",
+          "company": "宁德时代",
+          "year": 2025,
+          "metric": "境内营业收入比境外营业收入多约",
+          "expected_kind": "single_value",
+          "expected_value": null,
+          "required": true,
+          "source_scope": "annual_report",
+          "route_ids": [
+            "route-1"
+          ],
+          "status": "missing",
+          "matched_chunks": [],
+          "matched_documents": [],
+          "routes": [],
+          "reason": "missing evidence slot"
+        }
+      ],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 0.0,
+      "retrieval_stats": {
+        "queries": [
+          "宁德时代2025年境内营业收入比境外营业收入多约多少千元？ 境内营业收入比境外营业收入多约"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "000157-2024",
+            "000157-2025",
+            "000568-2023",
+            "000568-2024",
+            "000568-2025",
+            "002352-2023",
+            "002352-2025",
+            "002415-2023",
+            "002415-2024",
+            "002415-2025",
+            "300124-2025",
+            "300750-2023",
+            "300750-2024",
+            "300750-2025",
+            "300760-2023",
+            "300760-2024",
+            "300760-2025",
+            "600900-2024",
+            "603259-2023",
+            "603259-2024",
+            "603259-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "宁德时代2025年境内营业收入比境外营业收入多约多少千元？ 境内营业收入比境外营业收入多约",
+            "returned": 50,
+            "covered": [],
+            "missing": [
+              "obligation-1"
+            ],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.03021353930031804,
+        "accumulated": 9,
+        "budget": 15,
+        "scope": {
+          "scoped": true,
+          "kept": 9,
+          "dropped": 8,
+          "companies": [
+            "300750"
+          ],
+          "years": [
+            2025
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [],
+        "obligations_missing": [
+          "obligation-1"
+        ],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [
+          "obligation-1"
+        ],
+        "post_scope_missing": [
+          "obligation-1"
+        ]
+      },
+      "refusal_expected": false,
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 6560,
+      "answer_tokens_est": 0,
+      "seconds": 67.77
+    },
+    {
+      "id": "ar-calc-005",
+      "question_type": "calc",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2024"
+      ],
+      "retrieved_docs": [
+        "600036-2023",
+        "600036-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 2,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "招商银行2024年营业收入较2023年减少约多少亿元？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000333-2023",
+            "000333-2024",
+            "000333-2025",
+            "002230-2024",
+            "002352-2024",
+            "002352-2025",
+            "600030-2023",
+            "600036-2023",
+            "600036-2024",
+            "600036-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "招商银行2024年营业收入较2023年减少约多少亿元？",
+            "returned": 25,
+            "covered": [
+              "obligation-1",
+              "obligation-2"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.02571241401899771,
+        "accumulated": 4,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 1,
+          "companies": [
+            "600036"
+          ],
+          "years": [
+            2023,
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1",
+          "obligation-2"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [
+        "600036-2023"
+      ],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 3085,
+      "answer_tokens_est": 0,
+      "seconds": 13.34
+    },
+    {
+      "id": "ar-refuse-004",
+      "question_type": "refuse",
+      "expected_behavior": "refuse",
+      "wanted_docs": [],
+      "retrieved_docs": [
+        "600519-2023",
+        "600519-2024",
+        "600519-2025"
+      ],
+      "doc_recall": null,
+      "all_docs_hit": null,
+      "first_relevant_rank_top5": null,
+      "evidence_hit_top5": null,
+      "evidence_hit_final": null,
+      "evidence_count": 19,
+      "retry_count": 2,
+      "rewrite_sources": [
+        "rule",
+        "rule"
+      ],
+      "graded_passed": false,
+      "graded_reason": "证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 第一季度；缺少证据义务: obligation-1",
+      "obligation_coverage": 0.0,
+      "missing_obligations": [
+        {
+          "obligation_id": "obligation-1",
+          "company": "贵州茅台",
+          "year": 2026,
+          "metric": "第一季度 + 营业收入",
+          "expected_kind": "multi_value",
+          "expected_value": null,
+          "required": true,
+          "source_scope": "annual_report",
+          "route_ids": [
+            "route-1"
+          ],
+          "status": "missing",
+          "matched_chunks": [],
+          "matched_documents": [],
+          "routes": [],
+          "reason": "missing evidence slot"
+        }
+      ],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 0.0,
+      "retrieval_stats": {
+        "queries": [
+          "贵州茅台 2026年 第一季度 营业收入 年度报告"
+        ],
+        "returned": 15,
+        "top_k": 15,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r2-route-1": 50
+        },
+        "per_query_candidates": {
+          "r2-route-1": 50
+        },
+        "per_query_documents": {
+          "r2-route-1": [
+            "600519-2023",
+            "600519-2024",
+            "600519-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r2-route-1",
+            "query": "贵州茅台 2026年 第一季度 营业收入 年度报告",
+            "returned": 50,
+            "covered": [],
+            "missing": [
+              "obligation-1"
+            ],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.026022913256955812,
+        "accumulated": 19,
+        "budget": 15,
+        "scope": {
+          "scoped": false,
+          "reason": "裁剪后为空，回退原集合",
+          "kept": 19,
+          "dropped": 0
+        },
+        "obligations_covered": [],
+        "obligations_missing": [
+          "obligation-1"
+        ],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [
+          "obligation-1"
+        ],
+        "post_scope_missing": [
+          "obligation-1"
+        ]
+      },
+      "refusal_expected": false,
+      "needs_human_review": true,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [
+        "600519-2023",
+        "600519-2024",
+        "600519-2025"
+      ],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 13920,
+      "answer_tokens_est": 0,
+      "seconds": 65.94
+    },
+    {
+      "id": "ar-refuse-005",
+      "question_type": "refuse",
+      "expected_behavior": "refuse",
+      "wanted_docs": [],
+      "retrieved_docs": [
+        "601012-2024"
+      ],
+      "doc_recall": null,
+      "all_docs_hit": null,
+      "first_relevant_rank_top5": null,
+      "evidence_hit_top5": null,
+      "evidence_hit_final": null,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "obligation_coverage": 1.0,
+      "missing_obligations": [],
+      "ambiguous_obligations": [],
+      "route_coverage_rate": 1.0,
+      "retrieval_stats": {
+        "queries": [
+          "隆基绿能2024年的营业收入是多少？"
+        ],
+        "returned": 5,
+        "top_k": 5,
+        "obligation_fills": [],
+        "per_query_returned": {
+          "r0-route-1": 25
+        },
+        "per_query_candidates": {
+          "r0-route-1": 50
+        },
+        "per_query_documents": {
+          "r0-route-1": [
+            "000333-2024",
+            "601012-2023",
+            "601012-2024",
+            "601012-2025"
+          ]
+        },
+        "route_coverage": [
+          {
+            "query_id": "r0-route-1",
+            "query": "隆基绿能2024年的营业收入是多少？",
+            "returned": 25,
+            "covered": [
+              "obligation-1"
+            ],
+            "missing": [],
+            "ambiguous": []
+          }
+        ],
+        "top_score": 0.02492401215805471,
+        "accumulated": 4,
+        "budget": 5,
+        "scope": {
+          "scoped": true,
+          "kept": 4,
+          "dropped": 1,
+          "companies": [
+            "601012"
+          ],
+          "years": [
+            2024
+          ],
+          "year_window": 0
+        },
+        "obligations_covered": [
+          "obligation-1"
+        ],
+        "obligations_missing": [],
+        "obligation_fill_chunks": [],
+        "pre_scope_missing": [],
+        "post_scope_missing": []
+      },
+      "refusal_expected": false,
+      "needs_human_review": false,
+      "status": "retrieval_only",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": null,
+      "foreign_evidence_docs": [
+        "601012-2024"
+      ],
+      "foreign_cited_docs": [],
+      "grounding_checked": null,
+      "grounding_verified": null,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": false,
+      "prompt_tokens_est": 2428,
+      "answer_tokens_est": 0,
+      "seconds": 13.02
+    }
+  ],
+  "elapsed_seconds": 1969.9
+}

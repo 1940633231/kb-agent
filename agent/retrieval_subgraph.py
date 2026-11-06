@@ -15,6 +15,10 @@ from typing import Any, Dict, List, TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
+from agent.evidence_contract import (
+    assess_route_coverage,
+    preserve_obligation_evidence,
+)
 from rag_adapter import rag
 
 
@@ -24,7 +28,11 @@ class RetrievalState(TypedDict, total=False):
     queries: List[str]
     anchor: str          # 用于统一重排的锚点查询（通常是用户原始问题）
     top_k: int
+    obligations: List[Dict[str, Any]]
+    route_prefix: str
     candidates: List[Dict[str, Any]]
+    route_hits: List[Dict[str, Any]]
+    route_coverage: List[Dict[str, Any]]
     stats: Dict[str, Any]
 
 
@@ -36,7 +44,16 @@ def merge_candidates(candidates: List[Dict]) -> List[Dict]:
         current = best.get(key)
         if current is None or float(hit.get("score", 0.0)) > float(
                 current.get("score", 0.0)):
-            best[key] = hit
+            merged = dict(hit)
+            if current is not None:
+                merged["retrieval_routes"] = sorted(set(
+                    current.get("retrieval_routes") or []
+                ) | set(hit.get("retrieval_routes") or []))
+            best[key] = merged
+        else:
+            current["retrieval_routes"] = sorted(set(
+                current.get("retrieval_routes") or []
+            ) | set(hit.get("retrieval_routes") or []))
     return sorted(best.values(), key=lambda h: float(h.get("score", 0.0)),
                   reverse=True)
 
@@ -57,12 +74,57 @@ def build_retrieval_subgraph(runtime: Any):
         """多路查询一次检索（合并去重 + 单次重排），记录检索统计。"""
         top_k = int(state.get("top_k") or runtime.top_k)
         queries = state.get("queries") or []
-        hits = rag.retrieve_multi(runtime.service, queries, top_k=top_k,
-                                  anchor=state.get("anchor"))
+        obligations = state.get("obligations") or []
+        hits, route_hits = rag.retrieve_multi_with_routes(
+            runtime.service, queries, top_k=top_k, anchor=state.get("anchor"))
+        prefix = str(state.get("route_prefix") or "")
+        if prefix:
+            for route in route_hits:
+                old_id = str(route.get("query_id"))
+                route["query_id"] = prefix + old_id
+                for hit in route.get("hits") or []:
+                    hit["retrieval_routes"] = [
+                        prefix + str(item)
+                        for item in hit.get("retrieval_routes") or []
+                    ]
+            for hit in hits:
+                hit["retrieval_routes"] = [
+                    prefix + str(item)
+                    for item in hit.get("retrieval_routes") or []
+                ]
+        hits = merge_candidates(hits)
+        hits, obligation_fills = preserve_obligation_evidence(
+            hits, route_hits, obligations)
+        route_coverage = assess_route_coverage(route_hits, obligations)
+        per_query_returned = {
+            route["query_id"]: route.get("returned", 0)
+            for route in route_hits
+        }
+        per_query_candidates = {
+            route["query_id"]: route.get("candidate_count", 0)
+            for route in route_hits
+        }
+        per_query_documents = {
+            route["query_id"]: sorted({
+                str(hit.get("document_id")
+                    or (hit.get("metadata") or {}).get("document_id") or "")
+                for hit in route.get("hits") or []
+                if hit.get("document_id")
+                or (hit.get("metadata") or {}).get("document_id")
+            })
+            for route in route_hits
+        }
         return {
             "candidates": hits,
+            "route_hits": route_hits,
+            "route_coverage": route_coverage,
             "stats": {"queries": list(queries), "returned": len(hits),
                       "top_k": top_k,
+                      "obligation_fills": obligation_fills,
+                      "per_query_returned": per_query_returned,
+                      "per_query_candidates": per_query_candidates,
+                      "per_query_documents": per_query_documents,
+                      "route_coverage": route_coverage,
                       "top_score": float(hits[0].get("score", 0.0)) if hits else None},
         }
 

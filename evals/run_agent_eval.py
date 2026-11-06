@@ -199,6 +199,22 @@ def evaluate(questions: List[Dict], args) -> Dict:
             if doc and (doc.split("-")[0] not in wanted_companies
                         or doc.split("-")[1] not in wanted_years))
         cited_docs = {c.get("document_id") for c in (result.get("citations") or [])}
+        retrieval_score = result.get("retrieval_score") or {}
+        required_obligations = {
+            item.get("obligation_id")
+            for item in retrieval_score.get("obligations") or []
+            if item.get("required", True)
+        }
+        route_covered_obligations = {
+            obligation_id
+            for route in retrieval_score.get("route_coverage") or []
+            for obligation_id in route.get("covered") or []
+        }
+        route_coverage_rate = (
+            len(required_obligations & route_covered_obligations)
+            / len(required_obligations)
+            if required_obligations else None
+        )
         foreign_cited = sorted(
             doc for doc in cited_docs
             if doc and (doc.split("-")[0] not in wanted_companies
@@ -218,8 +234,14 @@ def evaluate(questions: List[Dict], args) -> Dict:
             "retry_count": result.get("retry_count", 0),
             "rewrite_sources": [entry.get("source")
                                 for entry in result.get("rewrite_history") or []],
-            "graded_passed": (result.get("retrieval_score") or {}).get("passed"),
-            "graded_reason": (result.get("retrieval_score") or {}).get("reason"),
+            "graded_passed": retrieval_score.get("passed"),
+            "graded_reason": retrieval_score.get("reason"),
+            "obligation_coverage": retrieval_score.get("obligation_coverage"),
+            "missing_obligations": retrieval_score.get("missing_obligations") or [],
+            "ambiguous_obligations": retrieval_score.get("ambiguous_obligations") or [],
+            "route_coverage_rate": route_coverage_rate,
+            "retrieval_stats": result.get("retrieval_stats") or {},
+            "refusal_expected": retrieval_score.get("refusal_expected"),
             "needs_human_review": result.get("needs_human_review"),
             "status": result.get("status"),
             "repairs": len(result.get("repair_history") or []),
@@ -269,6 +291,14 @@ def evaluate(questions: List[Dict], args) -> Dict:
             [1.0 if r["evidence_hit_top5"] else 0.0 for r in scored]),
         "evidence_hit_final": mean([1.0 if r["evidence_hit_final"] else 0.0
                                     for r in scored]),
+        "evidence_obligation_coverage": mean(
+            [r["obligation_coverage"] for r in answerable]),
+        "missing_obligation_rate": mean(
+            [1.0 if r["missing_obligations"] else 0.0 for r in answerable]),
+        "ambiguous_obligation_rate": mean(
+            [1.0 if r["ambiguous_obligations"] else 0.0 for r in answerable]),
+        "route_obligation_coverage": mean(
+            [r["route_coverage_rate"] for r in answerable]),
         "mean_evidence_count": mean([r["evidence_count"] for r in rows]),
         "retry_rate": round(len(retried) / len(rows), 4) if rows else None,
         "mean_retries": mean([r["retry_count"] for r in rows]),

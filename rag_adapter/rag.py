@@ -62,18 +62,58 @@ def retrieve_multi(service: RAGService, queries: List[str], top_k: int = 5,
     这里对齐 pipeline 的多路召回语义（_search_all 按路均分候选池后合并），
     再用 anchor（用户原始问题）统一重排，排序口径一致。
     """
+    hits, _ = retrieve_multi_with_routes(service, queries, top_k=top_k,
+                                         anchor=anchor)
+    return hits
+
+
+def retrieve_multi_with_routes(
+        service: RAGService, queries: List[str], top_k: int = 5,
+        anchor: Optional[str] = None
+        ) -> Tuple[List[Dict], List[Dict]]:
+    """Retrieve each route separately, preserve route provenance, rerank once.
+
+    This is intentionally more expensive than a single fused ``_search_all``:
+    it runs dense/BM25 retrieval once per query so every candidate can be traced
+    back to the sub-query that found it. Cross-Encoder reranking still runs only
+    once over the merged pool.
+    """
     pipeline = service._pipeline  # noqa: SLF001
-    ordered = [q for q in (queries or []) if q and q.strip()]
+    ordered = [q.strip() for q in (queries or []) if q and q.strip()]
     if not ordered:
-        return []
+        return [], []
     primary = anchor or ordered[0]
-    candidates = pipeline._search_all(primary, ordered)  # noqa: SLF001
-    candidates = pipeline._filter_active_versions(candidates)  # noqa: SLF001
+    route_limit = max(20, min(50, top_k * 5))
+    candidates: List[Dict] = []
+    routes: List[Dict] = []
+
+    for index, query in enumerate(ordered, start=1):
+        query_id = "route-{}".format(index)
+        raw = pipeline._search_all(query, [query])  # noqa: SLF001
+        filtered = pipeline._filter_active_versions(raw)  # noqa: SLF001
+        ranked = sorted(filtered, key=lambda r: r.get("score", 0.0),
+                        reverse=True)
+        route_hits: List[Dict] = []
+        for hit in ranked[:route_limit]:
+            copied = dict(hit)
+            copied["retrieval_routes"] = [query_id]
+            route_hits.append(copied)
+            candidates.append(copied)
+        routes.append({
+            "query_id": query_id,
+            "query": query,
+            "candidate_count": len(filtered),
+            "returned": len(route_hits),
+            "hits": route_hits,
+        })
+
     candidates = _dedupe_keep_best(candidates)
     if pipeline.reranker is not None:
-        return pipeline.reranker.rerank(primary, candidates, top_k=top_k)
-    return sorted(candidates, key=lambda r: r.get("score", 0.0),
-                  reverse=True)[:top_k]
+        reranked = pipeline.reranker.rerank(primary, candidates, top_k=top_k)
+    else:
+        reranked = sorted(candidates, key=lambda r: r.get("score", 0.0),
+                          reverse=True)[:top_k]
+    return reranked, routes
 
 
 def _dedupe_keep_best(candidates: List[Dict]) -> List[Dict]:
@@ -84,7 +124,16 @@ def _dedupe_keep_best(candidates: List[Dict]) -> List[Dict]:
         current = best.get(key)
         if current is None or float(hit.get("score", 0.0)) > float(
                 current.get("score", 0.0)):
-            best[key] = hit
+            merged = dict(hit)
+            if current is not None:
+                merged["retrieval_routes"] = sorted(set(
+                    current.get("retrieval_routes") or []
+                ) | set(hit.get("retrieval_routes") or []))
+            best[key] = merged
+        else:
+            current["retrieval_routes"] = sorted(set(
+                current.get("retrieval_routes") or []
+            ) | set(hit.get("retrieval_routes") or []))
     return list(best.values())
 
 
@@ -108,6 +157,34 @@ def accumulate_evidence(previous: List[Dict], incoming: List[Dict],
         seen.add(key)
         merged.append(hit)
     return merged[:limit]
+
+
+def cap_evidence_preserving(candidates: List[Dict], limit: int,
+                            protected_keys: set[str]) -> List[Dict]:
+    """Cap the evidence pool without dropping obligation-critical chunks."""
+    if len(candidates) <= limit:
+        return list(candidates)
+    protected = [
+        hit for hit in candidates
+        if str(hit.get("chunk_id") or hit.get("vector_id")) in protected_keys
+    ]
+    ordinary = [
+        hit for hit in candidates
+        if str(hit.get("chunk_id") or hit.get("vector_id")) not in protected_keys
+    ]
+    ordinary_slots = max(0, limit - len(protected))
+    selected = {
+        str(hit.get("chunk_id") or hit.get("vector_id"))
+        for hit in ordinary[:ordinary_slots]
+    }
+    selected.update(
+        str(hit.get("chunk_id") or hit.get("vector_id")) for hit in protected
+    )
+    kept = [
+        hit for hit in candidates
+        if str(hit.get("chunk_id") or hit.get("vector_id")) in selected
+    ]
+    return kept[:limit]
 
 
 def load_annual_reports(registry_path: Optional[Path] = None
