@@ -180,6 +180,8 @@ def run_generation(questions: list[dict], repeats: int,
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "elapsed_seconds": round(time.time() - started, 2),
+        "model": "BAAI/bge-small-zh-v1.5 + {}".format(
+            os.environ.get("LLM_MODEL", "LLM_MODEL")),
         "dataset": dataset_meta(questions),
         "config": {
             "repeats": repeats,

@@ -1,16 +1,15 @@
 {
-  "generated_at": "2026-11-06T07:23:30.655488+00:00",
-  "status": "stale_dataset_manifest_mismatch",
-  "model": "deepseek-flash + BAAI/bge-small-zh-v1.5",
-  "elapsed_seconds": 1034.27,
+  "generated_at": "2026-11-06T13:15:15.739395+00:00",
+  "elapsed_seconds": 1744.39,
+  "model": "BAAI/bge-small-zh-v1.5 + deepseek-flash",
   "dataset": {
     "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
     "manifest": {
       "dataset_id": "kb-agent-scaled-120",
       "version": "v1",
-      "generated_at": "2026-11-06T05:57:15.896578+00:00",
+      "generated_at": "2026-11-06T08:33:01.706287+00:00",
       "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
-      "sha256": "de02bd689ecdfcc900105f1f1be02b7c280c484529e78837c6f73086a611ece3",
+      "sha256": "805751e132a5f94f7b80015ac232180d3480876cfdddf74360ddbda41eb895a1",
       "corpus_metadata_sha256": "38bbabd11e54afbe1c3a4c5f67112bfb4640c503ad750fc824ebbe06e982deba",
       "companies": 30,
       "documents": 90,
@@ -40,38 +39,31 @@
   },
   "metrics": {
     "all_docs_hit@5": {
-      "mean": 0.8476,
+      "mean": 1.0,
       "stddev": 0.0,
-      "min": 0.8476,
-      "max": 0.8476,
+      "min": 1.0,
+      "max": 1.0,
       "runs": 3
     },
     "ambiguous_obligation_rate": {
-      "mean": 0.0,
+      "mean": 0.0095,
       "stddev": 0.0,
-      "min": 0.0,
-      "max": 0.0,
+      "min": 0.0095,
+      "max": 0.0095,
       "runs": 3
     },
     "answer_tokens_est_mean": {
-      "mean": 84.4111,
-      "stddev": 2.075633,
-      "min": 82.2417,
-      "max": 87.2083,
+      "mean": 70.108367,
+      "stddev": 3.538852,
+      "min": 65.1167,
+      "max": 72.9167,
       "runs": 3
     },
     "answer_value_rate": {
-      "mean": 0.126967,
-      "stddev": 0.004478,
-      "min": 0.1238,
-      "max": 0.1333,
-      "runs": 3
-    },
-    "answer_correctness": {
-      "mean": 0.126967,
-      "stddev": 0.004478,
-      "min": 0.1238,
-      "max": 0.1333,
+      "mean": 0.495267,
+      "stddev": 0.020569,
+      "min": 0.4667,
+      "max": 0.5143,
       "runs": 3
     },
     "answerable_questions": {
@@ -82,31 +74,24 @@
       "runs": 3
     },
     "citation_coverage": {
-      "mean": 0.9906,
-      "stddev": 0.003879,
-      "min": 0.9859,
-      "max": 0.9954,
+      "mean": 0.994533,
+      "stddev": 0.00392,
+      "min": 0.991,
+      "max": 1.0,
       "runs": 3
     },
     "citation_full_coverage_rate": {
-      "mean": 0.981733,
-      "stddev": 0.006178,
-      "min": 0.973,
-      "max": 0.9863,
-      "runs": 3
-    },
-    "citation_full_coverage": {
-      "mean": 0.981733,
-      "stddev": 0.006178,
-      "min": 0.973,
-      "max": 0.9863,
+      "mean": 0.978967,
+      "stddev": 0.015646,
+      "min": 0.9625,
+      "max": 1.0,
       "runs": 3
     },
     "citation_rate": {
-      "mean": 0.876167,
-      "stddev": 0.013482,
-      "min": 0.8571,
-      "max": 0.8857,
+      "mean": 0.844433,
+      "stddev": 0.025011,
+      "min": 0.8095,
+      "max": 0.8667,
       "runs": 3
     },
     "citation_valid_rate": {
@@ -117,10 +102,10 @@
       "runs": 3
     },
     "claim_support_rate": {
-      "mean": 0.5953,
-      "stddev": 0.028202,
-      "min": 0.5646,
-      "max": 0.6327,
+      "mean": 0.656367,
+      "stddev": 0.009263,
+      "min": 0.6468,
+      "max": 0.6689,
       "runs": 3
     },
     "context_overflow_rate": {
@@ -130,67 +115,74 @@
       "max": 0.0,
       "runs": 3
     },
-    "doc_mrr": {
-      "mean": 0.9143,
+    "cross_document_contamination_rate": {
+      "mean": 0.0,
       "stddev": 0.0,
-      "min": 0.9143,
-      "max": 0.9143,
+      "min": 0.0,
+      "max": 0.0,
+      "runs": 3
+    },
+    "doc_mrr": {
+      "mean": 1.0,
+      "stddev": 0.0,
+      "min": 1.0,
+      "max": 1.0,
       "runs": 3
     },
     "doc_recall@5": {
-      "mean": 0.881,
+      "mean": 1.0,
       "stddev": 0.0,
-      "min": 0.881,
-      "max": 0.881,
+      "min": 1.0,
+      "max": 1.0,
       "runs": 3
     },
     "evidence_hit@5": {
-      "mean": 0.2286,
+      "mean": 0.4,
       "stddev": 0.0,
-      "min": 0.2286,
-      "max": 0.2286,
+      "min": 0.4,
+      "max": 0.4,
       "runs": 3
     },
     "evidence_hit_final": {
-      "mean": 0.2286,
+      "mean": 0.4,
       "stddev": 0.0,
-      "min": 0.2286,
-      "max": 0.2286,
+      "min": 0.4,
+      "max": 0.4,
       "runs": 3
     },
     "evidence_obligation_coverage": {
-      "mean": 0.5667,
+      "mean": 0.8333,
       "stddev": 0.0,
-      "min": 0.5667,
-      "max": 0.5667,
+      "min": 0.8333,
+      "max": 0.8333,
       "runs": 3
     },
     "foreign_citation_rate": {
-      "mean": 0.073,
-      "stddev": 0.011893,
-      "min": 0.0571,
-      "max": 0.0857,
+      "mean": 0.0,
+      "stddev": 0.0,
+      "min": 0.0,
+      "max": 0.0,
       "runs": 3
     },
     "foreign_evidence_rate": {
-      "mean": 0.0857,
+      "mean": 0.0,
       "stddev": 0.0,
-      "min": 0.0857,
-      "max": 0.0857,
+      "min": 0.0,
+      "max": 0.0,
       "runs": 3
     },
     "grounding_verified_rate": {
-      "mean": 0.871733,
-      "stddev": 0.011035,
-      "min": 0.863,
-      "max": 0.8873,
+      "mean": 0.7671,
+      "stddev": 0.013189,
+      "min": 0.75,
+      "max": 0.7821,
       "runs": 3
     },
     "mean_evidence_count": {
-      "mean": 2.9917,
+      "mean": 4.4167,
       "stddev": 0.0,
-      "min": 2.9917,
-      "max": 2.9917,
+      "min": 4.4167,
+      "max": 4.4167,
       "runs": 3
     },
     "mean_retries": {
@@ -201,45 +193,38 @@
       "runs": 3
     },
     "mean_seconds_per_query": {
-      "mean": 2.704,
-      "stddev": 0.047177,
-      "min": 2.6693,
-      "max": 2.7707,
+      "mean": 4.4513,
+      "stddev": 0.115448,
+      "min": 4.312,
+      "max": 4.5947,
       "runs": 3
     },
     "mean_ungrounded_numbers": {
-      "mean": 0.125,
-      "stddev": 0.024514,
-      "min": 0.0917,
-      "max": 0.15,
+      "mean": 0.269433,
+      "stddev": 0.027513,
+      "min": 0.2333,
+      "max": 0.3,
       "runs": 3
     },
     "missing_obligation_rate": {
-      "mean": 0.4571,
+      "mean": 0.1714,
       "stddev": 0.0,
-      "min": 0.4571,
-      "max": 0.4571,
+      "min": 0.1714,
+      "max": 0.1714,
       "runs": 3
     },
     "prompt_tokens_est_mean": {
-      "mean": 1908.575,
+      "mean": 2926.8583,
       "stddev": 0.0,
-      "min": 1908.575,
-      "max": 1908.575,
+      "min": 2926.8583,
+      "max": 2926.8583,
       "runs": 3
     },
     "refuse_correct_rate": {
-      "mean": 0.7333,
+      "mean": 1.0,
       "stddev": 0.0,
-      "min": 0.7333,
-      "max": 0.7333,
-      "runs": 3
-    },
-    "refusal_correctness": {
-      "mean": 0.7333,
-      "stddev": 0.0,
-      "min": 0.7333,
-      "max": 0.7333,
+      "min": 1.0,
+      "max": 1.0,
       "runs": 3
     },
     "refuse_flagged_rate": {
@@ -263,25 +248,53 @@
       "max": 0.0,
       "runs": 3
     },
-    "route_obligation_coverage": {
-      "mean": 0.5667,
+    "route_empty_rate": {
+      "mean": 0.0833,
       "stddev": 0.0,
-      "min": 0.5667,
-      "max": 0.5667,
+      "min": 0.0833,
+      "max": 0.0833,
+      "runs": 3
+    },
+    "route_filter_degraded_rate": {
+      "mean": 0.0,
+      "stddev": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "runs": 3
+    },
+    "route_filter_missing_rate": {
+      "mean": 0.0833,
+      "stddev": 0.0,
+      "min": 0.0833,
+      "max": 0.0833,
+      "runs": 3
+    },
+    "route_obligation_coverage": {
+      "mean": 0.8333,
+      "stddev": 0.0,
+      "min": 0.8333,
+      "max": 0.8333,
+      "runs": 3
+    },
+    "routes_planned_mean": {
+      "mean": 1.0833,
+      "stddev": 0.0,
+      "min": 1.0833,
+      "max": 1.0833,
       "runs": 3
     },
     "tokens_est_total": {
-      "mean": 239158.333333,
-      "stddev": 249.078747,
-      "min": 238898,
-      "max": 239494,
+      "mean": 359636,
+      "stddev": 424.662219,
+      "min": 359037,
+      "max": 359973,
       "runs": 3
     },
     "unsupported_claim_rate": {
-      "mean": 0.4047,
-      "stddev": 0.028202,
-      "min": 0.3673,
-      "max": 0.4354,
+      "mean": 0.343633,
+      "stddev": 0.009263,
+      "min": 0.3311,
+      "max": 0.3532,
       "runs": 3
     },
     "unverified_rate": {
@@ -290,133 +303,1348 @@
       "min": 0.0,
       "max": 0.0,
       "runs": 3
+    },
+    "answer_correctness": {
+      "mean": 0.495267,
+      "stddev": 0.020569,
+      "min": 0.4667,
+      "max": 0.5143,
+      "runs": 3
+    },
+    "citation_full_coverage": {
+      "mean": 0.978967,
+      "stddev": 0.015646,
+      "min": 0.9625,
+      "max": 1.0,
+      "runs": 3
+    },
+    "refusal_correctness": {
+      "mean": 1.0,
+      "stddev": 0.0,
+      "min": 1.0,
+      "max": 1.0,
+      "runs": 3
     }
   },
   "runs": [
     {
       "metrics": {
         "answerable_questions": 105,
-        "doc_recall@5": 0.881,
-        "all_docs_hit@5": 0.8476,
-        "doc_mrr": 0.9143,
-        "evidence_hit@5": 0.2286,
-        "evidence_hit_final": 0.2286,
-        "evidence_obligation_coverage": 0.5667,
-        "missing_obligation_rate": 0.4571,
-        "ambiguous_obligation_rate": 0.0,
-        "route_obligation_coverage": 0.5667,
-        "claim_support_rate": 0.5646,
-        "unsupported_claim_rate": 0.4354,
+        "doc_recall@5": 1.0,
+        "all_docs_hit@5": 1.0,
+        "doc_mrr": 1.0,
+        "evidence_hit@5": 0.4,
+        "evidence_hit_final": 0.4,
+        "evidence_obligation_coverage": 0.8333,
+        "missing_obligation_rate": 0.1714,
+        "ambiguous_obligation_rate": 0.0095,
+        "route_obligation_coverage": 0.8333,
+        "claim_support_rate": 0.6468,
+        "unsupported_claim_rate": 0.3532,
         "context_overflow_rate": 0.0,
-        "mean_evidence_count": 2.9917,
+        "mean_evidence_count": 4.4167,
         "retry_rate": 0.0,
         "mean_retries": 0.0,
         "refuse_flagged_rate": 1.0,
-        "mean_seconds_per_query": 2.7707,
-        "foreign_evidence_rate": 0.0857,
-        "foreign_citation_rate": 0.0857,
-        "grounding_verified_rate": 0.8873,
-        "mean_ungrounded_numbers": 0.0917,
-        "citation_coverage": 0.9859,
-        "citation_full_coverage_rate": 0.9859,
+        "mean_seconds_per_query": 4.4472,
+        "foreign_evidence_rate": 0.0,
+        "cross_document_contamination_rate": 0.0,
+        "foreign_citation_rate": 0.0,
+        "routes_planned_mean": 1.0833,
+        "route_empty_rate": 0.0833,
+        "route_filter_degraded_rate": 0.0,
+        "route_filter_missing_rate": 0.0833,
+        "grounding_verified_rate": 0.75,
+        "mean_ungrounded_numbers": 0.3,
+        "citation_coverage": 0.9926,
+        "citation_full_coverage_rate": 0.9625,
         "repair_rate": 0.0,
         "repair_fixed_rate": null,
         "unverified_rate": 0.0,
-        "prompt_tokens_est_mean": 1908.575,
-        "answer_tokens_est_mean": 82.2417,
-        "tokens_est_total": 238898,
+        "prompt_tokens_est_mean": 2926.8583,
+        "answer_tokens_est_mean": 72.9167,
+        "tokens_est_total": 359973,
         "cost_estimate_per_query": null,
-        "answer_value_rate": 0.1238,
+        "answer_value_rate": 0.5048,
+        "citation_rate": 0.8667,
+        "citation_valid_rate": 1.0,
+        "refuse_correct_rate": 1.0
+      },
+      "elapsed_seconds": null
+    },
+    {
+      "metrics": {
+        "answerable_questions": 105,
+        "doc_recall@5": 1.0,
+        "all_docs_hit@5": 1.0,
+        "doc_mrr": 1.0,
+        "evidence_hit@5": 0.4,
+        "evidence_hit_final": 0.4,
+        "evidence_obligation_coverage": 0.8333,
+        "missing_obligation_rate": 0.1714,
+        "ambiguous_obligation_rate": 0.0095,
+        "route_obligation_coverage": 0.8333,
+        "claim_support_rate": 0.6534,
+        "unsupported_claim_rate": 0.3466,
+        "context_overflow_rate": 0.0,
+        "mean_evidence_count": 4.4167,
+        "retry_rate": 0.0,
+        "mean_retries": 0.0,
+        "refuse_flagged_rate": 1.0,
+        "mean_seconds_per_query": 4.5947,
+        "foreign_evidence_rate": 0.0,
+        "cross_document_contamination_rate": 0.0,
+        "foreign_citation_rate": 0.0,
+        "routes_planned_mean": 1.0833,
+        "route_empty_rate": 0.0833,
+        "route_filter_degraded_rate": 0.0,
+        "route_filter_missing_rate": 0.0833,
+        "grounding_verified_rate": 0.7821,
+        "mean_ungrounded_numbers": 0.2333,
+        "citation_coverage": 1.0,
+        "citation_full_coverage_rate": 1.0,
+        "repair_rate": 0.0,
+        "repair_fixed_rate": null,
+        "unverified_rate": 0.0,
+        "prompt_tokens_est_mean": 2926.8583,
+        "answer_tokens_est_mean": 65.1167,
+        "tokens_est_total": 359037,
+        "cost_estimate_per_query": null,
+        "answer_value_rate": 0.4667,
+        "citation_rate": 0.8095,
+        "citation_valid_rate": 1.0,
+        "refuse_correct_rate": 1.0
+      },
+      "elapsed_seconds": null
+    },
+    {
+      "metrics": {
+        "answerable_questions": 105,
+        "doc_recall@5": 1.0,
+        "all_docs_hit@5": 1.0,
+        "doc_mrr": 1.0,
+        "evidence_hit@5": 0.4,
+        "evidence_hit_final": 0.4,
+        "evidence_obligation_coverage": 0.8333,
+        "missing_obligation_rate": 0.1714,
+        "ambiguous_obligation_rate": 0.0095,
+        "route_obligation_coverage": 0.8333,
+        "claim_support_rate": 0.6689,
+        "unsupported_claim_rate": 0.3311,
+        "context_overflow_rate": 0.0,
+        "mean_evidence_count": 4.4167,
+        "retry_rate": 0.0,
+        "mean_retries": 0.0,
+        "refuse_flagged_rate": 1.0,
+        "mean_seconds_per_query": 4.312,
+        "foreign_evidence_rate": 0.0,
+        "cross_document_contamination_rate": 0.0,
+        "foreign_citation_rate": 0.0,
+        "routes_planned_mean": 1.0833,
+        "route_empty_rate": 0.0833,
+        "route_filter_degraded_rate": 0.0,
+        "route_filter_missing_rate": 0.0833,
+        "grounding_verified_rate": 0.7692,
+        "mean_ungrounded_numbers": 0.275,
+        "citation_coverage": 0.991,
+        "citation_full_coverage_rate": 0.9744,
+        "repair_rate": 0.0,
+        "repair_fixed_rate": null,
+        "unverified_rate": 0.0,
+        "prompt_tokens_est_mean": 2926.8583,
+        "answer_tokens_est_mean": 72.2917,
+        "tokens_est_total": 359898,
+        "cost_estimate_per_query": null,
+        "answer_value_rate": 0.5143,
         "citation_rate": 0.8571,
         "citation_valid_rate": 1.0,
-        "refuse_correct_rate": 0.7333
-      },
-      "elapsed_seconds": null
-    },
-    {
-      "metrics": {
-        "answerable_questions": 105,
-        "doc_recall@5": 0.881,
-        "all_docs_hit@5": 0.8476,
-        "doc_mrr": 0.9143,
-        "evidence_hit@5": 0.2286,
-        "evidence_hit_final": 0.2286,
-        "evidence_obligation_coverage": 0.5667,
-        "missing_obligation_rate": 0.4571,
-        "ambiguous_obligation_rate": 0.0,
-        "route_obligation_coverage": 0.5667,
-        "claim_support_rate": 0.6327,
-        "unsupported_claim_rate": 0.3673,
-        "context_overflow_rate": 0.0,
-        "mean_evidence_count": 2.9917,
-        "retry_rate": 0.0,
-        "mean_retries": 0.0,
-        "refuse_flagged_rate": 1.0,
-        "mean_seconds_per_query": 2.672,
-        "foreign_evidence_rate": 0.0857,
-        "foreign_citation_rate": 0.0762,
-        "grounding_verified_rate": 0.8649,
-        "mean_ungrounded_numbers": 0.15,
-        "citation_coverage": 0.9905,
-        "citation_full_coverage_rate": 0.973,
-        "repair_rate": 0.0,
-        "repair_fixed_rate": null,
-        "unverified_rate": 0.0,
-        "prompt_tokens_est_mean": 1908.575,
-        "answer_tokens_est_mean": 87.2083,
-        "tokens_est_total": 239494,
-        "cost_estimate_per_query": null,
-        "answer_value_rate": 0.1333,
-        "citation_rate": 0.8857,
-        "citation_valid_rate": 1.0,
-        "refuse_correct_rate": 0.7333
-      },
-      "elapsed_seconds": null
-    },
-    {
-      "metrics": {
-        "answerable_questions": 105,
-        "doc_recall@5": 0.881,
-        "all_docs_hit@5": 0.8476,
-        "doc_mrr": 0.9143,
-        "evidence_hit@5": 0.2286,
-        "evidence_hit_final": 0.2286,
-        "evidence_obligation_coverage": 0.5667,
-        "missing_obligation_rate": 0.4571,
-        "ambiguous_obligation_rate": 0.0,
-        "route_obligation_coverage": 0.5667,
-        "claim_support_rate": 0.5886,
-        "unsupported_claim_rate": 0.4114,
-        "context_overflow_rate": 0.0,
-        "mean_evidence_count": 2.9917,
-        "retry_rate": 0.0,
-        "mean_retries": 0.0,
-        "refuse_flagged_rate": 1.0,
-        "mean_seconds_per_query": 2.6693,
-        "foreign_evidence_rate": 0.0857,
-        "foreign_citation_rate": 0.0571,
-        "grounding_verified_rate": 0.863,
-        "mean_ungrounded_numbers": 0.1333,
-        "citation_coverage": 0.9954,
-        "citation_full_coverage_rate": 0.9863,
-        "repair_rate": 0.0,
-        "repair_fixed_rate": null,
-        "unverified_rate": 0.0,
-        "prompt_tokens_est_mean": 1908.575,
-        "answer_tokens_est_mean": 83.7833,
-        "tokens_est_total": 239083,
-        "cost_estimate_per_query": null,
-        "answer_value_rate": 0.1238,
-        "citation_rate": 0.8857,
-        "citation_valid_rate": 1.0,
-        "refuse_correct_rate": 0.7333
+        "refuse_correct_rate": 1.0
       },
       "elapsed_seconds": null
     }
   ],
   "failures": {
-    "1": [],
-    "2": [],
-    "3": []
+    "1": [
+      {
+        "id": "scaled-fact-002",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-003",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-005",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-006",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-011",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据文本未出现公司: 京东方A",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-012",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据文本未出现公司: 京东方A",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-014",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-017",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-026",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-031",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-032",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-033",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-037",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-042",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-048",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-049",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-050",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-052",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-053",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-054",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-055",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-057",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-059",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-062",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-063",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-065",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-066",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-067",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-070",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-071",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-079",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-088",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-cross-001",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-006",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-008",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "缺少证据义务: obligation-2",
+        "missing_obligations": [
+          "obligation-2"
+        ]
+      },
+      {
+        "id": "scaled-cross-009",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "缺少证据义务: obligation-2",
+        "missing_obligations": [
+          "obligation-2"
+        ]
+      },
+      {
+        "id": "scaled-cross-010",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-011",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-012",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据文本未出现公司: 京东方A",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-013",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "缺少证据义务: obligation-2",
+        "missing_obligations": [
+          "obligation-2"
+        ]
+      },
+      {
+        "id": "scaled-cross-015",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-001",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 贵州茅台；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-002",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 宁德时代；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-003",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 招商银行；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-004",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 比亚迪；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-005",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 美的集团；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-006",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 中国平安；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-007",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 隆基绿能；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-008",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 海康威视；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-009",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 迈瑞医疗；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-010",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 中国神华；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-011",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 华为,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-012",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；指标关键词未覆盖: 字节跳动,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-013",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 苹果公司,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-014",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；指标关键词未覆盖: OpenAI,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-015",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 未收录公司,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      }
+    ],
+    "2": [
+      {
+        "id": "scaled-fact-002",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-003",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-005",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-006",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-012",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据文本未出现公司: 京东方A",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-014",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-026",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-031",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-032",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-033",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-037",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-042",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-044",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-048",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-049",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-050",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-052",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-053",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-054",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-055",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-057",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-059",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-062",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-063",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-065",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-066",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-067",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-070",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-071",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-079",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-088",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-cross-001",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-006",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-008",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "缺少证据义务: obligation-2",
+        "missing_obligations": [
+          "obligation-2"
+        ]
+      },
+      {
+        "id": "scaled-cross-009",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "缺少证据义务: obligation-2",
+        "missing_obligations": [
+          "obligation-2"
+        ]
+      },
+      {
+        "id": "scaled-cross-010",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-011",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-013",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "缺少证据义务: obligation-2",
+        "missing_obligations": [
+          "obligation-2"
+        ]
+      },
+      {
+        "id": "scaled-cross-015",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-001",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 贵州茅台；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-002",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 宁德时代；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-003",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 招商银行；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-004",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 比亚迪；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-005",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 美的集团；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-006",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 中国平安；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-007",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 隆基绿能；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-008",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 海康威视；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-009",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 迈瑞医疗；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-010",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 中国神华；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-011",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 华为,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-012",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；指标关键词未覆盖: 字节跳动,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-013",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 苹果公司,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-014",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；指标关键词未覆盖: OpenAI,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-015",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 未收录公司,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      }
+    ],
+    "3": [
+      {
+        "id": "scaled-fact-002",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-003",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-005",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-006",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-011",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据文本未出现公司: 京东方A",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-014",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-026",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-029",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-031",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-032",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-033",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-037",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-042",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-048",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-049",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-050",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-052",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-053",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-054",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-055",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-057",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-059",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-062",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-063",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-065",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-066",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-067",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-fact-070",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-071",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-078",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-079",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-083",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据义务存在多口径歧义: obligation-1",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-fact-088",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-cross-001",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-002",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-003",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据文本未出现公司: 京东方A",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-006",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-008",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "缺少证据义务: obligation-2",
+        "missing_obligations": [
+          "obligation-2"
+        ]
+      },
+      {
+        "id": "scaled-cross-009",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "缺少证据义务: obligation-2",
+        "missing_obligations": [
+          "obligation-2"
+        ]
+      },
+      {
+        "id": "scaled-cross-010",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-011",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-cross-013",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "缺少证据义务: obligation-2",
+        "missing_obligations": [
+          "obligation-2"
+        ]
+      },
+      {
+        "id": "scaled-cross-015",
+        "status": "answer_hard_gate_failed",
+        "graded_reason": "证据已覆盖问题要素",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-001",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 贵州茅台；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-002",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 宁德时代；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-003",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 招商银行；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-004",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 比亚迪；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-005",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 美的集团；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-006",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 中国平安；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-007",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 隆基绿能；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-008",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 海康威视；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-009",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；证据文本未出现公司: 迈瑞医疗；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-010",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；证据文本未出现公司: 中国神华；指标关键词未覆盖: 营业收入；缺少证据义务: obligation-1；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": [
+          "obligation-1"
+        ]
+      },
+      {
+        "id": "scaled-refuse-011",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 华为,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-012",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；指标关键词未覆盖: 字节跳动,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-013",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 苹果公司,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-014",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2022；指标关键词未覆盖: OpenAI,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      },
+      {
+        "id": "scaled-refuse-015",
+        "status": "refused_no_evidence",
+        "graded_reason": "没有检索到任何候选片段；证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 未收录公司,营业收入；语料中没有问题点名的公司/年份年报",
+        "missing_obligations": []
+      }
+    ]
   }
 }
