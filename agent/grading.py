@@ -30,7 +30,8 @@ QUESTION_NOISE = (
     "是多少元", "是多少千元", "是多少亿元", "是多少百万元", "多少个百分点",
     "分别是多少", "保留两位小数", "单位不同", "分别是", "是多少", "有多少",
     "多少", "请问", "约为", "大约", "注意", "是否", "为什么", "哪些", "什么",
-    "如何", "同年", "列出", "两位小数",
+    "如何理解", "如何", "理解", "含义", "定义", "概念",
+    "同年", "列出", "两位小数",
     # 关系/比较类短语
     "较上年末", "较上年底", "上年末", "上年同期", "上期", "同期", "同比", "环比",
     "百分点", "个百分点", "增减", "变动", "变化", "上升", "下降", "增加", "减少",
@@ -141,7 +142,11 @@ def grade_evidence(question: str, hits: List[Dict],
     if obligations is None:
         obligations = [item.as_dict() for item in build_obligations(question, facets)]
     obligation_result = assess_obligations(hits, obligations, question)
-    scope_supported = scope_supported_by_corpus(question, facets)
+    unscoped_general = not facets["companies"] and not facets["years"]
+    scope_supported = (
+        True if unscoped_general
+        else scope_supported_by_corpus(question, facets)
+    )
 
     years_in_evidence = set()
     for document_id in documents:
@@ -174,9 +179,17 @@ def grade_evidence(question: str, hits: List[Dict],
     if not scope_supported:
         reasons.append("语料中没有问题点名的公司/年份年报")
 
-    passed = (scope_supported and not reasons
-              and not obligation_result["refusal_expected"]
-              and obligation_result["passed"])
+    if unscoped_general:
+        passed = (
+            bool(hits)
+            and not reasons
+            and not obligation_result["refusal_expected"]
+            and coverage >= min_coverage
+        )
+    else:
+        passed = (scope_supported and not reasons
+                  and not obligation_result["refusal_expected"]
+                  and obligation_result["passed"])
 
     return {
         "passed": passed,
@@ -196,8 +209,10 @@ def grade_evidence(question: str, hits: List[Dict],
             if item["obligation_id"] in obligation_result["ambiguous"]
         ],
         "refusal_expected": (
-            obligation_result["refusal_expected"] or not scope_supported
+            obligation_result["refusal_expected"]
+            or (not scope_supported and not unscoped_general)
         ),
+        "unscoped_general": unscoped_general,
         "route_coverage": route_coverage or [],
         "keyword_hits": keyword_hits,
         "missing_years": missing_years,

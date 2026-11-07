@@ -154,6 +154,16 @@ def test_unknown_company_produces_refusal_obligation():
     assert result["passed"] is False
 
 
+def test_general_question_without_company_or_year_has_no_refusal_obligation():
+    question = "经营活动现金流如何理解？"
+    obligations = build_obligations(question)
+    result = assess_obligations([], obligations, question)
+
+    assert obligations == []
+    assert result["refusal_expected"] is False
+    assert result["passed"] is False
+
+
 def test_known_company_with_unsupported_year_is_outside_corpus_scope():
     question = "贵州茅台2026年的营业收入是多少元？"
     obligations = build_obligations(question)

@@ -17,6 +17,7 @@ from agent.answer_audit import audit_answer
 from agent.context_budget import build_context_with_budget
 from agent.grading import extract_facets, grade_evidence, needs_knowledge_base
 from agent.evidence_contract import (
+    RetrievalRoute,
     assess_obligations,
     bind_routes_to_obligations,
     build_evidence_contract,
@@ -112,13 +113,6 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         facets = extract_facets(question)
         contract = build_evidence_contract(question, facets=facets)
         obligations = contract["obligations"]
-        routes: List[Dict[str, Any]] = []
-        if runtime.enable_pre_retrieval_routing:
-            planned_routes = build_initial_routes(
-                question, obligations, facets=facets)
-            obligations = bind_routes_to_obligations(
-                obligations, planned_routes)
-            routes = [route.as_dict() for route in planned_routes]
         # 跨会话记忆：先召回该用户已存的偏好/约定（namespace 隔离在 memory.py）
         memories: List[Dict[str, Any]] = []
         if runtime.memory_store is not None and runtime.memory_user_id:
@@ -126,6 +120,21 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         # "记住我以后都……"这类输入是记忆写入请求，不是知识库问题，不做检索
         memory_request = extract_memory(question)
         needs_retrieval = needs_knowledge_base(question) and not memory_request
+        routes: List[Dict[str, Any]] = []
+        if runtime.enable_pre_retrieval_routing:
+            planned_routes = build_initial_routes(
+                question, obligations, facets=facets)
+            if (needs_retrieval and not planned_routes
+                    and not facets.get("companies")
+                    and not facets.get("years")):
+                planned_routes = [RetrievalRoute(
+                    query_id="route-1",
+                    query=question,
+                    unrouted=True,
+                )]
+            obligations = bind_routes_to_obligations(
+                obligations, planned_routes)
+            routes = [route.as_dict() for route in planned_routes]
         if memory_request:
             status = "memory_only"
         elif needs_retrieval:

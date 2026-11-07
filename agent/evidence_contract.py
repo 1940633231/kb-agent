@@ -453,7 +453,7 @@ def build_obligations(question: str,
     years = [int(item) for item in facets.get("years") or []]
     metrics = [str(item) for item in facets.get("keywords") or []]
 
-    if not companies and not years and not metrics:
+    if not companies and not years:
         return []
     if not companies:
         return [EvidenceObligation(

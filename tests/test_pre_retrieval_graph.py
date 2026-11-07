@@ -9,6 +9,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from agent import graph as agent_graph  # noqa: E402
+from agent.grading import extract_facets  # noqa: E402
 from agent.rewriter import RuleRewriter  # noqa: E402
 from agent.runtime import AgentRuntime  # noqa: E402
 from fakes import FakeService, make_hit  # noqa: E402
@@ -119,6 +120,47 @@ def test_unknown_entity_does_not_search_or_retry():
     assert result["retry_count"] == 0
     assert service._pipeline.retriever.queries == []
     assert result["routes"] == []
+
+
+def test_general_question_falls_back_to_one_unrouted_query():
+    facets = extract_facets("经营活动现金流如何理解？")
+    graph, service = graph_for(
+        lambda query: [make_hit(
+            "600519-2023",
+            "经营活动现金流用于反映企业主营业务产生现金的能力，理解时应结合"
+            "现金流量表与利润表。",
+        )],
+        max_retries=0,
+    )
+
+    result = agent_graph.ask(
+        graph, "经营活动现金流如何理解？", thread_id="route-general")
+
+    assert facets["companies"] == []
+    assert facets["years"] == []
+    assert facets["keywords"] == ["经营活动现金流"]
+    assert len(result["routes"]) == 1
+    assert result["routes"][0]["unrouted"] is True
+    assert result["routes"][0]["query"] == "经营活动现金流如何理解？"
+    assert result["routes"][0]["document_ids"] == []
+    assert result["retrieval_stats"]["routes_planned"] == 1
+    assert result["retrieval_stats"]["routing_enabled"] is True
+    assert result["retrieval_score"]["unscoped_general"] is True
+    assert result["retrieval_score"]["passed"] is True
+    assert service._pipeline.retriever.queries == ["经营活动现金流如何理解？"]
+    assert service._pipeline.retriever.document_filters == [None]
+    assert result["status"] != "refused_no_evidence"
+
+
+def test_chitchat_stays_out_of_scope_without_retrieval():
+    graph, service = graph_for(lambda query: [])
+
+    result = agent_graph.ask(graph, "你好", thread_id="route-chitchat")
+
+    assert result["needs_retrieval"] is False
+    assert result["status"] == "out_of_scope"
+    assert result["routes"] == []
+    assert service._pipeline.retriever.queries == []
 
 
 def test_routing_switch_restores_legacy_single_query_behavior():
