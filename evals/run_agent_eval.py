@@ -88,6 +88,24 @@ def mean(values: Sequence[Optional[float]]) -> Optional[float]:
     return round(sum(clean) / len(clean), 4) if clean else None
 
 
+def update_layer_matrix(path: Path, layer: str, label: str,
+                        config: Dict[str, Any],
+                        metrics: Dict[str, Any]) -> Dict[str, Any]:
+    """Upsert one evaluation layer without overwriting sibling ablations."""
+    matrix: Dict[str, Any] = {}
+    if path.exists():
+        matrix = json.loads(path.read_text(encoding="utf-8"))
+    matrix.setdefault("layers", {})[layer] = {
+        "label": label,
+        "config": config,
+        "metrics": metrics,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(matrix, ensure_ascii=False, indent=2),
+                    encoding="utf-8")
+    return matrix
+
+
 def citation_is_valid(citation: Dict, chunks: List[Dict]) -> bool:
     chunk_ids = {chunk.get("chunk_id") for chunk in chunks}
     return citation.get("chunk_id") in chunk_ids
@@ -477,14 +495,14 @@ def main() -> int:
     print("\n报告 -> {}".format(target))
 
     matrix_path = reports_dir / "layer_matrix.json"
-    if matrix_path.exists():
-        matrix = json.loads(matrix_path.read_text(encoding="utf-8"))
-        matrix.setdefault("layers", {})["L3"] = {
-            "label": report["label"], "config": report["config"],
-            "metrics": outcome["metrics"]}
-        matrix_path.write_text(json.dumps(matrix, ensure_ascii=False, indent=2),
-                               encoding="utf-8")
-        print("已并入分层矩阵 -> {}".format(matrix_path))
+    update_layer_matrix(
+        matrix_path,
+        report["layer"],
+        report["label"],
+        report["config"],
+        outcome["metrics"],
+    )
+    print("已并入分层矩阵 -> {}".format(matrix_path))
     return 0
 
 
