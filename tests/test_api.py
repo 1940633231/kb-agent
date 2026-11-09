@@ -21,7 +21,8 @@ from agent.graph import build_graph, default_runtime  # noqa: E402
 from api.app import create_app  # noqa: E402
 from api.service import AppContext  # noqa: E402
 from api.settings import ApiSettings  # noqa: E402
-from fakes import DictStore, FakeGenerator, FakeService, maotai_hit  # noqa: E402
+from fakes import (DictStore, FakeGenerator, FakeService, make_hit,  # noqa: E402
+                   maotai_hit)
 
 QUESTION = "贵州茅台2023年的营业收入是多少元？"
 
@@ -42,7 +43,8 @@ def parse_sse(body: str) -> List[Dict[str, Any]]:
     return events
 
 
-def build_context(resolver=None, interrupt: bool = False, token_stream: bool = True
+def build_context(resolver=None, interrupt: bool = False, token_stream: bool = True,
+                  max_retries: int = 2
                   ) -> AppContext:
     resolver = resolver or (lambda query: [maotai_hit(2023)])
     service = FakeService(resolver, generator=FakeGenerator())
@@ -50,6 +52,7 @@ def build_context(resolver=None, interrupt: bool = False, token_stream: bool = T
                            token_stream=token_stream)
     runtime = default_runtime(service=service, memory_user_id="tester",
                               interrupt_on_low_confidence=interrupt,
+                              max_retries=max_retries,
                               review_timeout_seconds=None)
     # 关键：AppContext.ask() 会用 self.checkpointer 另建图，
     # 测试里必须让两处共用同一个 saver，否则挂起的审核读不到
@@ -125,8 +128,14 @@ def test_stream_without_token_streaming_still_answers():
 
 
 def test_review_flow_over_http():
-    # 让检索结果与问题不匹配，触发低置信度 → 挂起人工审核
-    context = build_context(resolver=lambda q: [maotai_hit(2025)], interrupt=True)
+    # 文档在 route 内，但指标证据不足：触发低置信度 → 挂起人工审核
+    context = build_context(
+        resolver=lambda q: [
+            make_hit("600519-2023", "贵州茅台 2023 年年度报告 其他内容")
+        ],
+        interrupt=True,
+        max_retries=0,
+    )
     with TestClient(create_app(context)) as test_client:
         body = test_client.post("/ask", json={"question": QUESTION,
                                              "thread_id": "rev-1"}).json()
@@ -156,7 +165,13 @@ def test_review_flow_over_http():
 
 
 def test_review_id_mismatch_returns_409():
-    context = build_context(resolver=lambda q: [maotai_hit(2025)], interrupt=True)
+    context = build_context(
+        resolver=lambda q: [
+            make_hit("600519-2023", "贵州茅台 2023 年年度报告 其他内容")
+        ],
+        interrupt=True,
+        max_retries=0,
+    )
     with TestClient(create_app(context)) as test_client:
         test_client.post("/ask", json={"question": QUESTION, "thread_id": "rev-2"})
         response = test_client.post("/threads/rev-2/review", json={
