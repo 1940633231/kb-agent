@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-06T09:02:50.041156+00:00",
+  "generated_at": "2026-11-09T03:52:42.073151+00:00",
   "dataset": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
   "manifest": {
     "dataset_id": "kb-agent-scaled-120",
-    "version": "v1",
-    "generated_at": "2026-11-06T08:33:01.706287+00:00",
+    "version": "v2",
+    "generated_at": "2026-11-09T03:52:08.411403+00:00",
     "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
-    "sha256": "805751e132a5f94f7b80015ac232180d3480876cfdddf74360ddbda41eb895a1",
+    "sha256": "9b91a2457f47afab5de9968f9dfebef72e72598abdf4e8a58ef95c4e1417d29f",
     "corpus_metadata_sha256": "38bbabd11e54afbe1c3a4c5f67112bfb4640c503ad750fc824ebbe06e982deba",
     "companies": 30,
     "documents": 90,
@@ -104,16 +104,18 @@
     },
     {
       "id": "scaled-fact-004",
-      "question": "美的集团2023年的营业收入是多少千元？",
+      "question": "美的集团2023年的营业总收入是多少千元？",
       "bucket": "normal",
       "risk_score": 0,
       "checks": {
         "source_docs_match_expected": true,
         "known_document_000333-2023": true,
-        "pdf_page_exists_000333-2023_161": true,
+        "pdf_page_exists_000333-2023_160": true,
+        "known_chunk_000333-2023_chunk_257": true,
+        "page_matches_000333-2023_chunk_257": true,
         "keywords_in_question": true,
         "evidence_literals_present_in_source": true,
-        "value_parse_营业收入": true,
+        "value_parse_营业总收入": true,
         "question_has_company_000333": true,
         "question_has_year_2023": true
       },
@@ -121,24 +123,25 @@
       "source_pages": [
         {
           "doc": "000333-2023",
-          "page": 161
+          "page": 160,
+          "chunk_id": "000333-2023_chunk_257"
         }
       ]
     },
     {
       "id": "scaled-fact-005",
-      "question": "美的集团2024年的营业收入是多少元？",
+      "question": "美的集团2024年的营业总收入是多少千元？",
       "bucket": "normal",
       "risk_score": 0,
       "checks": {
         "source_docs_match_expected": true,
         "known_document_000333-2024": true,
-        "pdf_page_exists_000333-2024_20": true,
-        "known_chunk_000333-2024_chunk_28": true,
-        "page_matches_000333-2024_chunk_28": true,
+        "pdf_page_exists_000333-2024_157": true,
+        "known_chunk_000333-2024_chunk_253": true,
+        "page_matches_000333-2024_chunk_253": true,
         "keywords_in_question": true,
         "evidence_literals_present_in_source": true,
-        "value_parse_营业收入": true,
+        "value_parse_营业总收入": true,
         "question_has_company_000333": true,
         "question_has_year_2024": true
       },
@@ -146,25 +149,25 @@
       "source_pages": [
         {
           "doc": "000333-2024",
-          "page": 20,
-          "chunk_id": "000333-2024_chunk_28"
+          "page": 157,
+          "chunk_id": "000333-2024_chunk_253"
         }
       ]
     },
     {
       "id": "scaled-fact-006",
-      "question": "美的集团2025年的营业收入是多少元？",
+      "question": "美的集团2025年的营业总收入是多少千元？",
       "bucket": "normal",
       "risk_score": 0,
       "checks": {
         "source_docs_match_expected": true,
         "known_document_000333-2025": true,
-        "pdf_page_exists_000333-2025_20": true,
-        "known_chunk_000333-2025_chunk_26": true,
-        "page_matches_000333-2025_chunk_26": true,
+        "pdf_page_exists_000333-2025_133": true,
+        "known_chunk_000333-2025_chunk_211": true,
+        "page_matches_000333-2025_chunk_211": true,
         "keywords_in_question": true,
         "evidence_literals_present_in_source": true,
-        "value_parse_营业收入": true,
+        "value_parse_营业总收入": true,
         "question_has_company_000333": true,
         "question_has_year_2025": true
       },
@@ -172,8 +175,8 @@
       "source_pages": [
         {
           "doc": "000333-2025",
-          "page": 20,
-          "chunk_id": "000333-2025_chunk_26"
+          "page": 133,
+          "chunk_id": "000333-2025_chunk_211"
         }
       ]
     },

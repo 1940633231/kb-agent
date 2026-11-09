@@ -147,16 +147,71 @@ def page_text_entries(document_id: str, chunks: list[dict],
     return entries
 
 
-def revenue_fact_from_pdf(pdf_path: Path) -> tuple[str, str, int] | None:
-    best = None
+def revenue_candidates_from_text(
+        text: str, page_index: int) -> list[tuple[int, int, int, str, str, str]]:
+    """Select exact revenue rows from main data or consolidated statements."""
+    has_main = "主要会计数据" in text
+    has_consolidated = any(marker in text for marker in (
+        "合并利润表", "合并及银行利润表", "合并及公司利润表"))
+    has_parent_only = "母公司利润表" in text and not has_consolidated
+    segment_table = (
+        any(marker in text for marker in (
+            "分行业", "分产品", "分地区", "分季度"))
+        and not has_main and not has_consolidated
+    )
+    if has_parent_only or segment_table or not (has_main or has_consolidated):
+        return []
+
+    source_priority = 0 if has_consolidated else 1
     label_priority = {
-        "营业总收入": 0,
-        "营业收入合计": 1,
-        "一、营业总收入": 2,
-        "一、营业收入": 3,
+        "一、营业总收入": 0,
+        "营业总收入": 1,
+        "一、营业收入": 2,
+        "营业收入合计": 3,
         "其中：营业收入": 4,
         "营业收入": 5,
     }
+    candidates = []
+    for match in REVENUE_ROW.finditer(text):
+        label = match.group("label")
+        prefix = text[max(0, match.start() - 16):match.start()]
+        between = text[match.end("label"):match.start("value")]
+        if re.search(r"(占|比例|比重)", prefix):
+            continue
+        if re.search(r"(占|比例|比重)", between):
+            continue
+        if label == "其中：营业收入" and not has_consolidated:
+            continue
+        value = match.group("value").rstrip(".")
+        if re.fullmatch(r"20\d{2}", value):
+            continue
+        value_position = match.start("value")
+        unit_matches = list(re.finditer(
+            r"(?:单位\s*[：:]\s*(?:人民币)?|人民币)\s*"
+            r"(亿元|百万元|万元|千元|元)",
+            text[:value_position],
+        ))
+        if not unit_matches:
+            unit_matches = list(re.finditer(
+                r"(亿元|百万元|万元|千元|元)",
+                text[max(0, value_position - 700):value_position],
+            ))
+        if not unit_matches:
+            continue
+        unit = unit_matches[-1].group(1)
+        candidates.append((
+            source_priority,
+            label_priority.get(label, 9),
+            page_index + 1,
+            value,
+            unit,
+            label,
+        ))
+    return candidates
+
+
+def revenue_fact_from_pdf(pdf_path: Path) -> tuple[str, str, str, int] | None:
+    best = None
     pdf = pdfium.PdfDocument(str(pdf_path))
     try:
         for page_index in range(len(pdf)):
@@ -165,57 +220,14 @@ def revenue_fact_from_pdf(pdf_path: Path) -> tuple[str, str, int] | None:
                 text = text_page.get_text_range()
             finally:
                 text_page.close()
-            has_main = "主要会计数据" in text
-            has_consolidated = "合并利润表" in text or "合并及银行利润表" in text
-            has_parent_only = "母公司利润表" in text and not has_consolidated
-            segment_table = (
-                any(marker in text for marker in (
-                    "分行业", "分产品", "分地区", "分季度"))
-                and not has_main and not has_consolidated
-            )
-            if has_parent_only or segment_table:
-                continue
-            for match in REVENUE_ROW.finditer(text):
-                label = match.group("label")
-                prefix = text[max(0, match.start() - 16):match.start()]
-                between = text[match.end("label"):match.start("value")]
-                if re.search(r"(占|比例|比重)", prefix):
-                    continue
-                if re.search(r"(占|比例|比重)", between):
-                    continue
-                if label == "其中：营业收入" and not has_consolidated:
-                    continue
-                value = match.group("value").rstrip(".")
-                if re.fullmatch(r"20\d{2}", value):
-                    continue
-                value_position = match.start("value")
-                unit_matches = list(re.finditer(
-                    r"(?:单位\s*[：:]\s*(?:人民币)?|人民币)\s*"
-                    r"(亿元|百万元|万元|千元|元)",
-                    text[:value_position],
-                ))
-                if not unit_matches:
-                    unit_matches = list(re.finditer(
-                        r"(亿元|百万元|万元|千元|元)",
-                        text[max(0, value_position - 700):value_position],
-                    ))
-                if not unit_matches:
-                    continue
-                unit = unit_matches[-1].group(1)
-                candidate = (
-                    label_priority.get(label, 9),
-                    0 if has_main else 1,
-                    page_index + 1,
-                    value,
-                    unit,
-                )
-                if best is None or candidate[:3] < best[:3]:
+            for candidate in revenue_candidates_from_text(text, page_index):
+                if best is None or candidate < best:
                     best = candidate
     finally:
         pdf.close()
     if best is None:
         return None
-    return best[3], best[4], best[2]
+    return best[5], best[3], best[4], best[2]
 
 
 def fact_record(source: dict, chunk: dict | None, page_offsets: dict,
@@ -400,7 +412,8 @@ def main() -> int:
         selected = revenue_fact_from_pdf(pdf_path)
         if selected is None:
             raise RuntimeError("no revenue row for {}".format(document_id))
-        literal, unit, page = selected
+        label, literal, unit, page = selected
+        metric = label.removeprefix("一、").removeprefix("其中：").strip()
         chunk = next(
             (item for item in by_document.get(document_id, [])
              if literal in (item.get("content") or "")
@@ -408,8 +421,8 @@ def main() -> int:
             None,
         )
         facts.append(fact_record(
-            source, chunk, page_offsets, len(facts) + 1, "营业收入",
-            ("营业收入", literal, unit), page_override=page))
+            source, chunk, page_offsets, len(facts) + 1, metric,
+            (metric, literal, unit), page_override=page))
 
     def metric_of(record: dict) -> str:
         return str(record["expected_keywords"][0])
@@ -468,7 +481,7 @@ def main() -> int:
     )
     manifest = {
         "dataset_id": "kb-agent-scaled-120",
-        "version": "v1",
+        "version": "v2",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "path": str(OUTPUT_PATH),
         "sha256": sha256_of(OUTPUT_PATH),

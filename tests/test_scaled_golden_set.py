@@ -7,10 +7,13 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / "evals"))
 
 DATASET = PROJECT_ROOT / "evals" / "golden_set_scaled_120.jsonl"
 MANIFEST = PROJECT_ROOT / "evals" / "golden_set_scaled_120.manifest.json"
 REGISTRY = PROJECT_ROOT / "data" / "docs" / "annual_reports" / "metadata.json"
+
+from build_scaled_golden_set import revenue_candidates_from_text  # noqa: E402
 
 
 def load_records() -> list[dict]:
@@ -35,6 +38,7 @@ def test_scaled_set_has_120_unique_records_and_expected_mix():
 def test_manifest_matches_dataset_and_counts():
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     records = load_records()
+    assert manifest["version"] == "v2"
     assert manifest["counts"]["total"] == len(records)
     assert manifest["companies"] == 30
     assert manifest["documents"] == 90
@@ -91,3 +95,53 @@ def test_each_company_has_three_company_questions():
 
     assert len(counts) == 30
     assert set(counts.values()) == {3}
+
+
+def test_revenue_extraction_prefers_exact_consolidated_statement():
+    text = """
+美的集团股份有限公司
+2024 年度合并及公司利润表
+（除特别注明外，金额单位为人民币千元）
+项目 2024年度 2023年度
+合并 合并
+一、营业总收入 409,084,266 373,709,804
+其中：营业收入 407,149,600 372,037,280
+    """
+
+    candidates = revenue_candidates_from_text(text, page_index=157)
+
+    assert candidates
+    best = min(candidates)
+    assert best[5] == "一、营业总收入"
+    assert best[3] == "409,084,266"
+    assert best[4] == "千元"
+    assert best[2] == 158
+
+
+def test_revenue_extraction_ignores_rounded_narrative():
+    text = "2024 年，公司营业总收入 4,091 亿元。"
+
+    assert revenue_candidates_from_text(text, page_index=19) == []
+
+
+def test_midea_revenue_records_use_consistent_total_revenue_units():
+    records = {item["id"]: item for item in load_records()}
+    expected = {
+        "scaled-fact-004": ("373,709,804", 373709804.0, 160),
+        "scaled-fact-005": ("409,084,266", 409084266.0, 157),
+        "scaled-fact-006": ("458,502,407", 458502407.0, 133),
+    }
+    for record_id, (literal, value, page) in expected.items():
+        record = records[record_id]
+        assert "营业总收入" in record["question"]
+        assert record["question"].endswith("千元？")
+        assert record["expected_keywords"] == ["营业总收入"]
+        assert record["expected_values"] == [{
+            "label": "营业总收入",
+            "value": value,
+            "unit": "千元",
+            "display": "{}千元".format(literal),
+        }]
+        assert record["evidence_literals"] == [literal]
+        assert record["required_evidence"][0]["metric"] == "营业总收入"
+        assert record["source_pages"][0]["page"] == page
