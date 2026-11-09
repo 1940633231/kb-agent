@@ -125,6 +125,12 @@ def main() -> int:
     if args.limit:
         questions = questions[:args.limit]
     by_document = load_chunks()
+    scaled_manifest = (
+        json.loads(SCALED_MANIFEST.read_text(encoding="utf-8"))
+        if GOLDEN_SET == SCALED_MANIFEST.with_name(
+            "golden_set_scaled_120.jsonl")
+        else {}
+    )
     counter = CharCounter()
     baseline_manager = ContextManager(
         token_counter=counter,
@@ -231,7 +237,7 @@ def main() -> int:
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "dataset": str(GOLDEN_SET),
         "dataset_version": (
-            "kb-agent-scaled-120-v1"
+            "kb-agent-scaled-120-{}".format(scaled_manifest.get("version"))
             if GOLDEN_SET == SCALED_MANIFEST.with_name(
                 "golden_set_scaled_120.jsonl")
             else "legacy-golden-set"

@@ -72,12 +72,37 @@ def evaluation_rows(report: dict) -> list[dict]:
     return report.get("rows") or report.get("questions") or []
 
 
+def generation_answer_failures(report: dict) -> list[dict]:
+    """Return answer-level failures with enough detail for error attribution."""
+    failures = []
+    for row in evaluation_rows(report):
+        if row.get("expected_behavior") != "answer":
+            continue
+        if row.get("answer_value_hit") is True:
+            continue
+        failures.append({
+            "id": row.get("id"),
+            "question_type": row.get("question_type"),
+            "status": row.get("status"),
+            "answer_value_hit": row.get("answer_value_hit"),
+            "claim_support_rate": row.get("claim_support_rate"),
+            "unsupported_claim_rate": row.get("unsupported_claim_rate"),
+            "grounding_verified": row.get("grounding_verified"),
+            "ungrounded_numbers": row.get("ungrounded_numbers") or [],
+            "wanted_docs": row.get("wanted_docs") or [],
+            "retrieved_docs": row.get("retrieved_docs") or [],
+            "answer": str(row.get("answer") or "")[:500],
+        })
+    return failures
+
+
 def dataset_meta(questions: list[dict]) -> dict:
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     return {
         "path": str(DATASET),
         "manifest": manifest,
         "evaluated": len(questions),
+        "available": int(manifest["counts"]["total"]),
     }
 
 
@@ -124,8 +149,15 @@ def run_l3_retrieval(questions: list[dict], top_k: int = 5) -> dict:
 
 def run_generation(questions: list[dict], repeats: int,
                    top_k: int = 5,
-                   generation_mode: str = "vector") -> dict:
+                   generation_mode: str = "vector",
+                   max_retries: int = 0,
+                   report_name: str = "scaled_generation.json") -> dict:
     started = time.time()
+    meta = dataset_meta(questions)
+    temporary = len(questions) != int(
+        meta.get("available") or len(questions))
+    if temporary and report_name == "scaled_generation.json":
+        report_name = "scaled_generation_debug.json"
     runs = []
     service = None
     if generation_mode in {"vector", "hybrid"}:
@@ -139,7 +171,7 @@ def run_generation(questions: list[dict], repeats: int,
         args = SimpleNamespace(
             generate=True,
             rule_rewrite=True,
-            max_retries=0,
+            max_retries=max_retries,
             no_scope=False,
             no_pre_retrieval_routing=False,
             no_strict_route_filter=False,
@@ -160,6 +192,7 @@ def run_generation(questions: list[dict], repeats: int,
         if source in summary:
             summary[alias] = dict(summary[source])
     failures = {}
+    answer_failures = {}
     for repeat, report in enumerate(runs, start=1):
         failures[str(repeat)] = [
             {
@@ -180,25 +213,35 @@ def run_generation(questions: list[dict], repeats: int,
                 and row.get("expected_behavior") != "refuse"
             )
         ]
+        answer_failures[str(repeat)] = generation_answer_failures(report)
     claim_report = {}
     claim_path = REPORTS / "claim_audit.json"
     if claim_path.exists():
         claim_report = json.loads(claim_path.read_text(encoding="utf-8"))
     claim_metrics = claim_report.get("metrics") or {}
+    reranker = " + BAAI/bge-reranker-base" if generation_mode == "hybrid" else ""
     payload = {
+        "temporary": temporary,
+        "formal_report": not temporary,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "elapsed_seconds": round(time.time() - started, 2),
-        "model": "BAAI/bge-small-zh-v1.5 + {}".format(
+        "model": "BAAI/bge-small-zh-v1.5{} + {}".format(
+            reranker,
             os.environ.get("LLM_MODEL", "LLM_MODEL")),
-        "dataset": dataset_meta(questions),
+        "dataset": meta,
         "config": {
             "repeats": repeats,
             "top_k": top_k,
             "rule_rewrite": True,
             "llm_grader": False,
-            "max_retries": 0,
+            "max_retries": max_retries,
             "generate": True,
             "generation_mode": generation_mode,
+            "enable_pre_retrieval_routing": True,
+            "strict_route_filter": True,
+            "route_candidate_limit": (
+                200 if generation_mode == "vector" else 50
+            ),
         },
         "hard_gate": {
             "source": "claim_audit.json",
@@ -210,12 +253,14 @@ def run_generation(questions: list[dict], repeats: int,
         "metrics": summary,
         "runs": [
             {"metrics": report.get("metrics") or {},
-             "elapsed_seconds": report.get("elapsed_seconds")}
+             "elapsed_seconds": report.get("elapsed_seconds"),
+             "questions": evaluation_rows(report)}
             for report in runs
         ],
         "failures": failures,
+        "answer_failures": answer_failures,
     }
-    write_report("scaled_generation.json", payload)
+    write_report(report_name, payload)
     return payload
 
 
@@ -230,7 +275,15 @@ def main() -> int:
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument(
         "--generation-mode", choices=["vector", "hybrid"], default="vector")
+    parser.add_argument("--max-retries", type=int, default=0,
+                        help="retry budget for generation-mode agent runs")
+    parser.add_argument("--output", default="scaled_generation.json",
+                        help="generation report filename under evals/reports")
     args = parser.parse_args()
+    if args.repeats < 1:
+        parser.error("--repeats must be at least 1")
+    if args.max_retries < 0:
+        parser.error("--max-retries must be non-negative")
     use_project_root_as_cwd()
     load_env()
     questions = load_questions(args.limit)
@@ -243,7 +296,9 @@ def main() -> int:
     if args.mode in ("generation", "all"):
         report = run_generation(
             questions, repeats=max(1, args.repeats), top_k=args.top_k,
-            generation_mode=args.generation_mode)
+            generation_mode=args.generation_mode,
+            max_retries=args.max_retries,
+            report_name=args.output)
         print(json.dumps(report["metrics"], ensure_ascii=False, indent=2))
     return 0
 

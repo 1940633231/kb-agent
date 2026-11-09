@@ -237,6 +237,7 @@ def test_numeric_discipline_reaches_the_prompt():
     system = captured["system"]
     assert "数字纪律" in system
     assert "逐字一致" in system
+    assert "优先精确表格值" in system
     assert "公司+年份=数值" in system
 
 

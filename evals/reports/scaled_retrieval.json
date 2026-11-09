@@ -8647,5 +8647,8 @@
       ],
       "seconds": 0.06
     }
-  ]
+  ],
+  "status": "stale_dataset_manifest_mismatch",
+  "stale_against_manifest_sha256": "9b91a2457f47afab5de9968f9dfebef72e72598abdf4e8a58ef95c4e1417d29f",
+  "stale_reason": "dataset upgraded from v1 to v2 after revenue metric corrections"
 }
