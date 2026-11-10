@@ -52,10 +52,23 @@ class FakeRetriever:
     def __init__(self, resolver):
         self.resolver = resolver
         self.queries: List[str] = []
+        self.document_filters: List[Dict] = []
 
     def search(self, query, top_k=5, document_ids=None):
         self.queries.append(query)
-        return self.resolver(query)[:top_k]
+        self.document_filters.append(document_ids)
+        hits = self.resolver(query)
+        if document_ids is not None:
+            allowed = {str(item) for item in document_ids}
+            hits = [
+                hit for hit in hits
+                if str(
+                    hit.get("document_id")
+                    or (hit.get("metadata") or {}).get("document_id")
+                    or ""
+                ) in allowed
+            ]
+        return hits[:top_k]
 
 
 class FakeService:
@@ -82,7 +95,8 @@ class FakePipeline:
     def _search_all(self, query, queries, document_ids=None):
         collected: List[Dict] = []
         for text in queries:
-            collected.extend(self.retriever.search(text, top_k=self.top_k))
+            collected.extend(self.retriever.search(
+                text, top_k=self.top_k, document_ids=document_ids))
         return collected
 
     def _filter_active_versions(self, candidates):
@@ -144,7 +158,10 @@ def test_retry_rewrites_query_and_recovers():
 
 
 def test_gives_up_after_two_retries_and_flags_review():
-    graph, service = build_graph(lambda q: [maotai_year_hit(2025)])
+    graph, service = build_graph(
+        lambda q: [maotai_year_hit(2025)],
+        enable_pre_retrieval_routing=False,
+    )
     result = agent_graph.ask(graph, QUESTION, thread_id="t-giveup")
 
     assert result["retry_count"] == 2, "重试上限为 2（v2 §4.1）"
@@ -172,6 +189,7 @@ def test_refuses_when_no_evidence_at_all():
 def test_human_review_interrupt_and_resume_approve():
     """低置信度 + 开启审核：图在 human_review 处暂停，Command 恢复后收敛结果。"""
     graph, _ = build_graph(lambda q: [maotai_year_hit(2025)],
+                           enable_pre_retrieval_routing=False,
                            extra={"interrupt_on_low_confidence": True})
     result = agent_graph.ask(graph, QUESTION, thread_id="t-review")
 
@@ -191,6 +209,7 @@ def test_human_review_interrupt_and_resume_approve():
 def test_human_review_reject_and_idempotency():
     store = DictStore()
     graph, _ = build_graph(lambda q: [maotai_year_hit(2025)],
+                           enable_pre_retrieval_routing=False,
                            extra={"interrupt_on_low_confidence": True})
     agent_graph.ask(graph, QUESTION, thread_id="t-reject")
     payload = pending_review(graph, "t-reject")
@@ -210,6 +229,7 @@ def test_human_review_reject_and_idempotency():
 
 def test_human_review_rejects_stale_review_id():
     graph, _ = build_graph(lambda q: [maotai_year_hit(2025)],
+                           enable_pre_retrieval_routing=False,
                            extra={"interrupt_on_low_confidence": True})
     agent_graph.ask(graph, QUESTION, thread_id="t-stale")
     outcome = resume_review(graph, "t-stale", "deadbeef", decision="approve")
@@ -262,7 +282,8 @@ def test_evidence_accumulates_across_retries():
             return [maotai_year_hit(2025, score=0.6)]
         return [maotai_year_hit(2023, score=0.9)]
 
-    graph, _ = build_graph(resolver)
+    graph, _ = build_graph(
+        resolver, enable_pre_retrieval_routing=False)
     result = agent_graph.ask(graph, "贵州茅台2023年与2025年的营业收入分别是多少元？",
                              thread_id="t-accumulate")
 
@@ -274,8 +295,11 @@ def test_evidence_accumulates_across_retries():
 
 def test_facet_scope_drops_unnamed_year_from_evidence():
     """问题只点名 2023 时，混进来的 2025 片段要被裁掉（跨年污染实测 11/17）。"""
-    graph, _ = build_graph(lambda q: [maotai_year_hit(2023, score=0.9),
-                                      maotai_year_hit(2025, score=0.8)])
+    graph, _ = build_graph(
+        lambda q: [maotai_year_hit(2023, score=0.9),
+                   maotai_year_hit(2025, score=0.8)],
+        enable_pre_retrieval_routing=False,
+    )
     result = agent_graph.ask(graph, QUESTION, thread_id="t-scope")
 
     document_ids = {hit["document_id"] for hit in result["retrieved_chunks"]}

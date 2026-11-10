@@ -16,11 +16,17 @@
 
 | 阶段 | 内容 | 状态 |
 |---|---|---|
-| 第零阶段 | 语料抓取、灌库、20 题 golden set、L0 检索基线 | 已完成：9 份年报 / 3,576 chunk；L0 Recall@5=0.882 |
+| 第零阶段 | 语料扩展与审计、灌库、golden set、L0 检索基线 | 已完成：30 家 / 90 份年报 / 37,958 chunk；历史 L0 Recall@5=0.882（9 份语料） |
+| P0 | 证据义务契约、逐路覆盖、缺失义务重试 | 已完成：50 题证据义务覆盖率 `0.8333`，文档 Recall@5 `1.0` |
+| P1 | Claim 解析、硬门禁、软提示、定向修复 | 已完成：硬违规召回 `1.0`，正常答案误伤率 `0.0` |
+| P2 | 统一 system/history/query/evidence/output 预算 | 已完成：v2 数据集预算溢出率 `0.0` |
+| P3 | 120 题扩展集、重复评测与新指标 | v2 检索、路由和三 轮 hybrid 生成均完成；生成质量仍待优化 |
 | 第一阶段 | LangGraph 主图：State / 节点 / 条件边 / 检索子图 / 自纠错重试 | 已完成，见「第一阶段」 |
 | 第二阶段 | Postgres Checkpointer、Store 长期记忆、Interrupt 人工审核 | 已完成，见「第二阶段」 |
 | 第三阶段 | FastAPI + SSE、结构化日志、四场景演示 | 已完成，见「第三阶段」 |
 | 验收 | 50 题验收集、CI、成本与延迟、面试材料 | 已完成，见「验收相关的工程配置」 |
+
+最终交付状态见 `docs/final-handoff.md`。
 
 ## 目录结构
 
@@ -37,7 +43,7 @@ flowchart TB
     GRAPH <--> STORE["Store<br/>跨会话记忆（namespace 隔离）"]
     CP --> PG[("PostgreSQL<br/>kb-agent-postgres 容器")]
     STORE --> PG
-    RAG --> IDX["索引：3,576 chunk<br/>faiss.index + metadata.json + page_offsets.json"]
+    RAG --> IDX["索引：37,958 chunk<br/>faiss.index + metadata.json + page_offsets.json"]
     RAG --> LLM["模型：LLM_MODEL（生成/改写/复核/裁判）<br/>bge-small-zh-v1.5 · bge-reranker-base"]
     EVAL["评估层<br/>golden set 50 题 · 分层矩阵 · LLM 裁判 · 延迟"] --> GRAPH
 ```
@@ -51,7 +57,7 @@ kb-agent/
 ├── rag_adapter/      # 对 production-rag 的封装：配置、年报装载、检索入口
 ├── persistence/      # Postgres Checkpointer / Store 装配 + docker-compose
 ├── api/              # FastAPI 接口、SSE 事件流、结构化日志
-├── configs/          # kb_agent.yaml（本地轻量检索配置）
+├── configs/          # kb_agent.yaml + cninfo_targets.json（检索与抓取配置）
 ├── scripts/          # 抓取年报、灌库、原文定位
 ├── evals/            # golden_set.jsonl、run_eval.py、baseline.json、reports/
 ├── data/docs/        # annual_reports/（PDF + 抓取登记表）
@@ -81,28 +87,93 @@ LLM 统一走 OpenAI-compatible `/chat/completions`。旧版 `DASHSCOPE_API_KEY`
 
 ### 1. 语料
 
-三家 A 股公司 × 近三年（2023/2024/2025）共 9 份年报，来自巨潮资讯公告接口：
+30 家 A 股公司 × 近三年（2023/2024/2025）共 90 份年报，来自巨潮资讯公告接口。
+完整名单、代码、查询参数与 5 家替补候选项见 `configs/cninfo_targets.json`；默认
+只抓取 `enabled=true` 的 30 家，替补项显式加 `--include-candidates` 才启用。
 
-| 公司 | 代码 | 选它的原因 |
-|---|---|---|
-| 贵州茅台 | 600519 | 消费、表格规整，适合表格题 |
-| 宁德时代 | 300750 | 制造、附注长，且两年披露单位不同（万元 / 千元） |
-| 招商银行 | 600036 | 金融、科目体系不同，适合跨文档对比 |
+语料覆盖消费、新能源、家电、工程机械、金融、电子、半导体、医药、能源与物流。
+原有贵州茅台、宁德时代、招商银行保留，用于延续 50 题回归集的历史可比性。
 
 ```powershell
-python scripts/fetch_annual_reports.py --out-dir data/docs/annual_reports
+python scripts/fetch_annual_reports.py `
+  --targets configs/cninfo_targets.json `
+  --years 2023 2024 2025 `
+  --out-dir data/docs/annual_reports
+
+python scripts/audit_annual_reports.py `
+  --targets configs/cninfo_targets.json `
+  --metadata data/docs/annual_reports/metadata.json `
+  --report evals/reports/corpus_audit.json
 ```
 
 抓取结果登记在 `data/docs/annual_reports/metadata.json`：公告标题、公告 ID、
 PDF 直链、字节数、sha256、抓取时间。**只有登记表进 git，PDF 不进**（体积大、可重抓）。
+每次抓取还会写 `data/docs/annual_reports/fetch_report.json`，按公司/年份记录查询、
+选择或下载失败，避免失败只停留在终端。
 
 抓取要点（都已实测）：
 
 - 查询接口 `POST http://www.cninfo.com.cn/new/hisAnnouncement/query` **必须带 User-Agent**。
 - 沪市可用 `stock="600519,gssh0600519"`；深市 orgId 前缀无稳定规律（300750 各种
   前缀组合都返回 0 条），改用 `searchkey="宁德时代"` 更稳。
+- `stock` 为空时自动回退到 `searchkey`；配置项缺少两者时再回退到公司名。
 - 返回体含 `<em>` 高亮标签，需要先剥标签再匹配标题。
 - 标题过滤要排除 `摘要 / 英文 / 更正 / 已取消 / 半年 / 季度` 等干扰项。
+
+阶段 0 实测（2026-11-06）：抓取 90/90 份成功，PDFium 打开与文本抽取 90/90，
+正文合计 **24,067,420 字符**，SHA-256 无重复；审计报告为
+`evals/reports/corpus_audit.json`。重建后为 **37,958 chunk**，FAISS vector 数与
+metadata vector ID 集合一致，页码映射 90/90 份文档覆盖。纯 CPU embedding 约
+18,831 秒，是语料扩展阶段的主要耗时。
+
+扩展后原 50 题回归可完整运行：
+
+- 确定性 L0：Recall@5 `0.8333`、全命中率 `0.7778`、MRR `0.5915`，
+  报告见 `evals/reports/stage0_expanded_retrieval.json`。
+- L3 生成烟测（规则改写、关闭 LLM 复核、`max_retries=0`）：45 道可答题均完成
+  检索与生成；文档 Recall@5 `0.9333`、证据命中 `0.5333`、答案数值命中 `0.6222`、
+  引用率 `0.8667`、平均 66.5 秒/题，报告见
+  `evals/reports/stage0_expanded_generation.json`。
+
+这些是“扩展后、P0 之前”的基线，不应与 9 份语料的历史数字直接混比。
+
+P0 完成后，原 50 题 L3 确定性回归结果为：文档 Recall@5 `1.0`、全命中率 `1.0`、
+证据义务覆盖率 `0.8333`、缺失义务率 `0.1556`、重试率 `0.3`。报告见
+`evals/reports/p0_l3_evidence.json`。逐路统计包括 `per_query_returned`、
+`per_query_documents`、`route_coverage`、`obligations_covered` 和
+`obligations_missing`，并由缺失义务定向生成重试查询。
+
+P1 将答案拆成 `numeric / entity_year / citation / completeness` Claim。硬违规包括
+数字不在被引片段、公司或年份错绑、指标错配、计算输入或完整性义务缺失；
+引用覆盖不足与多口径未说明只作为软问题交人工审核。自动修复默认关闭，开启后
+只替换硬违规 Claim 的文本 span，不重写整段答案。100 条离线污染集结果为：
+硬违规召回 `1.0`、正常答案误伤率 `0.0`，报告见
+`evals/reports/claim_audit.json`。
+
+P2 统一预算把 system prompt、当前问题、历史对话、必要证据和输出预留放进同一个
+`max_context_tokens` 约束。历史按最近完整回合裁剪；证据义务所需片段优先保留；
+每次生成在 `prompt_budget` 中记录各分量、裁剪数量和溢出状态。105 个 scaled case
+预算溢出率为 `0.0`，P95 预算开销约 `1.78ms`，相对既有生成基线约 `0.0027%`。
+报告见 `evals/reports/context_budget.json`。
+
+P3 新增 120 题扩展集：90 道公司题、15 道跨文档题、15 道应拒答题，并附
+dataset manifest、语料 SHA、required evidence、required claims、route
+expectations 与 source pages。确定性检索、L3 编排检索和三轮 vector 生成评测均
+已完成，生成指标按均值和标准差记录，失败样本按轮次保留：
+
+- `evals/reports/scaled_retrieval.json`
+- `evals/reports/scaled_l3.json`
+- `evals/reports/scaled_generation.json`
+- `evals/reports/claim_audit.json`
+- `evals/reports/context_budget.json`
+
+评测集 v2 已完成自动源文核验：`120/120` 通过，人工复核短名单为空。
+当前正式报告统一使用 manifest SHA `9b91a245...`：
+
+- 路由消融：L3a Recall@5 `1.0`，L3b Route 覆盖 `0.9905`，缺失义务率 `0`。
+- 三轮 hybrid L3b 生成：答案正确率 `0.6603`，Claim 支持率 `0.7988`，
+  引用完整覆盖率 `0.9930`，上下文溢出率 `0`。
+- 详细结果见 `docs/routing-ablation-results.md` 和 `docs/generation-eval-v2.md`。
 
 ### 1b. 辅库：LangGraph 官方文档
 
@@ -116,7 +187,8 @@ python scripts/fetch_langgraph_docs.py      # 默认走镜像，网络可直连�
 并把 upstream / 实际使用的镜像 / commit / 文件数写入
 `data/docs/langgraph_docs_registry.json`。
 
-**辅库暂未灌入索引**：L0/L1/L2 基线固定在 9 份年报语料上，避免语料一变动基线就不可比。
+**辅库暂未灌入索引**：L0/L1/L2 历史基线明确标注为 9 份年报语料版本，避免把扩展
+前后的指标混在一起比较。
 技术问答题属于 50 题扩展集的范围，接入时建议单独一个索引/命名空间。
 
 ### 2. PDF 文本抽取：改用 PDFium（有实测证据的决策）
@@ -215,7 +287,8 @@ rag-eval run --config configs\eval.kb_agent.yaml `
 | L0 | 单路向量（基线） | — |
 | L1 | + BM25 + RRF | 检索方式 |
 | L2 | + Cross-Encoder Rerank | 重排开关 |
-| L3 | + 自纠错重试（第一阶段） | 待实现 |
+| L3a | + 检索前公司/年份路由 | 已完成 |
+| L3b | + 缺失义务定向重试 | 已完成 |
 
 指标定义见 `evals/run_eval.py` 顶部注释：`doc_recall@5`、`all_docs_hit@5`、
 `doc_mrr`、`value_hit_rate`、`evidence_hit@5`，应拒答题单列 top-1 相似度分布
@@ -224,9 +297,9 @@ rag-eval run --config configs\eval.kb_agent.yaml `
 L0 基线写入 `evals/baseline.json`（方案 §6.4 规则 2：灌库完成后立即测出），
 各层汇总写入 `evals/reports/layer_matrix.json`。
 
-### 6. 第零阶段结果（实测，2026-10-13）
+### 6. 扩展前第零阶段结果（实测，2026-10-13）
 
-环境：9 份年报 / 3,576 chunk / `BAAI/bge-small-zh-v1.5` / `BAAI/bge-reranker-base` /
+历史环境：9 份年报 / 3,576 chunk / `BAAI/bge-small-zh-v1.5` / `BAAI/bge-reranker-base` /
 chunk 800·overlap 120 / strategy=recursive / top_k=5 / faiss 1.15.1。
 
 | 层 | 说明 | Recall@5 | 全命中率 | MRR | 证据命中@5 |
@@ -800,7 +873,8 @@ Postgres 连不上时接口层会降级到内存 checkpointer，日志里留一�
   改为在 `scripts/ingest_kb.py` 里用 `faiss.vector_to_array` 做等效核对
   （metadata.json 与 FAISS 的 vector_id 集合必须一致），并在本地配置里关闭
   上游校验开关。
-- 语料只有 3 家公司 × 3 年、共 9 份年报，**不能**据此谈容量或 SLA。
+- 语料已扩展到 30 家公司 × 3 年、共 90 份年报，但仍**不能**据此谈生产容量或 SLA；
+  原 50 题和 L0-L3 数字同时保留“9 份语料版本”的标注，扩展后的新基线需单独评测。
 - **证据级指标的口径**：计算题与单位换算题（"增加约多少亿元"）的期望值是算出来的，
   原文里没有该字面量，所以这类题用 `evidence_literals` 声明"证据里必须真实出现的数字"。
   修正口径后 L1/L2 的证据命中是 0.353 / 0.471（此前 0.588 / 0.706 是把"算出来的期望值"
@@ -817,6 +891,8 @@ Postgres 连不上时接口层会降级到内存 checkpointer，日志里留一�
   优化方向：候选池裁剪、批量重排、查询缓存，或换 API 侧的 rerank 服务。
 - 表格在抽取后是"拍平"的文本行，数字顺序保留、行列语义丢失；表格题的召回
   依赖数字与表头关键词共现，不是结构化取数。
-- golden set 的 20 题为自建最小集，验收前需扩到 50 题。
+- scaled golden set 已扩展到 120 题，并通过 v2 源文审计。
+- hybrid L3b 三轮生成的整体答案正确率为 `0.6603`，跨文档题仅 `0.4889`；
+  生成层仍是当前主要质量短板。
 - 第零阶段只验证检索层，**答案正确性 / 拒答 / 引用准确率**需要生成链路，
   属于第一阶段及以后。

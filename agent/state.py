@@ -24,11 +24,17 @@ class AgentState(TypedDict, total=False):
     rewritten_query: str
     sub_queries: List[str]
     rewrite_history: Annotated[List[Dict[str, Any]], operator.add]
+    routes: List[Dict[str, Any]]
+    route_history: Annotated[List[Dict[str, Any]], operator.add]
 
     # 当前证据与评分（覆盖写：只反映"当前这轮"）
     retrieved_chunks: List[Dict[str, Any]]
     retrieval_stats: Dict[str, Any]
     retrieval_score: Dict[str, Any]
+    prompt_budget: Dict[str, Any]
+    obligations: List[Dict[str, Any]]
+    route_hits: List[Dict[str, Any]]
+    route_coverage: List[Dict[str, Any]]
     retry_count: int
     next_action: str
 
@@ -47,6 +53,9 @@ class AgentState(TypedDict, total=False):
     context_chunks: List[Dict[str, Any]]
     # 答案落地校验（数字是否能在"含问题指标词"的被引片段里找到）
     grounding: Dict[str, Any]
+    # P1 Claim 审计与定向修复
+    claims: List[Dict[str, Any]]
+    answer_audit: Dict[str, Any]
     # 同一指标在证据里是否出现多个候选值（口径歧义），以及修复记录
     ambiguity: Dict[str, Any]
     repair_history: Annotated[List[Dict[str, Any]], operator.add]
@@ -70,9 +79,15 @@ def initial_state(question: str,
         "rewritten_query": question,
         "sub_queries": [],
         "rewrite_history": [],
+        "routes": [],
+        "route_history": [],
         "retrieved_chunks": [],
         "retrieval_stats": {},
         "retrieval_score": {},
+        "prompt_budget": {},
+        "obligations": [],
+        "route_hits": [],
+        "route_coverage": [],
         "retry_count": 0,
         "next_action": "",
         "facets": {},
@@ -83,6 +98,8 @@ def initial_state(question: str,
         "citations": [],
         "context_chunks": [],
         "grounding": {},
+        "claims": [],
+        "answer_audit": {},
         "ambiguity": {},
         "repair_history": [],
         "needs_human_review": False,

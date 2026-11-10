@@ -141,11 +141,47 @@ def test_l3_adapter_defaults_to_retrieval_only() -> None:
     assert prediction.metadata["generate_answers"] is False
 
 
+def test_l3_adapter_records_pre_retrieval_routing_config() -> None:
+    service = FakeService(
+        lambda query: [maotai_hit()],
+        mode="hybrid",
+        use_rerank=True,
+        generator=ExplodingGenerator(),
+    )
+    adapter = KbAgentL3Adapter(
+        service=service,
+        generate_answers=False,
+        use_llm_rewrite=False,
+        use_llm_grader=False,
+        enable_pre_retrieval_routing=False,
+        strict_route_filter=False,
+        route_candidate_limit=12,
+    )
+
+    prediction = adapter.run(_sample("agent"), _context())
+
+    assert prediction.metadata["enable_pre_retrieval_routing"] is False
+    assert prediction.metadata["strict_route_filter"] is False
+    assert prediction.metadata["route_candidate_limit"] == 12
+    assert prediction.metadata["routes_planned"] == 1
+    assert prediction.metadata["retrieval_stats"]["routing_enabled"] is False
+
+
+def test_l3_adapter_rejects_invalid_route_candidate_limit() -> None:
+    adapter = KbAgentL3Adapter(
+        service=FakeService(lambda query: [maotai_hit()]),
+        generate_answers=False,
+        route_candidate_limit=0,
+    )
+
+    assert "route_candidate_limit must be positive" in adapter.validate()
+
+
 def test_l3_adapter_records_human_review_without_resuming() -> None:
     generator = ExplodingGenerator()
     service = FakeService(
         lambda query: [
-            make_hit("600519-2022", "贵州茅台 2022 年年度报告 其他内容")
+            make_hit("600519-2023", "贵州茅台 2023 年年度报告 其他内容")
         ],
         mode="hybrid",
         use_rerank=True,

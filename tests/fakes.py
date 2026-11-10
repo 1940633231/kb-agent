@@ -40,10 +40,23 @@ class FakeRetriever:
     def __init__(self, resolver) -> None:
         self.resolver = resolver
         self.queries: List[str] = []
+        self.document_filters: List[Any] = []
 
     def search(self, query, top_k=5, document_ids=None):
         self.queries.append(query)
-        return self.resolver(query)[:top_k]
+        self.document_filters.append(document_ids)
+        hits = self.resolver(query)
+        if document_ids is not None:
+            allowed = {str(item) for item in document_ids}
+            hits = [
+                hit for hit in hits
+                if str(
+                    hit.get("document_id")
+                    or (hit.get("metadata") or {}).get("document_id")
+                    or ""
+                ) in allowed
+            ]
+        return hits[:top_k]
 
 
 class FakeGenerator:
@@ -87,7 +100,8 @@ class FakePipeline:
     def _search_all(self, query, queries, document_ids=None):
         collected: List[Dict] = []
         for text in queries:
-            collected.extend(self.retriever.search(text, top_k=self.top_k))
+            collected.extend(self.retriever.search(
+                text, top_k=self.top_k, document_ids=document_ids))
         return collected
 
     def _filter_active_versions(self, candidates):

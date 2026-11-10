@@ -42,20 +42,65 @@ class LLMGrader:
         self.max_chars_per_chunk = max_chars_per_chunk
         self.last_error: Optional[str] = None
 
-    def _evidence_block(self, hits: List[Dict]) -> str:
+    def _evidence_block(self, hits: List[Dict],
+                        obligations: Optional[List[Dict[str, Any]]] = None) -> str:
+        selected: List[Dict[str, Any]] = []
+        if obligations:
+            from agent.evidence_contract import (
+                EvidenceObligation,
+                hit_matches_obligation,
+            )
+
+            for raw in obligations:
+                obligation = (raw if isinstance(raw, EvidenceObligation)
+                              else EvidenceObligation.from_dict(raw))
+                matches = [hit for hit in hits
+                           if hit_matches_obligation(hit, obligation)]
+                if matches:
+                    selected.append(matches[0])
+        for hit in hits:
+            if hit not in selected:
+                selected.append(hit)
         lines = []
-        for index, hit in enumerate(hits[:self.max_chunks], 1):
+        for index, hit in enumerate(selected[:self.max_chunks], 1):
             document_id = hit.get("document_id") or ""
             content = (hit.get("content") or "")[:self.max_chars_per_chunk]
             lines.append("[{}] {} {}".format(index, document_id, content))
         return "\n".join(lines)
 
-    def grade(self, question: str, hits: List[Dict]) -> Dict[str, Any]:
+    def grade(self, question: str, hits: List[Dict],
+              obligations: Optional[List[Dict[str, Any]]] = None,
+              missing_obligations: Optional[List[Dict[str, Any]]] = None,
+              route_coverage: Optional[List[Dict[str, Any]]] = None
+              ) -> Dict[str, Any]:
         """返回 {judgment, reason, missing, source}；异常时 source=fallback。"""
         if not hits:
             return {"judgment": "insufficient", "reason": "没有候选片段",
                     "missing": "全部证据", "source": "rule"}
-        prompt = "问题：{}\n\n候选片段：\n{}".format(question, self._evidence_block(hits))
+        obligation_text = "\n".join(
+            "- {} {} {}".format(
+                item.get("company") or "",
+                "{}年".format(item.get("year")) if item.get("year") else "",
+                item.get("metric") or "",
+            ).strip()
+            for item in missing_obligations or []
+        ) or "无"
+        route_text = "\n".join(
+            "- {} {} covered={} missing={}".format(
+                item.get("query_id") or "",
+                item.get("query") or "",
+                item.get("covered") or [],
+                item.get("missing") or [],
+            )
+            for item in route_coverage or []
+        ) or "无"
+        prompt = (
+            "问题：{}\n\n"
+            "仍缺失的证据义务：\n{}\n\n"
+            "各路检索覆盖：\n{}\n\n"
+            "候选片段：\n{}"
+        ).format(question, obligation_text, route_text,
+                 self._evidence_block(hits, obligations))
         try:
             answer = self.generator.generate([
                 {"role": "system", "content": GRADE_SYSTEM_PROMPT},

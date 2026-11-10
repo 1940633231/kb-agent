@@ -1,45 +1,45 @@
 {
   "layer": "L3",
   "label": "+自纠错重试（本项目）",
-  "generated_at": "2026-10-14T09:09:19.931638+00:00",
+  "generated_at": "2026-11-05T18:18:21.800830+00:00",
   "config": {
     "mode": "hybrid",
     "use_rerank": true,
     "top_k": 5,
     "strategy": "recursive",
-    "max_retries": 2,
+    "max_retries": 0,
     "generate": true,
-    "llm_rewrite": true
+    "llm_rewrite": false
   },
   "metrics": {
     "answerable_questions": 45,
-    "doc_recall@5": 1.0,
-    "all_docs_hit@5": 1.0,
-    "doc_mrr": 0.9889,
-    "evidence_hit@5": 0.6444,
-    "evidence_hit_final": 0.7333,
-    "mean_evidence_count": 7.16,
-    "retry_rate": 0.46,
-    "mean_retries": 0.82,
-    "refuse_flagged_rate": 1.0,
-    "mean_seconds_per_query": 53.498,
-    "foreign_evidence_rate": 0.0222,
-    "foreign_citation_rate": 0.0,
-    "grounding_verified_rate": 0.5294,
-    "mean_ungrounded_numbers": 0.5,
-    "citation_coverage": 0.9044,
-    "citation_full_coverage_rate": 0.8824,
+    "doc_recall@5": 0.9333,
+    "all_docs_hit@5": 0.8889,
+    "doc_mrr": 0.9667,
+    "evidence_hit@5": 0.5333,
+    "evidence_hit_final": 0.5333,
+    "mean_evidence_count": 3.34,
+    "retry_rate": 0.0,
+    "mean_retries": 0.0,
+    "refuse_flagged_rate": 0.6,
+    "mean_seconds_per_query": 66.536,
+    "foreign_evidence_rate": 0.0444,
+    "foreign_citation_rate": 0.0444,
+    "grounding_verified_rate": 0.6562,
+    "mean_ungrounded_numbers": 0.4,
+    "citation_coverage": 0.9948,
+    "citation_full_coverage_rate": 0.9688,
     "repair_rate": 0.0,
     "repair_fixed_rate": null,
     "unverified_rate": 0.0,
-    "prompt_tokens_est_mean": 5265.2,
-    "answer_tokens_est_mean": 133.64,
-    "tokens_est_total": 269942,
+    "prompt_tokens_est_mean": 2468.74,
+    "answer_tokens_est_mean": 78.46,
+    "tokens_est_total": 127360,
     "cost_estimate_per_query": null,
-    "answer_value_rate": 0.8,
-    "citation_rate": 0.9333,
+    "answer_value_rate": 0.6222,
+    "citation_rate": 0.8667,
     "citation_valid_rate": 1.0,
-    "refuse_correct_rate": 1.0
+    "refuse_correct_rate": 0.6
   },
   "questions": [
     {
@@ -66,21 +66,16 @@
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
-      "answer_value_hit": false,
+      "answer_value_hit": true,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 1,
+      "grounding_checked": 3,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]明确给出了贵州茅台2023年营业收入为14,769,360.50万元，即147.693605亿元，数值具体且与问题匹配。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 1,
+      "llm_review": null,
+      "numbers_total": 3,
       "citation_coverage": 1.0,
-      "answer": "根据上下文[2]中的“营业收入和营业成本情况”表格，贵州茅台2023年的营业收入合计为 **81,415,570,788.59元**。\n\n该数据来源于财务报表附注中“主营业务”与“其他业务”收入之和[2]。",
+      "answer": "根据上下文，贵州茅台2023年营业收入合计本期发生额为 **81,415,570,788.59 元**[2]。\n\n但上下文同时存在另一个数值：[1]中关键审计事项列示“2023年度营业收入发生额为人民币 **14,769,360.50 万元**”（即 **147,693,605,000 元**）。两个数值在上下文中不一致，引用时需注意区分[1][2]。",
       "citations": [
         {
           "number": 2,
@@ -94,14 +89,27 @@
           "company": "贵州茅台",
           "year": 2023,
           "page": 141
+        },
+        {
+          "number": 1,
+          "chunk_id": "600519-2023_chunk_93",
+          "file_name": "贵州茅台2023年年度报告",
+          "document_id": "600519-2023",
+          "start_offset": 58956,
+          "end_offset": 59752,
+          "content_preview": "们根据职业判断，认为对本期财务报表审计最为重要的事项。这些事项的\n应对以对财务报表整体进行审计并形成",
+          "document_title": "贵州茅台2023年年度报告",
+          "company": "贵州茅台",
+          "year": 2023,
+          "page": 55
         }
       ],
-      "citation_count": 1,
+      "citation_count": 2,
       "citation_valid": true,
       "refused": false,
       "prompt_tokens_est": 1375,
-      "answer_tokens_est": 95,
-      "seconds": 32.19
+      "answer_tokens_est": 141,
+      "seconds": 68.92
     },
     {
       "id": "ar-fact-002",
@@ -133,15 +141,10 @@
       "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[2]明确给出招商银行2024年不良贷款率为0.95%",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 0,
       "citation_coverage": null,
-      "answer": "招商银行2024年的不良贷款率为0.95%[2]。",
+      "answer": "招商银行2024年末本集团不良贷款率为 **0.95%**，与上年末持平[2]。",
       "citations": [
         {
           "number": 2,
@@ -161,8 +164,8 @@
       "citation_valid": true,
       "refused": false,
       "prompt_tokens_est": 3710,
-      "answer_tokens_est": 26,
-      "seconds": 34.32
+      "answer_tokens_est": 41,
+      "seconds": 66.84
     },
     {
       "id": "ar-fact-003",
@@ -179,7 +182,7 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": true,
       "evidence_hit_final": true,
-      "evidence_count": 5,
+      "evidence_count": 4,
       "retry_count": 0,
       "rewrite_sources": [],
       "graded_passed": true,
@@ -191,39 +194,34 @@
       "answer_value_hit": true,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 2,
+      "grounding_checked": 1,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[2]明确列出了宁德时代2025年营业收入为423,701,834千元，实体、年份和指标均完整且无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 2,
+      "llm_review": null,
+      "numbers_total": 1,
       "citation_coverage": 1.0,
-      "answer": "宁德时代2025年的营业收入为 **423,701,834 千元**。\n\n该数据来源于上下文[2]中的“合并利润表”部分，其中明确列出：\n\n> 一、营业总收入 423,701,834 362,012,554  \n> 其中：营业收入 423,701,834 362,012,554 [2]",
+      "answer": "宁德时代2025年度实现收入 **423,701,834 千元**，较上年增长 17.04%[1]。",
       "citations": [
         {
-          "number": 2,
-          "chunk_id": "300750-2025_chunk_181",
+          "number": 1,
+          "chunk_id": "300750-2025_chunk_171",
           "file_name": "2025年年度报告",
           "document_id": "300750-2025",
-          "start_offset": 113750,
-          "end_offset": 114650,
-          "content_preview": "股\n永续债\n资本公积 132,644,612 94,452,344 \n减：库存股 7,097,993",
+          "start_offset": 107722,
+          "end_offset": 108511,
+          "content_preview": "；\n（4）获取管理层编制的存在减值迹象的固定资产的减值测试表，复核资产减值测试方法与模型、关\n键假设",
           "document_title": "2025年年度报告",
           "company": "宁德时代",
           "year": 2025,
-          "page": 115
+          "page": 108
         }
       ],
       "citation_count": 1,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 3887,
-      "answer_tokens_est": 104,
-      "seconds": 33.17
+      "prompt_tokens_est": 3048,
+      "answer_tokens_est": 40,
+      "seconds": 65.66
     },
     {
       "id": "ar-fact-004",
@@ -249,45 +247,39 @@
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
-      "answer_value_hit": false,
+      "answer_value_hit": true,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 2,
+      "grounding_checked": 6,
       "grounding_verified": false,
       "ungrounded_numbers": [
-        "85,305,341,965.73",
-        "76,370,303,842.59"
+        "82,320,067,101.68"
       ],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]明确列出了贵州茅台2025年归属于上市公司股东的净利润分季度数据，合计为102,319,967,101.68元，可唯一确定问题答案。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 2,
-      "citation_coverage": 1.0,
-      "answer": "根据您提供的上下文，贵州茅台2025年归属于上市公司股东的净利润为 **85,305,341,965.73元**。\n\n该数据来源于报告中的“合并利润表”部分，其中明确列示：\n\n> 四、净利润（净亏损以“－”号填列） 85,305,341,965.73 76,370,303,842.59\n\n[2]",
+      "llm_review": null,
+      "numbers_total": 6,
+      "citation_coverage": 0.8333333333333334,
+      "answer": "根据2025年分季度主要财务数据，四个季度归属于上市公司股东的净利润分别为26,847,474,238.76元、18,555,488,059.34元、19,223,784,414.08元、17,693,320,389.50元，合计为 **82,320,067,101.68元（约823.20亿元）**[1]。",
       "citations": [
         {
-          "number": 2,
-          "chunk_id": "600519-2025_chunk_104",
+          "number": 1,
+          "chunk_id": "600519-2025_chunk_7",
           "file_name": "贵州茅台2025年年度报告",
           "document_id": "600519-2025",
-          "start_offset": 64262,
-          "end_offset": 65101,
-          "content_preview": "7.21\n四、净利润（净亏损以“－”号填列） 85,305,341,965.73 76,370,30",
+          "start_offset": 3640,
+          "end_offset": 4431,
+          "content_preview": "减少及不可随时支取的同业存款增加。\n\n贵州茅台酒股份有限公司2025 年年度报告\n7 / 143\n八",
           "document_title": "贵州茅台2025年年度报告",
           "company": "贵州茅台",
           "year": 2025,
-          "page": 63
+          "page": 6
         }
       ],
       "citation_count": 1,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 2891,
-      "answer_tokens_est": 124,
-      "seconds": 33.33
+      "prompt_tokens_est": 2812,
+      "answer_tokens_est": 112,
+      "seconds": 67.55
     },
     {
       "id": "ar-fact-005",
@@ -319,15 +311,10 @@
       "grounding_checked": 1,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[3]明确给出招商银行2025年非利息净收入为1,219.39亿元，覆盖了公司、年份和指标名，且数值具体无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 1,
       "citation_coverage": 1.0,
-      "answer": "招商银行2025年的非利息净收入是1,219.39亿元[2]。",
+      "answer": "招商银行2025年非利息净收入为 **1,219.39亿元**，同比下降3.38%[2]。",
       "citations": [
         {
           "number": 2,
@@ -347,8 +334,8 @@
       "citation_valid": true,
       "refused": false,
       "prompt_tokens_est": 2126,
-      "answer_tokens_est": 28,
-      "seconds": 31.49
+      "answer_tokens_est": 39,
+      "seconds": 63.9
     },
     {
       "id": "ar-table-001",
@@ -378,26 +365,33 @@
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
       "grounding_checked": 1,
-      "grounding_verified": false,
-      "ungrounded_numbers": [
-        "7,561,191"
-      ],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段明确列出宁德时代2024年研发费用中职工薪酬为7,561,191千元",
-        "missing": "",
-        "source": "llm"
-      },
+      "grounding_verified": true,
+      "ungrounded_numbers": [],
+      "llm_review": null,
       "numbers_total": 1,
-      "citation_coverage": 0.0,
-      "answer": "根据提供的上下文，宁德时代2024年研发费用明细中，职工薪酬为 **7,561,191千元**[53]。",
-      "citations": [],
-      "citation_count": 0,
-      "citation_valid": null,
+      "citation_coverage": 1.0,
+      "answer": "宁德时代2024年研发费用明细中，职工薪酬本期发生额为 **7,561,191 千元**[1]。",
+      "citations": [
+        {
+          "number": 1,
+          "chunk_id": "300750-2024_chunk_307",
+          "file_name": "2024年年度报告",
+          "document_id": "300750-2024",
+          "start_offset": 193094,
+          "end_offset": 193927,
+          "content_preview": "发生额\n职工薪酬 1,533,505 1,347,024 \n宣传及办公费 999,331 1,132",
+          "document_title": "2024年年度报告",
+          "company": "宁德时代",
+          "year": 2024,
+          "page": 197
+        }
+      ],
+      "citation_count": 1,
+      "citation_valid": true,
       "refused": false,
       "prompt_tokens_est": 685,
-      "answer_tokens_est": 54,
-      "seconds": 33.77
+      "answer_tokens_est": 49,
+      "seconds": 68.42
     },
     {
       "id": "ar-table-002",
@@ -429,36 +423,31 @@
       "grounding_checked": 1,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]和[3]明确提到招商银行2024年净利息收入为2,112.77亿元，与问题要求的实体、年份和指标完全匹配，数值准确无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 1,
       "citation_coverage": 1.0,
-      "answer": "招商银行2024年本集团实现的净利息收入是**2,112.77亿元**[1]。",
+      "answer": "招商银行2024年本集团实现的净利息收入为 **2,112.77亿元**[2]。",
       "citations": [
         {
-          "number": 1,
-          "chunk_id": "600036-2024_chunk_31",
+          "number": 2,
+          "chunk_id": "600036-2024_chunk_26",
           "file_name": "招商银行股份有限公司2024年度报告",
           "document_id": "600036-2024",
-          "start_offset": 19065,
-          "end_offset": 19840,
-          "content_preview": "构存拆放款项利息支出196.29亿元，同比下降1.19%，主要是因为同业和\n其他金融机构存拆放款项成",
+          "start_offset": 16084,
+          "end_offset": 17560,
+          "content_preview": "55.33 19.72\n注： 以上数据均为本公司口径，根据金融监督管理机构监管口径计算。\n2.4 境",
           "document_title": "招商银行股份有限公司2024年度报告",
           "company": "招商银行",
           "year": 2024,
-          "page": 21
+          "page": 17
         }
       ],
       "citation_count": 1,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 2885,
+      "prompt_tokens_est": 2994,
       "answer_tokens_est": 35,
-      "seconds": 31.66
+      "seconds": 63.87
     },
     {
       "id": "ar-table-003",
@@ -475,51 +464,59 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": false,
       "evidence_hit_final": false,
-      "evidence_count": 5,
+      "evidence_count": 4,
       "retry_count": 0,
       "rewrite_sources": [],
-      "graded_passed": true,
-      "graded_reason": "证据已覆盖问题要素",
-      "needs_human_review": false,
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 销售费用",
+      "needs_human_review": true,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
-      "answer_value_hit": true,
+      "answer_value_hit": false,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 1,
+      "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]明确列出了贵州茅台2024年销售费用为5,639,300,059.49元，实体、年份和指标均完整且无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 1,
-      "citation_coverage": 1.0,
-      "answer": "贵州茅台2024年的销售费用为5,639,300,059.49元[1]。",
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "根据现有信息无法回答。上下文未明确披露“贵州茅台2024年的销售费用”金额；其中出现的合计、营业收入、营业成本等数据均未标注为销售费用[1][2]。",
       "citations": [
         {
           "number": 1,
-          "chunk_id": "600519-2024_chunk_17",
+          "chunk_id": "600519-2024_chunk_75",
           "file_name": "贵州茅台2024年年度报告",
           "document_id": "600519-2024",
-          "start_offset": 10226,
-          "end_offset": 11106,
-          "content_preview": "□适用 √不适用\nB.公司主要供应商情况\n√适用 □不适用\n前五名供应商采购额 304,247.59",
+          "start_offset": 47348,
+          "end_offset": 48777,
+          "content_preview": "资实业有限\n公司 其他 销售商品 销售商品 销售价格与公司其他非关联经\n销商的购货价格相同 16,2",
           "document_title": "贵州茅台2024年年度报告",
           "company": "贵州茅台",
           "year": 2024,
-          "page": 10
+          "page": 43
+        },
+        {
+          "number": 2,
+          "chunk_id": "600519-2024_chunk_28",
+          "file_name": "贵州茅台2024年年度报告",
+          "document_id": "600519-2024",
+          "start_offset": 17366,
+          "end_offset": 17984,
+          "content_preview": "683,762,096.71 19.65 4,967,916,424.11 19.00 79.87 ",
+          "document_title": "贵州茅台2024年年度报告",
+          "company": "贵州茅台",
+          "year": 2024,
+          "page": 16
         }
       ],
-      "citation_count": 1,
+      "citation_count": 2,
       "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 3511,
-      "answer_tokens_est": 30,
-      "seconds": 32.26
+      "refused": true,
+      "prompt_tokens_est": 2657,
+      "answer_tokens_est": 78,
+      "seconds": 74.2
     },
     {
       "id": "ar-table-004",
@@ -536,54 +533,32 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": false,
       "evidence_hit_final": false,
-      "evidence_count": 5,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "llm"
-      ],
-      "graded_passed": true,
-      "graded_reason": "证据已覆盖问题要素",
-      "needs_human_review": false,
+      "evidence_count": 1,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 研发投入合计",
+      "needs_human_review": true,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
-      "answer_value_hit": true,
+      "answer_value_hit": false,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 3,
+      "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[5]明确列出贵州茅台2023年研发投入合计为621,507,535.87元，覆盖了公司、年份和指标名，且数值准确无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 3,
-      "citation_coverage": 1.0,
-      "answer": "根据提供的上下文，贵州茅台2023年研发投入合计为 **621,507,535.87元**。\n\n该数据来源于“4. 研发投入”部分的“研发投入情况表”[2]：\n- 本期费用化研发投入：477,957,725.95 元\n- 本期资本化研发投入：143,549,809.92 元\n- 研发投入合计：621,507,535.87 元 [2]",
-      "citations": [
-        {
-          "number": 2,
-          "chunk_id": "600519-2023_chunk_19",
-          "file_name": "贵州茅台2023年年度报告",
-          "document_id": "600519-2023",
-          "start_offset": 11478,
-          "end_offset": 12245,
-          "content_preview": "告\n及市场拓展费用增加。\n财务费用本期-1,789,503,701.48 元，上期-1,391,80",
-          "document_title": "贵州茅台2023年年度报告",
-          "company": "贵州茅台",
-          "year": 2023,
-          "page": 11
-        }
-      ],
-      "citation_count": 1,
-      "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 3353,
-      "answer_tokens_est": 142,
-      "seconds": 94.29
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "根据现有信息无法回答。提供的上下文未包含贵州茅台2023年研发投入合计金额。",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": true,
+      "prompt_tokens_est": 751,
+      "answer_tokens_est": 40,
+      "seconds": 60.79
     },
     {
       "id": "ar-cross-001",
@@ -600,32 +575,25 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": true,
       "evidence_hit_final": true,
-      "evidence_count": 10,
-      "retry_count": 1,
-      "rewrite_sources": [
-        "llm"
-      ],
-      "graded_passed": true,
-      "graded_reason": "证据已覆盖问题要素",
-      "needs_human_review": false,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 零售贷款不良率",
+      "needs_human_review": true,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
       "answer_value_hit": true,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 0,
+      "grounding_checked": 2,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段1明确提供了招商银行2023年零售贷款不良率0.89%和信用卡贷款不良率1.75%，满足问题对实体、年份和指标名的全部要求，且数值具体无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 0,
-      "citation_coverage": null,
-      "answer": "根据提供的上下文信息：\n\n- 招商银行2023年零售贷款不良率为 **0.89%**[1]。\n- 信用卡贷款不良率为 **1.75%**[1]。\n\n以上数据均来自《招商银行股份有限公司2023年度报告（A股）》中的“管理层讨论与分析”部分。",
+      "llm_review": null,
+      "numbers_total": 2,
+      "citation_coverage": 1.0,
+      "answer": "根据2023年度报告披露：\n\n- 零售贷款不良率：**0.89%**，与上年末持平[1]\n- 信用卡贷款不良率：**1.75%**，较上年末下降0.02个百分点[1]\n\n（同期零售不良贷款余额305.87亿元，信用卡贷款不良余额163.83亿元[1]）",
       "citations": [
         {
           "number": 1,
@@ -644,9 +612,9 @@
       "citation_count": 1,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 7887,
-      "answer_tokens_est": 115,
-      "seconds": 66.22
+      "prompt_tokens_est": 2258,
+      "answer_tokens_est": 126,
+      "seconds": 66.08
     },
     {
       "id": "ar-cross-002",
@@ -666,48 +634,29 @@
       "evidence_count": 4,
       "retry_count": 0,
       "rewrite_sources": [],
-      "graded_passed": true,
-      "graded_reason": "证据已覆盖问题要素",
-      "needs_human_review": false,
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 销售费用,财务费用",
+      "needs_human_review": true,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
-      "answer_value_hit": true,
+      "answer_value_hit": false,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 2,
+      "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]明确列出了贵州茅台2024年的销售费用为5,639,300,059.49元，财务费用为-1,470,219,863.34元，完全满足问题要求的实体、年份和具体数值指标。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 2,
-      "citation_coverage": 1.0,
-      "answer": "根据提供的上下文信息：\n\n- 贵州茅台2024年的销售费用为 **5,639,300,059.49元**[1]。\n- 贵州茅台2024年的财务费用为 **-1,470,219,863.34元**[1]。\n\n（注：负值表示财务费用为净收益，即利息收入大于利息支出。）",
-      "citations": [
-        {
-          "number": 1,
-          "chunk_id": "600519-2024_chunk_17",
-          "file_name": "贵州茅台2024年年度报告",
-          "document_id": "600519-2024",
-          "start_offset": 10226,
-          "end_offset": 11106,
-          "content_preview": "□适用 √不适用\nB.公司主要供应商情况\n√适用 □不适用\n前五名供应商采购额 304,247.59",
-          "document_title": "贵州茅台2024年年度报告",
-          "company": "贵州茅台",
-          "year": 2024,
-          "page": 10
-        }
-      ],
-      "citation_count": 1,
-      "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 3127,
-      "answer_tokens_est": 112,
-      "seconds": 33.75
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "根据现有信息无法回答。上下文仅包含贵州茅台2024年年度报告中的关联交易等内容，未提供“销售费用”和“财务费用”的具体金额。",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": true,
+      "prompt_tokens_est": 2990,
+      "answer_tokens_est": 63,
+      "seconds": 65.35
     },
     {
       "id": "ar-cross-003",
@@ -739,15 +688,10 @@
       "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[3]明确给出了招商银行2023年房地产业不良贷款率为5.01%，较上年末上升1.02个百分点，覆盖了问题中的公司、年份、指标名及具体数值。",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 0,
       "citation_coverage": null,
-      "answer": "招商银行2023年房地产业不良贷款率为5.01%，较上年末上升了1.02个百分点[3]。",
+      "answer": "招商银行2023年房地产业不良贷款率为 **5.01%**，较上年末上升 **1.02个百分点**[3]。",
       "citations": [
         {
           "number": 3,
@@ -767,8 +711,8 @@
       "citation_valid": true,
       "refused": false,
       "prompt_tokens_est": 2388,
-      "answer_tokens_est": 48,
-      "seconds": 31.52
+      "answer_tokens_est": 52,
+      "seconds": 64.12
     },
     {
       "id": "ar-multi-001",
@@ -789,61 +733,38 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": false,
       "evidence_hit_final": false,
-      "evidence_count": 20,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "llm"
-      ],
-      "graded_passed": false,
-      "graded_reason": "LLM 复核判定证据不足: 2025年营业收入在片段中存在多个数值，且未明确合计金额，存在歧义",
-      "needs_human_review": true,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
-      "answer_value_hit": false,
+      "answer_value_hit": true,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 1,
-      "grounding_verified": false,
-      "ungrounded_numbers": [
-        "80,921,734,260.74"
-      ],
-      "llm_review": {
-        "judgment": "insufficient",
-        "reason": "2025年营业收入在片段中存在多个数值，且未明确合计金额，存在歧义",
-        "missing": "2025年营业收入的准确合计数值",
-        "source": "llm"
-      },
-      "numbers_total": 1,
-      "citation_coverage": 0.0,
-      "answer": "根据提供的上下文信息，贵州茅台2023年、2024年、2025年的营业收入如下：\n\n- **2023年营业收入**：未在上下文中直接提供具体数值。  \n  但根据[14]中“营业收入变动原因说明”提及“主要是本期销量增加、销售渠道、产品结构变化及主要产品销售价格调整”，可推断该数据存在于财务报表中，但当前文本未明确列出。\n\n- **2024年营业收入**：根据[9]中的“按销售渠道分类”表格，主营业务收入为80,921,734,260.74元（本期发生额），而该表属于2024年年度报告内容，且“主营业务”收入应接近总营业收入。结合[1]中提到的“2024年度，贵州茅台公司营业收入主要来自于茅台酒及系列酒的生产及销售”，可确认2024年营业收入约为 **80,921,734,260.74元**。\n\n- **2025年营业收入**：根据[9]中“按销售渠道分类”表格，主营业务收入为80,921,734,260.74元（本期发生额）——但此数据实际对应的是2024年。  \n  在[7]中提到：“营业收入变动原因说明：主要是本期销量增加、销售渠道、产品结构变化及主要产品销售价格调整。” 这是针对2025年的描述，但未给出具体金额。  \n  然而，在[9]表格中，“本期发生额”列的“主营业务”收入为 **80,921,734,260.74元**，该表格标注为2025年年度报告，因此可以判断该数据即为2025年营业收入。\n\n综上：\n- 2023年营业收入：**未在上下文中明确提供**  \n- 2024年营业收入：**80,921,734,260.74元** [9]  \n- 2025年营业收入：**80,921,734,260.74元** [9]\n\n> ⚠️ 注意：尽管2024年和2025年营业收入数值相同，但可能因数据提取方式或表格归属问题导致重复显示。若需准确数据，建议查阅完整年报原文。目前依据现有材料，仅能确认上述数值。",
+      "grounding_checked": 6,
+      "grounding_verified": true,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 6,
+      "citation_coverage": 1.0,
+      "answer": "贵州茅台营业收入分别为：\n\n- 2023年：14,769,360.50万元（147,693,605,000元）[2]\n- 2024年：17,089,915.23万元（170,899,152,300元）[1]\n- 2025年：16,883,810.25万元（168,838,102,500元）[3]",
       "citations": [
         {
-          "number": 14,
-          "chunk_id": "600519-2023_chunk_15",
+          "number": 2,
+          "chunk_id": "600519-2023_chunk_93",
           "file_name": "贵州茅台2023年年度报告",
           "document_id": "600519-2023",
-          "start_offset": 8847,
-          "end_offset": 9622,
-          "content_preview": "活动产生的现金流量净额 -58,889,101,991.94 -57,424,528,979.83 ",
+          "start_offset": 58956,
+          "end_offset": 59752,
+          "content_preview": "们根据职业判断，认为对本期财务报表审计最为重要的事项。这些事项的\n应对以对财务报表整体进行审计并形成",
           "document_title": "贵州茅台2023年年度报告",
           "company": "贵州茅台",
           "year": 2023,
-          "page": 8
-        },
-        {
-          "number": 9,
-          "chunk_id": "600519-2024_chunk_189",
-          "file_name": "贵州茅台2024年年度报告",
-          "document_id": "600519-2024",
-          "start_offset": 119458,
-          "end_offset": 120254,
-          "content_preview": "不适用\n单位：元 币种：人民币\n合同分类 合计\n营业收入 营业成本\n商品类型\n茅台酒 145,928",
-          "document_title": "贵州茅台2024年年度报告",
-          "company": "贵州茅台",
-          "year": 2024,
-          "page": 108
+          "page": 55
         },
         {
           "number": 1,
@@ -859,25 +780,25 @@
           "page": 55
         },
         {
-          "number": 7,
-          "chunk_id": "600519-2025_chunk_13",
+          "number": 3,
+          "chunk_id": "600519-2025_chunk_87",
           "file_name": "贵州茅台2025年年度报告",
           "document_id": "600519-2025",
-          "start_offset": 7563,
-          "end_offset": 8360,
-          "content_preview": "流\n量净额\n61,522,204,989.35 92,463,692,168.43 -33.46\n投",
+          "start_offset": 53326,
+          "end_offset": 54122,
+          "content_preview": "我们根据职业判断，认为对本期财务报表审计最为重要的事项。这些事项的\n应对以对财务报表整体进行审计并形",
           "document_title": "贵州茅台2025年年度报告",
           "company": "贵州茅台",
           "year": 2025,
-          "page": 9
+          "page": 53
         }
       ],
-      "citation_count": 4,
+      "citation_count": 3,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 14343,
-      "answer_tokens_est": 711,
-      "seconds": 88.05
+      "prompt_tokens_est": 3854,
+      "answer_tokens_est": 96,
+      "seconds": 66.63
     },
     {
       "id": "ar-multi-002",
@@ -888,75 +809,53 @@
         "300750-2025"
       ],
       "retrieved_docs": [
-        "300750-2023",
         "300750-2025"
       ],
-      "doc_recall": 1.0,
-      "all_docs_hit": true,
+      "doc_recall": 0.5,
+      "all_docs_hit": false,
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": false,
       "evidence_hit_final": false,
-      "evidence_count": 4,
+      "evidence_count": 3,
       "retry_count": 0,
       "rewrite_sources": [],
-      "graded_passed": true,
-      "graded_reason": "证据已覆盖问题要素",
-      "needs_human_review": false,
+      "graded_passed": false,
+      "graded_reason": "证据缺少问题涉及年份的年报片段: 2023",
+      "needs_human_review": true,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
       "answer_value_hit": false,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 8,
-      "grounding_verified": false,
-      "ungrounded_numbers": [
-        "401,096,100,000",
-        "423,701,834,000"
-      ],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[4]提供宁德时代2023年营业收入为8,903,846.53万元，片段[1]提供2025年营业收入为423,701,834千元，单位分别为万元和千元，符合问题要求的两年数据及不同披露单位，且数值明确无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 8,
-      "citation_coverage": 0.75,
-      "answer": "根据提供的上下文信息：\n\n- 宁德时代2025年的营业收入为 **423,701,834 千元**（即 4237.02 亿元）[2]。\n- 宁德时代2023年的营业收入在报告中以“万元”为单位披露，为 **40,109,610 万元**（即 4010.96 亿元），该数据来自“六、分季度主要财务指标”部分的全年合计 [4]。\n\n因此：\n- 2023年营业收入：40,109,610 万元\n- 2025年营业收入：423,701,834 千元\n\n> 注：单位不同，需注意换算。  \n> 1 万元 = 10,000 元，1 千元 = 1,000 元，故：\n> - 2023年：40,109,610 万元 = 40,109,610 × 10,000 = 401,096,100,000 元 = 4010.96 亿元  \n> - 2025年：423,701,834 千元 = 423,701,834 × 1,000 = 423,701,834,000 元 = 4237.02 亿元\n\n[2][4]",
+      "grounding_checked": 1,
+      "grounding_verified": true,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 1,
+      "citation_coverage": 1.0,
+      "answer": "**2025年营业收入**：423,701,834 千元（较上年增长 17.04%）[1]。\n\n**2023年营业收入**：根据现有信息无法回答。上下文仅披露了宁德时代2025年度收入及其同比增幅，未出现2023年的营业收入数值，也未提及两年披露单位不同的情况，因此无法给出该数据[1]。\n\n如需补充2023年数据，建议查阅2023年年度报告中的营业收入项目。",
       "citations": [
         {
-          "number": 2,
-          "chunk_id": "300750-2025_chunk_38",
+          "number": 1,
+          "chunk_id": "300750-2025_chunk_171",
           "file_name": "2025年年度报告",
           "document_id": "300750-2025",
-          "start_offset": 23141,
-          "end_offset": 23936,
-          "content_preview": ",439,820 14.74% 57,290,460 15.83% 8.99%\n电池材料及回收 21",
+          "start_offset": 107722,
+          "end_offset": 108511,
+          "content_preview": "；\n（4）获取管理层编制的存在减值迹象的固定资产的减值测试表，复核资产减值测试方法与模型、关\n键假设",
           "document_title": "2025年年度报告",
           "company": "宁德时代",
           "year": 2025,
-          "page": 24
-        },
-        {
-          "number": 4,
-          "chunk_id": "300750-2023_chunk_8",
-          "file_name": "2023年年度报告",
-          "document_id": "300750-2023",
-          "start_offset": 5079,
-          "end_offset": 5879,
-          "content_preview": "示公司持续经营能力存在不\n确定性\n□是 否\n扣除非经常损益前后的净利润孰低者为负值\n□是 否\n\n",
-          "document_title": "2023年年度报告",
-          "company": "宁德时代",
-          "year": 2023,
-          "page": 7
+          "page": 108
         }
       ],
-      "citation_count": 2,
+      "citation_count": 1,
       "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 3060,
-      "answer_tokens_est": 315,
-      "seconds": 35.52
+      "refused": true,
+      "prompt_tokens_est": 2041,
+      "answer_tokens_est": 166,
+      "seconds": 63.62
     },
     {
       "id": "ar-multi-003",
@@ -976,53 +875,32 @@
       "all_docs_hit": true,
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": false,
-      "evidence_hit_final": true,
-      "evidence_count": 16,
-      "retry_count": 1,
-      "rewrite_sources": [
-        "llm"
-      ],
+      "evidence_hit_final": false,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
       "graded_passed": true,
       "graded_reason": "证据已覆盖问题要素",
       "needs_human_review": false,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
-      "answer_value_hit": true,
+      "answer_value_hit": false,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
       "grounding_checked": 3,
       "grounding_verified": false,
       "ungrounded_numbers": [
         "146,602",
-        "148,391",
-        "150,181"
+        "148,391"
       ],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]明确提供了招商银行2023年、2024年、2025年归属于本行股东的净利润数值（146,602百万元、148,391百万元、150,181百万元），且年份与指标名完全匹配，无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 3,
       "citation_coverage": 1.0,
-      "answer": "根据提供的上下文，招商银行2023年、2024年、2025年归属于本行股东的净利润如下：\n\n- **2023年**：146,602 百万元 [11]  \n- **2024年**：148,391 百万元 [3]  \n- **2025年**：150,181 百万元 [10]\n\n以上数据均来自《招商银行股份有限公司年度报告（A股）》中的财务报表部分。",
+      "answer": "- **2023年**：归属于本行股东的净利润为 **146,602 百万元**（2023年度报告披露为 **1,466.02亿元**，即146,602百万元）[1,2]。\n- **2024年**：归属于本行股东的净利润为 **148,391 百万元**[1]。\n- **2025年**：根据现有信息无法回答，上下文未提供2025年归属于本行股东的净利润数值[3]。",
       "citations": [
         {
-          "number": 11,
-          "chunk_id": "600036-2023_chunk_247",
-          "file_name": "招商银行股份有限公司2023年度报告",
-          "document_id": "600036-2023",
-          "start_offset": 156875,
-          "end_offset": 157653,
-          "content_preview": "净利润 148,006 139,294\n归属于 ：\n本行股东的净利润 146,602 138,012",
-          "document_title": "招商银行股份有限公司2023年度报告",
-          "company": "招商银行",
-          "year": 2023,
-          "page": 136
-        },
-        {
-          "number": 3,
+          "number": 1,
           "chunk_id": "600036-2024_chunk_254",
           "file_name": "招商银行股份有限公司2024年度报告",
           "document_id": "600036-2024",
@@ -1035,25 +913,38 @@
           "page": 138
         },
         {
-          "number": 10,
-          "chunk_id": "600036-2025_chunk_256",
+          "number": 2,
+          "chunk_id": "600036-2023_chunk_25",
+          "file_name": "招商银行股份有限公司2023年度报告",
+          "document_id": "600036-2023",
+          "start_offset": 15059,
+          "end_offset": 15859,
+          "content_preview": "上数据均为本公司口径，根据中国银行业监督管理机构最新监管口径计算，历史数据已同口径调整。\n2.4 境",
+          "document_title": "招商银行股份有限公司2023年度报告",
+          "company": "招商银行",
+          "year": 2023,
+          "page": 18
+        },
+        {
+          "number": 3,
+          "chunk_id": "600036-2025_chunk_26",
           "file_name": "招商银行股份有限公司2025年度报告",
           "document_id": "600036-2025",
-          "start_offset": 165232,
-          "end_offset": 166038,
-          "content_preview": ")\n净利润 151,126 149,559\n归属于 ：\n本行股东的净利润 150,181 148,3",
+          "start_offset": 15919,
+          "end_offset": 16661,
+          "content_preview": "60.93 55.33\n注： 以上数据均为本公司口径，根据金融监督管理机构监管口径计算。\n2.4 境",
           "document_title": "招商银行股份有限公司2025年度报告",
           "company": "招商银行",
           "year": 2025,
-          "page": 131
+          "page": 17
         }
       ],
       "citation_count": 3,
       "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 12198,
-      "answer_tokens_est": 135,
-      "seconds": 58.34
+      "refused": true,
+      "prompt_tokens_est": 4001,
+      "answer_tokens_est": 153,
+      "seconds": 68.75
     },
     {
       "id": "ar-calc-001",
@@ -1070,7 +961,7 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": false,
       "evidence_hit_final": false,
-      "evidence_count": 2,
+      "evidence_count": 1,
       "retry_count": 0,
       "rewrite_sources": [],
       "graded_passed": true,
@@ -1082,39 +973,34 @@
       "answer_value_hit": true,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 0,
+      "grounding_checked": 1,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[2]明确给出2025年研发投入合计为803,132,232.31元，且结合片段[1]中营业收入合计168,774,585,187.65元，可计算出比例约为0.48%。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 0,
-      "citation_coverage": null,
-      "answer": "根据上下文，贵州茅台2025年研发投入合计占营业收入的比例为 **0.48%**[1]。",
+      "llm_review": null,
+      "numbers_total": 1,
+      "citation_coverage": 1.0,
+      "answer": "根据上下文，贵州茅台2025年研发投入合计为803,132,232.31元，研发投入总额占营业收入比例为**0.48%**[1]。保留两位小数为 **0.48%**。",
       "citations": [
         {
           "number": 1,
-          "chunk_id": "600519-2025_chunk_27",
+          "chunk_id": "600519-2025_chunk_17",
           "file_name": "贵州茅台2025年年度报告",
           "document_id": "600519-2025",
-          "start_offset": 16845,
-          "end_offset": 17745,
-          "content_preview": "道布局，通过“线\n上+线下”融合转型，线上管效率、管触达，线下管转化、管服务，形成以消费者为中心的良",
+          "start_offset": 10143,
+          "end_offset": 11001,
+          "content_preview": "新增供应商的或严重依\n赖于少数供应商的情形\n□适用 √不适用\nC. 报告期内公司股票被实施退市风险警",
           "document_title": "贵州茅台2025年年度报告",
           "company": "贵州茅台",
           "year": 2025,
-          "page": 17
+          "page": 11
         }
       ],
       "citation_count": 1,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 1640,
-      "answer_tokens_est": 45,
-      "seconds": 42.84
+      "prompt_tokens_est": 917,
+      "answer_tokens_est": 77,
+      "seconds": 66.87
     },
     {
       "id": "ar-calc-002",
@@ -1131,9 +1017,9 @@
       "doc_recall": 1.0,
       "all_docs_hit": true,
       "first_relevant_rank_top5": 1,
-      "evidence_hit_top5": true,
-      "evidence_hit_final": true,
-      "evidence_count": 5,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 3,
       "retry_count": 0,
       "rewrite_sources": [],
       "graded_passed": true,
@@ -1142,42 +1028,23 @@
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
-      "answer_value_hit": true,
+      "answer_value_hit": null,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 3,
+      "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[3]明确给出宁德时代2025年营业收入为423,701,834千元，2024年为362,012,554千元，可计算出增加额约为61,689,280千元即616.89亿元",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 3,
-      "citation_coverage": 1.0,
-      "answer": "根据上下文信息：\n\n- 宁德时代2025年营业收入为 **423,701,834 千元**  \n- 宁德时代2024年营业收入为 **362,012,554 千元**\n\n计算增加金额：\n423,701,834 - 362,012,554 = 61,689,280 千元\n\n换算为亿元：\n61,689,280 千元 = **61.69 亿元**（四舍五入至两位小数）\n\n因此，宁德时代2025年营业收入较2024年增加约 **61.69 亿元**[3]。",
-      "citations": [
-        {
-          "number": 3,
-          "chunk_id": "300750-2025_chunk_181",
-          "file_name": "2025年年度报告",
-          "document_id": "300750-2025",
-          "start_offset": 113750,
-          "end_offset": 114650,
-          "content_preview": "股\n永续债\n资本公积 132,644,612 94,452,344 \n减：库存股 7,097,993",
-          "document_title": "2025年年度报告",
-          "company": "宁德时代",
-          "year": 2025,
-          "page": 115
-        }
-      ],
-      "citation_count": 1,
-      "citation_valid": true,
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
       "refused": false,
-      "prompt_tokens_est": 3589,
-      "answer_tokens_est": 159,
-      "seconds": 47.11
+      "prompt_tokens_est": 2252,
+      "answer_tokens_est": 0,
+      "seconds": 67.74
     },
     {
       "id": "ar-refuse-001",
@@ -1185,170 +1052,70 @@
       "expected_behavior": "refuse",
       "wanted_docs": [],
       "retrieved_docs": [
-        "300750-2024",
-        "600036-2024",
-        "600519-2024"
+        "002594-2024"
       ],
       "doc_recall": null,
       "all_docs_hit": null,
       "first_relevant_rank_top5": null,
       "evidence_hit_top5": null,
       "evidence_hit_final": null,
-      "evidence_count": 9,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "rule"
-      ],
-      "graded_passed": false,
-      "graded_reason": "指标关键词未覆盖: 比亚迪",
-      "needs_human_review": true,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
       "answer_value_hit": null,
       "foreign_evidence_docs": [
-        "300750-2024",
-        "600036-2024",
-        "600519-2024"
+        "002594-2024"
       ],
       "foreign_cited_docs": [
-        "300750-2024",
-        "600036-2024",
-        "600519-2024"
+        "002594-2024"
       ],
-      "grounding_checked": 0,
+      "grounding_checked": 2,
       "grounding_verified": true,
       "ungrounded_numbers": [],
       "llm_review": null,
-      "numbers_total": 0,
-      "citation_coverage": null,
-      "answer": "根据提供的上下文，无法回答比亚迪2024年的营业收入是多少。\n\n原因：所提供的所有文档内容均未提及比亚迪（BYD）公司的财务数据，所有信息均围绕宁德时代新能源科技股份有限公司、招商银行股份有限公司等企业展开。因此，现有信息中没有关于比亚迪2024年营业收入的数据[1][2][3][4][5][6][7][8][9]。",
+      "numbers_total": 2,
+      "citation_coverage": 1.0,
+      "answer": "比亚迪2024年合并口径营业收入为人民币 **777,102,455千元**[3]。  \n若指公司财务报表口径，营业收入为人民币 **4,280,965千元**[4]。",
       "citations": [
         {
-          "number": 1,
-          "chunk_id": "600519-2024_chunk_7",
-          "file_name": "贵州茅台2024年年度报告",
-          "document_id": "600519-2024",
-          "start_offset": 4135,
-          "end_offset": 4933,
-          "content_preview": "会计准则披露的财务报告中净利润和归属于上市公司股东\n的净资产差异情况\n□适用 √不适用\n(三)境内外",
-          "document_title": "贵州茅台2024年年度报告",
-          "company": "贵州茅台",
-          "year": 2024,
-          "page": 6
-        },
-        {
-          "number": 2,
-          "chunk_id": "600036-2024_chunk_253",
-          "file_name": "招商银行股份有限公司2024年度报告",
-          "document_id": "600036-2024",
-          "start_offset": 163010,
-          "end_offset": 163789,
-          "content_preview": "附注 2024年 2023年\n营业收入\n利息收入 42 374,271 375,610\n利息支出 4",
-          "document_title": "招商银行股份有限公司2024年度报告",
-          "company": "招商银行",
-          "year": 2024,
-          "page": 138
-        },
-        {
           "number": 3,
-          "chunk_id": "600519-2024_chunk_111",
-          "file_name": "贵州茅台2024年年度报告",
-          "document_id": "600519-2024",
-          "start_offset": 70230,
-          "end_offset": 71020,
-          "content_preview": "人：蒋焰 会计机构负责人：蔡聪应\n母公司利润表\n2024 年 1—12 月 \n单位：元 币种：人民币",
-          "document_title": "贵州茅台2024年年度报告",
-          "company": "贵州茅台",
+          "chunk_id": "002594-2024_chunk_391",
+          "file_name": "2024年年度报告",
+          "document_id": "002594-2024",
+          "start_offset": 248153,
+          "end_offset": 248945,
+          "content_preview": "盈余公积 - 535,546\n支付普通股现金股利 9,012,493 3,324,525\n加：处置其",
+          "document_title": "2024年年度报告",
+          "company": "比亚迪",
           "year": 2024,
-          "page": 65
+          "page": 227
         },
         {
           "number": 4,
-          "chunk_id": "300750-2024_chunk_189",
+          "chunk_id": "002594-2024_chunk_289",
           "file_name": "2024年年度报告",
-          "document_id": "300750-2024",
-          "start_offset": 119409,
-          "end_offset": 120327,
-          "content_preview": ",289 \n减：库存股 2,712,804 1,572,972 \n其他综合收益 -448,715 -",
+          "document_id": "002594-2024",
+          "start_offset": 185821,
+          "end_offset": 186600,
+          "content_preview": "属于母公司股东权益合计 90,658,540 70,169,785\n股东权益合计 90,658,54",
           "document_title": "2024年年度报告",
-          "company": "宁德时代",
+          "company": "比亚迪",
           "year": 2024,
-          "page": 118
-        },
-        {
-          "number": 5,
-          "chunk_id": "300750-2024_chunk_27",
-          "file_name": "2024年年度报告",
-          "document_id": "300750-2024",
-          "start_offset": 17141,
-          "end_offset": 17911,
-          "content_preview": "公司境外收入 110,335,509 千元，占本\n期营业收入 30.48%。公司主要业务地区的经营环",
-          "document_title": "2024年年度报告",
-          "company": "宁德时代",
-          "year": 2024,
-          "page": 19
-        },
-        {
-          "number": 6,
-          "chunk_id": "300750-2024_chunk_305",
-          "file_name": "2024年年度报告",
-          "document_id": "300750-2024",
-          "start_offset": 192212,
-          "end_offset": 192995,
-          "content_preview": "323,982,130\n经审计扣除非经常损益前后净利润孰低是否为负值\n□是 否\n营业收入、营业成本",
-          "document_title": "2024年年度报告",
-          "company": "宁德时代",
-          "year": 2024,
-          "page": 196
-        },
-        {
-          "number": 7,
-          "chunk_id": "600036-2024_chunk_255",
-          "file_name": "招商银行股份有限公司2024年度报告",
-          "document_id": "600036-2024",
-          "start_offset": 164332,
-          "end_offset": 165197,
-          "content_preview": "962 149,260\n少数股东的综合收益总额 1,290 1,477\n附注为财务报表的组成部分\n财",
-          "document_title": "招商银行股份有限公司2024年度报告",
-          "company": "招商银行",
-          "year": 2024,
-          "page": 139
-        },
-        {
-          "number": 8,
-          "chunk_id": "300750-2024_chunk_9",
-          "file_name": "2024年年度报告",
-          "document_id": "300750-2024",
-          "start_offset": 5185,
-          "end_offset": 5971,
-          "content_preview": "8,213,098\n经营活动产生的现金流量净额（千元） 96,990,345 92,826,124 ",
-          "document_title": "2024年年度报告",
-          "company": "宁德时代",
-          "year": 2024,
-          "page": 9
-        },
-        {
-          "number": 9,
-          "chunk_id": "600519-2024_chunk_96",
-          "file_name": "贵州茅台2024年年度报告",
-          "document_id": "600519-2024",
-          "start_offset": 60289,
-          "end_offset": 61086,
-          "content_preview": "职业判断，认为对本期财务报表审计最为重要的事项。这些事项的\n应对以对财务报表整体进行审计并形成审计意",
-          "document_title": "贵州茅台2024年年度报告",
-          "company": "贵州茅台",
-          "year": 2024,
-          "page": 55
+          "page": 152
         }
       ],
-      "citation_count": 9,
+      "citation_count": 2,
       "citation_valid": true,
-      "refused": true,
-      "prompt_tokens_est": 6066,
-      "answer_tokens_est": 155,
-      "seconds": 94.0
+      "refused": false,
+      "prompt_tokens_est": 2497,
+      "answer_tokens_est": 73,
+      "seconds": 67.24
     },
     {
       "id": "ar-refuse-002",
@@ -1356,20 +1123,19 @@
       "expected_behavior": "refuse",
       "wanted_docs": [],
       "retrieved_docs": [
-        "300750-2024",
-        "600519-2024"
+        "000333-2024",
+        "002230-2024",
+        "002352-2024",
+        "601088-2024"
       ],
       "doc_recall": null,
       "all_docs_hit": null,
       "first_relevant_rank_top5": null,
       "evidence_hit_top5": null,
       "evidence_hit_final": null,
-      "evidence_count": 7,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "rule"
-      ],
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
       "graded_passed": false,
       "graded_reason": "指标关键词未覆盖: 华为",
       "needs_human_review": true,
@@ -1378,24 +1144,84 @@
       "repair_fixed": null,
       "answer_value_hit": null,
       "foreign_evidence_docs": [
-        "300750-2024",
-        "600519-2024"
+        "000333-2024",
+        "002230-2024",
+        "002352-2024",
+        "601088-2024"
       ],
-      "foreign_cited_docs": [],
+      "foreign_cited_docs": [
+        "000333-2024",
+        "002230-2024",
+        "002352-2024",
+        "601088-2024"
+      ],
       "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
       "llm_review": null,
       "numbers_total": 0,
       "citation_coverage": null,
-      "answer": "根据现有信息无法回答。",
-      "citations": [],
-      "citation_count": 0,
-      "citation_valid": null,
+      "answer": "根据现有信息无法回答。上下文中没有华为2024年研发投入的数据；其中提到的研发投入数值分别属于其他公司（如美的集团、顺丰控股等），不能用于回答华为的情况[1][2][3][4]。",
+      "citations": [
+        {
+          "number": 1,
+          "chunk_id": "000333-2024_chunk_79",
+          "file_name": "2024年年度报告",
+          "document_id": "000333-2024",
+          "start_offset": 50885,
+          "end_offset": 51682,
+          "content_preview": "430 亿元，其中 2024 年研发投入超过 160 亿元，同比增幅超过 10%。截至 2024 年",
+          "document_title": "2024年年度报告",
+          "company": "美的集团",
+          "year": 2024,
+          "page": 45
+        },
+        {
+          "number": 2,
+          "chunk_id": "002230-2024_chunk_58",
+          "file_name": "2024年年度报告",
+          "document_id": "002230-2024",
+          "start_offset": 37071,
+          "end_offset": 37871,
+          "content_preview": "元，创历史新\n高。\n2024 年，公司毛利较上年同期增长 15.68 亿元，归母净利润 5.60 亿",
+          "document_title": "2024年年度报告",
+          "company": "科大讯飞",
+          "year": 2024,
+          "page": 32
+        },
+        {
+          "number": 3,
+          "chunk_id": "601088-2024_chunk_32",
+          "file_name": "中国神华2024年度报告",
+          "document_id": "601088-2024",
+          "start_offset": 20056,
+          "end_offset": 20512,
+          "content_preview": "排放权交易支出等。\n4. 研发投入\n（1）研发投入情况\n单位：百万元\n本期费用化研发投入 2,727",
+          "document_title": "中国神华2024年度报告",
+          "company": "中国神华",
+          "year": 2024,
+          "page": 22
+        },
+        {
+          "number": 4,
+          "chunk_id": "002352-2024_chunk_67",
+          "file_name": "2024年年度报告",
+          "document_id": "002352-2024",
+          "start_offset": 41482,
+          "end_offset": 42253,
+          "content_preview": "司科技底盘能力夯实及技术提升，提高科技投产效能。\n(2) 本集团研发投入总额占营业收入的比重较上年未",
+          "document_title": "2024年年度报告",
+          "company": "顺丰控股",
+          "year": 2024,
+          "page": 46
+        }
+      ],
+      "citation_count": 4,
+      "citation_valid": true,
       "refused": true,
-      "prompt_tokens_est": 5019,
-      "answer_tokens_est": 12,
-      "seconds": 92.64
+      "prompt_tokens_est": 2972,
+      "answer_tokens_est": 90,
+      "seconds": 65.64
     },
     {
       "id": "ar-refuse-003",
@@ -1404,7 +1230,6 @@
       "wanted_docs": [],
       "retrieved_docs": [
         "600036-2023",
-        "600036-2024",
         "600036-2025"
       ],
       "doc_recall": null,
@@ -1412,12 +1237,9 @@
       "first_relevant_rank_top5": null,
       "evidence_hit_top5": null,
       "evidence_hit_final": null,
-      "evidence_count": 15,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "rule"
-      ],
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
       "graded_passed": false,
       "graded_reason": "证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 上半年",
       "needs_human_review": true,
@@ -1427,81 +1249,23 @@
       "answer_value_hit": null,
       "foreign_evidence_docs": [
         "600036-2023",
-        "600036-2024",
         "600036-2025"
       ],
-      "foreign_cited_docs": [
-        "600036-2023",
-        "600036-2024",
-        "600036-2025"
-      ],
+      "foreign_cited_docs": [],
       "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
       "llm_review": null,
       "numbers_total": 0,
       "citation_coverage": null,
-      "answer": "根据现有信息无法回答。提供的上下文仅包含招商银行2023年、2024年及2025年度的财务数据，未涉及2026年上半年的营业收入信息[1][3][4][8]。",
-      "citations": [
-        {
-          "number": 1,
-          "chunk_id": "600036-2025_chunk_28",
-          "file_name": "招商银行股份有限公司2025年度报告",
-          "document_id": "600036-2025",
-          "start_offset": 17197,
-          "end_offset": 17977,
-          "content_preview": "(189) (843)\n其他业务成本 (7,456) (7,084)\n营业外收支净额 (259) (",
-          "document_title": "招商银行股份有限公司2025年度报告",
-          "company": "招商银行",
-          "year": 2025,
-          "page": 19
-        },
-        {
-          "number": 3,
-          "chunk_id": "600036-2025_chunk_257",
-          "file_name": "招商银行股份有限公司2025年度报告",
-          "document_id": "600036-2025",
-          "start_offset": 165918,
-          "end_offset": 167460,
-          "content_preview": "2,165 174,962\n少数股东的综合收益总额 890 1,290\n附注为财务报表的组成部分\n财",
-          "document_title": "招商银行股份有限公司2025年度报告",
-          "company": "招商银行",
-          "year": 2025,
-          "page": 132
-        },
-        {
-          "number": 4,
-          "chunk_id": "600036-2023_chunk_248",
-          "file_name": "招商银行股份有限公司2023年度报告",
-          "document_id": "600036-2023",
-          "start_offset": 157533,
-          "end_offset": 159086,
-          "content_preview": ",260 139,065\n少数股东的综合收益总额 1,477 1,552\n附注为财务报表的组成部分\n",
-          "document_title": "招商银行股份有限公司2023年度报告",
-          "company": "招商银行",
-          "year": 2023,
-          "page": 137
-        },
-        {
-          "number": 8,
-          "chunk_id": "600036-2024_chunk_255",
-          "file_name": "招商银行股份有限公司2024年度报告",
-          "document_id": "600036-2024",
-          "start_offset": 164332,
-          "end_offset": 165867,
-          "content_preview": "962 149,260\n少数股东的综合收益总额 1,290 1,477\n附注为财务报表的组成部分\n财",
-          "document_title": "招商银行股份有限公司2024年度报告",
-          "company": "招商银行",
-          "year": 2024,
-          "page": 139
-        }
-      ],
-      "citation_count": 4,
-      "citation_valid": true,
+      "answer": "根据现有信息无法回答。上下文中没有招商银行2026年上半年的营业收入数据。",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
       "refused": true,
-      "prompt_tokens_est": 11108,
-      "answer_tokens_est": 74,
-      "seconds": 90.54
+      "prompt_tokens_est": 3957,
+      "answer_tokens_est": 38,
+      "seconds": 65.3
     },
     {
       "id": "ar-crossco-001",
@@ -1512,39 +1276,35 @@
         "600519-2023"
       ],
       "retrieved_docs": [
-        "600036-2023",
         "600519-2023"
       ],
-      "doc_recall": 1.0,
-      "all_docs_hit": true,
+      "doc_recall": 0.5,
+      "all_docs_hit": false,
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": false,
       "evidence_hit_final": false,
-      "evidence_count": 7,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "rule"
-      ],
+      "evidence_count": 1,
+      "retry_count": 0,
+      "rewrite_sources": [],
       "graded_passed": false,
-      "graded_reason": "指标关键词未覆盖: 两家",
+      "graded_reason": "证据文本未出现公司: 招商银行；指标关键词未覆盖: 两家",
       "needs_human_review": true,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
-      "answer_value_hit": true,
+      "answer_value_hit": false,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 5,
+      "grounding_checked": 2,
       "grounding_verified": true,
       "ungrounded_numbers": [],
       "llm_review": null,
-      "numbers_total": 5,
+      "numbers_total": 2,
       "citation_coverage": 1.0,
-      "answer": "根据提供的上下文信息：\n\n- **贵州茅台**2023年的营业收入为 **14,769,360.50 万元**（即 147.69 亿元人民币）[2]。  \n  注：该数据来自“2023 年年度报告”中关于关键审计事项的描述，明确指出“2023 年度财务报表所示营业收入发生额为人民币 14,769,360.50 万元”。\n\n- **招商银行**2023年的营业收入为 **3,391.23 亿元**（即 339,123 百万元）[1][3]。  \n  注：在“第二章 会计数据和财务指标摘要”中明确列出“营业收入”为 339,123 百万元，即 3,391.23 亿元。\n\n### 答案总结：\n- 贵州茅台2023年营业收入：**14,769,360.50 万元**（约 1,476.94 亿元）\n- 招商银行2023年营业收入：**3,391.23 亿元**\n\n> 注：两家公司披露单位不同，贵州茅台以“万元”为单位，招商银行以“亿元”为单位，已按单位换算后对比。",
+      "answer": "- 贵州茅台：2023年营业收入为人民币 **14,769,360.50 万元**（约 **1,476.94 亿元**）[1]。\n- 招商银行：根据现有信息无法回答，上下文未提供招商银行2023年营业收入数据。",
       "citations": [
         {
-          "number": 2,
+          "number": 1,
           "chunk_id": "600519-2023_chunk_93",
           "file_name": "贵州茅台2023年年度报告",
           "document_id": "600519-2023",
@@ -1555,40 +1315,14 @@
           "company": "贵州茅台",
           "year": 2023,
           "page": 55
-        },
-        {
-          "number": 1,
-          "chunk_id": "600036-2023_chunk_25",
-          "file_name": "招商银行股份有限公司2023年度报告",
-          "document_id": "600036-2023",
-          "start_offset": 15059,
-          "end_offset": 15859,
-          "content_preview": "上数据均为本公司口径，根据中国银行业监督管理机构最新监管口径计算，历史数据已同口径调整。\n2.4 境",
-          "document_title": "招商银行股份有限公司2023年度报告",
-          "company": "招商银行",
-          "year": 2023,
-          "page": 18
-        },
-        {
-          "number": 3,
-          "chunk_id": "600036-2023_chunk_18",
-          "file_name": "招商银行股份有限公司2023年度报告",
-          "document_id": "600036-2023",
-          "start_offset": 10854,
-          "end_offset": 11764,
-          "content_preview": "度最佳雇主10强”“最具社会责任雇主”“最受女性关注雇主”三项大奖，连续13年\n入围“年度最佳雇主”",
-          "document_title": "招商银行股份有限公司2023年度报告",
-          "company": "招商银行",
-          "year": 2023,
-          "page": 13
         }
       ],
-      "citation_count": 3,
+      "citation_count": 1,
       "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 5351,
-      "answer_tokens_est": 349,
-      "seconds": 92.91
+      "refused": true,
+      "prompt_tokens_est": 829,
+      "answer_tokens_est": 92,
+      "seconds": 67.98
     },
     {
       "id": "ar-crossco-002",
@@ -1599,77 +1333,57 @@
         "600519-2024"
       ],
       "retrieved_docs": [
-        "300750-2024",
         "600519-2024"
       ],
-      "doc_recall": 1.0,
-      "all_docs_hit": true,
+      "doc_recall": 0.5,
+      "all_docs_hit": false,
       "first_relevant_rank_top5": 1,
-      "evidence_hit_top5": true,
-      "evidence_hit_final": true,
-      "evidence_count": 12,
-      "retry_count": 1,
-      "rewrite_sources": [
-        "llm"
-      ],
-      "graded_passed": true,
-      "graded_reason": "证据已覆盖问题要素",
-      "needs_human_review": false,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 2,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": false,
+      "graded_reason": "证据文本未出现公司: 宁德时代；指标关键词未覆盖: 研发费用,研发投入合计",
+      "needs_human_review": true,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
       "answer_value_hit": false,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 2,
+      "grounding_checked": 3,
       "grounding_verified": false,
       "ungrounded_numbers": [
-        "18,606,756",
-        "186.07"
+        "695,376,735.81",
+        "593,779,816.96",
+        "101,596,918.85"
       ],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[4]明确列出了宁德时代2024年研发费用为18,606,756千元，且贵州茅台2024年研发支出在片段[1]中以合计形式给出为98,522,878.42元，两者均包含具体公司、年份和指标名，数值准确无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 2,
+      "llm_review": null,
+      "numbers_total": 3,
       "citation_coverage": 1.0,
-      "answer": "根据提供的上下文信息：\n\n- **宁德时代2024年的研发费用**为 **18,606,756千元**（即186.07亿元）[2]。\n- **贵州茅台2024年的研发投入**在文中未直接列出具体金额。虽然提到了“重要的资本化研发项目”和部分项目支出，但并未提供贵州茅台整体的研发费用总额或相关汇总数据。\n\n因此，可以明确的是：\n- 宁德时代2024年研发费用：**18,606,756千元**\n- 贵州茅台2024年研发投入：**无法从现有信息中获取**\n\n综上，**宁德时代2024年的研发费用与贵州茅台2024年的研发投入合计**为：  \n**18,606,756千元 + 未知** → **无法得出确切合计金额**。\n\n> 注：尽管有提到贵州茅台的某些研发项目如“i茅台用户运营体系研发与应用”等，但这些仅为个别项目的支出，并非全年研发投入总额[3]。",
+      "answer": "根据现有信息无法回答完整问题：上下文未提供宁德时代2024年的研发费用数据。\n\n上下文仅提供贵州茅台2024年研发支出数据：本期发生额合计为 **695,376,735.81元**，其中费用化研发支出 **593,779,816.96元**，资本化研发支出 **101,596,918.85元**[2]。\n\n因此，无法计算宁德时代与贵州茅台2024年研发投入的合计金额。",
       "citations": [
         {
           "number": 2,
-          "chunk_id": "300750-2024_chunk_34",
-          "file_name": "2024年年度报告",
-          "document_id": "300750-2024",
-          "start_offset": 21789,
-          "end_offset": 22579,
-          "content_preview": "度采购总额比例 16.33%\n前五名供应商采购额中关联方采购额占年度采购总额比例 0.00%\n公司前",
-          "document_title": "2024年年度报告",
-          "company": "宁德时代",
-          "year": 2024,
-          "page": 23
-        },
-        {
-          "number": 3,
-          "chunk_id": "600519-2024_chunk_206",
+          "chunk_id": "600519-2024_chunk_204",
           "file_name": "贵州茅台2024年年度报告",
           "document_id": "600519-2024",
-          "start_offset": 130619,
-          "end_offset": 131406,
-          "content_preview": " 2024 年年度报告\n120 / 143\n全面质量管理系统研发与应用 1,100,084.18 1",
+          "start_offset": 129294,
+          "end_offset": 130086,
+          "content_preview": "第四间门面 124,558.72\n茅台国际大酒店一号楼一楼正门左边第六间门面 299,009.18\n",
           "document_title": "贵州茅台2024年年度报告",
           "company": "贵州茅台",
           "year": 2024,
-          "page": 120
+          "page": 118
         }
       ],
-      "citation_count": 2,
+      "citation_count": 1,
       "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 8617,
-      "answer_tokens_est": 348,
-      "seconds": 63.6
+      "refused": true,
+      "prompt_tokens_est": 1488,
+      "answer_tokens_est": 160,
+      "seconds": 69.87
     },
     {
       "id": "ar-fact-006",
@@ -1680,252 +1394,6 @@
       ],
       "retrieved_docs": [
         "600519-2025"
-      ],
-      "doc_recall": 1.0,
-      "all_docs_hit": true,
-      "first_relevant_rank_top5": 1,
-      "evidence_hit_top5": true,
-      "evidence_hit_final": true,
-      "evidence_count": 3,
-      "retry_count": 0,
-      "rewrite_sources": [],
-      "graded_passed": true,
-      "graded_reason": "证据已覆盖问题要素",
-      "needs_human_review": false,
-      "status": "answered",
-      "repairs": 0,
-      "repair_fixed": null,
-      "answer_value_hit": true,
-      "foreign_evidence_docs": [],
-      "foreign_cited_docs": [],
-      "grounding_checked": 1,
-      "grounding_verified": false,
-      "ungrounded_numbers": [
-        "146,499,906,480.49"
-      ],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]明确列出了2025年茅台酒的营业收入为146,499,906,480.49元，覆盖了问题中的公司（贵州茅台）、年份（2025）和指标名（茅台酒营业收入）",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 1,
-      "citation_coverage": 1.0,
-      "answer": "根据提供的上下文，贵州茅台2025年茅台酒（分产品口径）的营业收入为 **146,499,906,480.49元**[1]。",
-      "citations": [
-        {
-          "number": 1,
-          "chunk_id": "600519-2025_chunk_27",
-          "file_name": "贵州茅台2025年年度报告",
-          "document_id": "600519-2025",
-          "start_offset": 16845,
-          "end_offset": 17745,
-          "content_preview": "道布局，通过“线\n上+线下”融合转型，线上管效率、管触达，线下管转化、管服务，形成以消费者为中心的良",
-          "document_title": "贵州茅台2025年年度报告",
-          "company": "贵州茅台",
-          "year": 2025,
-          "page": 17
-        }
-      ],
-      "citation_count": 1,
-      "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 2286,
-      "answer_tokens_est": 54,
-      "seconds": 30.23
-    },
-    {
-      "id": "ar-fact-007",
-      "question_type": "fact",
-      "expected_behavior": "answer",
-      "wanted_docs": [
-        "600519-2025"
-      ],
-      "retrieved_docs": [
-        "600519-2025"
-      ],
-      "doc_recall": 1.0,
-      "all_docs_hit": true,
-      "first_relevant_rank_top5": 1,
-      "evidence_hit_top5": false,
-      "evidence_hit_final": true,
-      "evidence_count": 12,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "llm"
-      ],
-      "graded_passed": false,
-      "graded_reason": "指标关键词未覆盖: 末国内经销商数量",
-      "needs_human_review": true,
-      "status": "answered",
-      "repairs": 0,
-      "repair_fixed": null,
-      "answer_value_hit": true,
-      "foreign_evidence_docs": [],
-      "foreign_cited_docs": [],
-      "grounding_checked": 1,
-      "grounding_verified": false,
-      "ungrounded_numbers": [
-        "2,353"
-      ],
-      "llm_review": null,
-      "numbers_total": 1,
-      "citation_coverage": 1.0,
-      "answer": "根据上下文[6]中的“经销商情况”表格，贵州茅台2025年末国内经销商数量为 **2,353** 个。[6]",
-      "citations": [
-        {
-          "number": 6,
-          "chunk_id": "600519-2025_chunk_26",
-          "file_name": "贵州茅台2025年年度报告",
-          "document_id": "600519-2025",
-          "start_offset": 16238,
-          "end_offset": 16965,
-          "content_preview": "9,576,851.10 63,854.83 65,110.83\n(3).区域情况\n√适用 □不适用",
-          "document_title": "贵州茅台2025年年度报告",
-          "company": "贵州茅台",
-          "year": 2025,
-          "page": 17
-        }
-      ],
-      "citation_count": 1,
-      "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 8898,
-      "answer_tokens_est": 51,
-      "seconds": 71.89
-    },
-    {
-      "id": "ar-fact-008",
-      "question_type": "fact",
-      "expected_behavior": "answer",
-      "wanted_docs": [
-        "600519-2024"
-      ],
-      "retrieved_docs": [
-        "600519-2024"
-      ],
-      "doc_recall": 1.0,
-      "all_docs_hit": true,
-      "first_relevant_rank_top5": 1,
-      "evidence_hit_top5": true,
-      "evidence_hit_final": true,
-      "evidence_count": 11,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "rule",
-        "llm"
-      ],
-      "graded_passed": false,
-      "graded_reason": "指标关键词未覆盖: 报告期末在职员工数量合计",
-      "needs_human_review": true,
-      "status": "answered",
-      "repairs": 0,
-      "repair_fixed": null,
-      "answer_value_hit": true,
-      "foreign_evidence_docs": [],
-      "foreign_cited_docs": [],
-      "grounding_checked": 1,
-      "grounding_verified": false,
-      "ungrounded_numbers": [
-        "34,750"
-      ],
-      "llm_review": null,
-      "numbers_total": 1,
-      "citation_coverage": 1.0,
-      "answer": "根据提供的上下文，贵州茅台2024年报告期末在职员工数量合计是 **34,750** 人[1]。",
-      "citations": [
-        {
-          "number": 1,
-          "chunk_id": "600519-2024_chunk_56",
-          "file_name": "贵州茅台2024年年度报告",
-          "document_id": "600519-2024",
-          "start_offset": 35257,
-          "end_offset": 36033,
-          "content_preview": "在职员工的数量 1,436\n在职员工的数量合计 34,750\n母公司及主要子公司需承担费用的离退休职",
-          "document_title": "贵州茅台2024年年度报告",
-          "company": "贵州茅台",
-          "year": 2024,
-          "page": 33
-        }
-      ],
-      "citation_count": 1,
-      "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 7827,
-      "answer_tokens_est": 44,
-      "seconds": 77.51
-    },
-    {
-      "id": "ar-fact-009",
-      "question_type": "fact",
-      "expected_behavior": "answer",
-      "wanted_docs": [
-        "300750-2024"
-      ],
-      "retrieved_docs": [
-        "300750-2024"
-      ],
-      "doc_recall": 1.0,
-      "all_docs_hit": true,
-      "first_relevant_rank_top5": 1,
-      "evidence_hit_top5": true,
-      "evidence_hit_final": true,
-      "evidence_count": 9,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "llm"
-      ],
-      "graded_passed": false,
-      "graded_reason": "指标关键词未覆盖: 报告期末在职员工数量合计",
-      "needs_human_review": true,
-      "status": "answered",
-      "repairs": 0,
-      "repair_fixed": null,
-      "answer_value_hit": true,
-      "foreign_evidence_docs": [],
-      "foreign_cited_docs": [],
-      "grounding_checked": 1,
-      "grounding_verified": false,
-      "ungrounded_numbers": [
-        "131,988"
-      ],
-      "llm_review": null,
-      "numbers_total": 1,
-      "citation_coverage": 1.0,
-      "answer": "宁德时代2024年报告期末在职员工数量合计是131,988人[1]。",
-      "citations": [
-        {
-          "number": 1,
-          "chunk_id": "300750-2024_chunk_91",
-          "file_name": "2024年年度报告",
-          "document_id": "300750-2024",
-          "start_offset": 56745,
-          "end_offset": 58280,
-          "content_preview": "注销部分\n已授予尚未行权的股票期权的议案》等议案\n2024 年 12 月 10 日\n审议通过《关于注",
-          "document_title": "2024年年度报告",
-          "company": "宁德时代",
-          "year": 2024,
-          "page": 56
-        }
-      ],
-      "citation_count": 1,
-      "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 6870,
-      "answer_tokens_est": 31,
-      "seconds": 76.6
-    },
-    {
-      "id": "ar-fact-010",
-      "question_type": "fact",
-      "expected_behavior": "answer",
-      "wanted_docs": [
-        "300750-2025"
-      ],
-      "retrieved_docs": [
-        "300750-2025"
       ],
       "doc_recall": 1.0,
       "all_docs_hit": true,
@@ -1947,18 +1415,267 @@
       "grounding_checked": 1,
       "grounding_verified": false,
       "ungrounded_numbers": [
-        "22,146,581"
+        "146,499,906,480.49"
       ],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段中明确列出了宁德时代2025年研发费用为22,146,581千元，覆盖了公司、年份和具体指标数值，无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 1,
       "citation_coverage": 1.0,
-      "answer": "宁德时代2025年的研发费用是 **22,146,581 千元**。[2]",
+      "answer": "贵州茅台2025年茅台酒（按产品档次/分产品口径）的营业收入为 **146,499,906,480.49 元**，同比增长 0.39%[1]。",
       "citations": [
+        {
+          "number": 1,
+          "chunk_id": "600519-2025_chunk_27",
+          "file_name": "贵州茅台2025年年度报告",
+          "document_id": "600519-2025",
+          "start_offset": 16845,
+          "end_offset": 17745,
+          "content_preview": "道布局，通过“线\n上+线下”融合转型，线上管效率、管触达，线下管转化、管服务，形成以消费者为中心的良",
+          "document_title": "贵州茅台2025年年度报告",
+          "company": "贵州茅台",
+          "year": 2025,
+          "page": 17
+        }
+      ],
+      "citation_count": 1,
+      "citation_valid": true,
+      "refused": false,
+      "prompt_tokens_est": 2962,
+      "answer_tokens_est": 61,
+      "seconds": 66.51
+    },
+    {
+      "id": "ar-fact-007",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2025"
+      ],
+      "retrieved_docs": [
+        "600519-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 2,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 末国内经销商数量",
+      "needs_human_review": true,
+      "status": "answered",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": false,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": 0,
+      "grounding_verified": true,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "根据现有信息无法回答。\n\n提供的上下文仅包含贵州茅台2025年年报中关联方交易（如利息支出、销售商品、劳务费等）的相关金额明细[1][2]，其中并未出现“国内经销商数量”这一指标的任何数据。因此无法确认2025年末国内经销商的数量。",
+      "citations": [
+        {
+          "number": 1,
+          "chunk_id": "600519-2025_chunk_224",
+          "file_name": "贵州茅台2025年年度报告",
+          "document_id": "600519-2025",
+          "start_offset": 142025,
+          "end_offset": 142812,
+          "content_preview": "）红缨子农业科技发展有限公司 24,248,396.87\n贵州茅台酒厂(集团)贵定晶琪玻璃制品有限公",
+          "document_title": "贵州茅台2025年年度报告",
+          "company": "贵州茅台",
+          "year": 2025,
+          "page": 131
+        },
+        {
+          "number": 2,
+          "chunk_id": "600519-2025_chunk_218",
+          "file_name": "贵州茅台2025年年度报告",
+          "document_id": "600519-2025",
+          "start_offset": 138051,
+          "end_offset": 138846,
+          "content_preview": ",295.57 138,837,804.65\n中国贵州茅台酒厂贸易(香港)有限公司 销售商品 33,",
+          "document_title": "贵州茅台2025年年度报告",
+          "company": "贵州茅台",
+          "year": 2025,
+          "page": 128
+        }
+      ],
+      "citation_count": 2,
+      "citation_valid": true,
+      "refused": true,
+      "prompt_tokens_est": 1536,
+      "answer_tokens_est": 109,
+      "seconds": 66.92
+    },
+    {
+      "id": "ar-fact-008",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2024"
+      ],
+      "retrieved_docs": [
+        "600519-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 报告期末在职员工数量合计",
+      "needs_human_review": true,
+      "status": "answered",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": true,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": 1,
+      "grounding_verified": false,
+      "ungrounded_numbers": [
+        "34,750"
+      ],
+      "llm_review": null,
+      "numbers_total": 1,
+      "citation_coverage": 1.0,
+      "answer": "贵州茅台2024年报告期末在职员工数量合计为 **34,750人**[1]。",
+      "citations": [
+        {
+          "number": 1,
+          "chunk_id": "600519-2024_chunk_56",
+          "file_name": "贵州茅台2024年年度报告",
+          "document_id": "600519-2024",
+          "start_offset": 35257,
+          "end_offset": 36033,
+          "content_preview": "在职员工的数量 1,436\n在职员工的数量合计 34,750\n母公司及主要子公司需承担费用的离退休职",
+          "document_title": "贵州茅台2024年年度报告",
+          "company": "贵州茅台",
+          "year": 2024,
+          "page": 33
+        }
+      ],
+      "citation_count": 1,
+      "citation_valid": true,
+      "refused": false,
+      "prompt_tokens_est": 2188,
+      "answer_tokens_est": 33,
+      "seconds": 62.28
+    },
+    {
+      "id": "ar-fact-009",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2024"
+      ],
+      "retrieved_docs": [
+        "300750-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 报告期末在职员工数量合计",
+      "needs_human_review": true,
+      "status": "answered",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": true,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": 1,
+      "grounding_verified": false,
+      "ungrounded_numbers": [
+        "131,988"
+      ],
+      "llm_review": null,
+      "numbers_total": 1,
+      "citation_coverage": 1.0,
+      "answer": "宁德时代2024年报告期末在职员工数量合计为 **131,988人**[1]。",
+      "citations": [
+        {
+          "number": 1,
+          "chunk_id": "300750-2024_chunk_91",
+          "file_name": "2024年年度报告",
+          "document_id": "300750-2024",
+          "start_offset": 56745,
+          "end_offset": 57616,
+          "content_preview": "注销部分\n已授予尚未行权的股票期权的议案》等议案\n2024 年 12 月 10 日\n审议通过《关于注",
+          "document_title": "2024年年度报告",
+          "company": "宁德时代",
+          "year": 2024,
+          "page": 56
+        }
+      ],
+      "citation_count": 1,
+      "citation_valid": true,
+      "refused": false,
+      "prompt_tokens_est": 2370,
+      "answer_tokens_est": 33,
+      "seconds": 66.28
+    },
+    {
+      "id": "ar-fact-010",
+      "question_type": "fact",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": true,
+      "evidence_hit_final": true,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "answered",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": true,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": 2,
+      "grounding_verified": true,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 2,
+      "citation_coverage": 1.0,
+      "answer": "宁德时代2025年研发费用为 **22,146,581 千元**（2024年为18,606,756千元，同比增长19.02%）[1]。研发支出合计同样为22,146,581千元，且全部为费用化研发支出[2]。",
+      "citations": [
+        {
+          "number": 1,
+          "chunk_id": "300750-2025_chunk_44",
+          "file_name": "2025年年度报告",
+          "document_id": "300750-2025",
+          "start_offset": 26918,
+          "end_offset": 27716,
+          "content_preview": ".60%\n4 第四名 8,258,913 1.43%\n5 第五名 7,518,360 1.30%\n合",
+          "document_title": "2025年年度报告",
+          "company": "宁德时代",
+          "year": 2025,
+          "page": 28
+        },
         {
           "number": 2,
           "chunk_id": "300750-2025_chunk_307",
@@ -1973,12 +1690,12 @@
           "page": 204
         }
       ],
-      "citation_count": 1,
+      "citation_count": 2,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 3027,
-      "answer_tokens_est": 31,
-      "seconds": 29.6
+      "prompt_tokens_est": 2056,
+      "answer_tokens_est": 90,
+      "seconds": 66.64
     },
     {
       "id": "ar-fact-011",
@@ -1995,67 +1712,32 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": true,
       "evidence_hit_final": true,
-      "evidence_count": 7,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "rule",
-        "llm"
-      ],
-      "graded_passed": false,
-      "graded_reason": "LLM 复核判定证据不足: 多个片段给出不同数值，存在歧义，无法唯一确定2025年末核心一级资本充足率",
-      "needs_human_review": true,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
-      "answer_value_hit": true,
+      "answer_value_hit": null,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
       "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "insufficient",
-        "reason": "多个片段给出不同数值，存在歧义，无法唯一确定2025年末核心一级资本充足率",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 0,
       "citation_coverage": null,
-      "answer": "根据提供的上下文，招商银行2025年末的核心一级资本充足率因计算方法不同而有多个数值：\n\n- **在高级法下**，核心一级资本充足率为 **14.16%** [4]。\n- **在权重法下**，核心一级资本充足率为 **11.38%** [3]。\n\n因此，具体数值取决于所采用的资本计量方法。若无特别说明，通常以“高级法”为准，即 **14.16%**。",
-      "citations": [
-        {
-          "number": 4,
-          "chunk_id": "600036-2025_chunk_59",
-          "file_name": "招商银行股份有限公司2025年度报告",
-          "document_id": "600036-2025",
-          "start_offset": 36691,
-          "end_offset": 38133,
-          "content_preview": "款损失准备余额2,672.22亿元，较上年末减\n少30.79亿元 ；拨备覆盖率391.79%，较上年",
-          "document_title": "招商银行股份有限公司2025年度报告",
-          "company": "招商银行",
-          "year": 2025,
-          "page": 37
-        },
-        {
-          "number": 3,
-          "chunk_id": "600036-2025_chunk_574",
-          "file_name": "招商银行股份有限公司2025年度报告",
-          "document_id": "600036-2025",
-          "start_offset": 367721,
-          "end_offset": 369162,
-          "content_preview": "适用全球系统重要\n性银行） 不适用\n66 对未并表金融机构的大额少数资本投资未扣除部分 28,545",
-          "document_title": "招商银行股份有限公司2025年度报告",
-          "company": "招商银行",
-          "year": 2025,
-          "page": 336
-        }
-      ],
-      "citation_count": 2,
-      "citation_valid": true,
+      "answer": "",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
       "refused": false,
-      "prompt_tokens_est": 5310,
-      "answer_tokens_est": 157,
-      "seconds": 75.12
+      "prompt_tokens_est": 3708,
+      "answer_tokens_est": 0,
+      "seconds": 67.39
     },
     {
       "id": "ar-fact-012",
@@ -2087,15 +1769,10 @@
       "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[2]明确提到招商银行2023年零售客户数为1.97亿户，覆盖了公司、年份和指标名，且数值具体，无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 0,
       "citation_coverage": null,
-      "answer": "招商银行2023年服务的零售客户数为1.97亿户[2]。",
+      "answer": "招商银行2023年报告期末零售客户数为 **1.97亿户**（含借记卡和信用卡客户），较上年末增长7.07%[2]。",
       "citations": [
         {
           "number": 2,
@@ -2115,8 +1792,8 @@
       "citation_valid": true,
       "refused": false,
       "prompt_tokens_est": 2520,
-      "answer_tokens_est": 28,
-      "seconds": 29.07
+      "answer_tokens_est": 60,
+      "seconds": 65.07
     },
     {
       "id": "ar-table-005",
@@ -2133,12 +1810,9 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": true,
       "evidence_hit_final": true,
-      "evidence_count": 6,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "llm"
-      ],
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
       "graded_passed": false,
       "graded_reason": "指标关键词未覆盖: 末合并资产负债表",
       "needs_human_review": true,
@@ -2156,7 +1830,7 @@
       "llm_review": null,
       "numbers_total": 1,
       "citation_coverage": 1.0,
-      "answer": "根据提供的上下文，贵州茅台2023年末合并资产负债表中的存货为 **46,435,185,061.53元**。\n\n该数据来源于报告中“母公司财务报表主要项目注释”部分的“其他流动资产”表格，其中明确列示了存货的期末账面余额[2]。",
+      "answer": "根据上下文[2]，贵州茅台2023年末存货为 **46,435,185,061.53 元**。",
       "citations": [
         {
           "number": 2,
@@ -2164,7 +1838,7 @@
           "file_name": "贵州茅台2023年年度报告",
           "document_id": "600519-2023",
           "start_offset": 14069,
-          "end_offset": 15538,
+          "end_offset": 14861,
           "content_preview": "控股子公司贵\n州茅台集团财务有限公司\n债务工具投资增加\n应收票据 13,933,440.00 0.0",
           "document_title": "贵州茅台2023年年度报告",
           "company": "贵州茅台",
@@ -2175,9 +1849,9 @@
       "citation_count": 1,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 4610,
-      "answer_tokens_est": 103,
-      "seconds": 73.12
+      "prompt_tokens_est": 2281,
+      "answer_tokens_est": 38,
+      "seconds": 67.16
     },
     {
       "id": "ar-table-006",
@@ -2206,18 +1880,13 @@
       "answer_value_hit": true,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 2,
+      "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]明确给出了2025年茅台酒的毛利率为93.53%",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 2,
-      "citation_coverage": 1.0,
-      "answer": "根据您提供的上下文，贵州茅台2025年茅台酒的毛利率是 **93.53%**。\n\n该数据来源于报告中“按产品档次”部分的“茅台酒”项目，具体信息如下：\n- 营业收入：146,499,906,480.49 元\n- 营业成本：9,484,757,825.54 元\n- 毛利率：93.53% [1]",
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "贵州茅台2025年茅台酒的毛利率为 **93.53%**，同比减少 0.53 个百分点[1]。",
       "citations": [
         {
           "number": 1,
@@ -2237,8 +1906,8 @@
       "citation_valid": true,
       "refused": false,
       "prompt_tokens_est": 2237,
-      "answer_tokens_est": 126,
-      "seconds": 33.33
+      "answer_tokens_est": 47,
+      "seconds": 66.9
     },
     {
       "id": "ar-table-007",
@@ -2254,55 +1923,49 @@
       "all_docs_hit": true,
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": false,
-      "evidence_hit_final": true,
-      "evidence_count": 15,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "rule"
-      ],
+      "evidence_hit_final": false,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
       "graded_passed": false,
-      "graded_reason": "LLM 复核判定证据不足: 未提供宁德时代2024年前五名客户合计销售金额的相关数据，仅提供了前五名供应商采购额信息，且无客户销售金额明细或合计项",
+      "graded_reason": "指标关键词未覆盖: 前五名客户合计销售金额",
       "needs_human_review": true,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
-      "answer_value_hit": true,
+      "answer_value_hit": false,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
       "grounding_checked": 1,
-      "grounding_verified": true,
-      "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "insufficient",
-        "reason": "未提供宁德时代2024年前五名客户合计销售金额的相关数据，仅提供了前五名供应商采购额信息，且无客户销售金额明细或合计项",
-        "missing": "宁德时代2024年前五名客户合计销售金额（千元）",
-        "source": "llm"
-      },
+      "grounding_verified": false,
+      "ungrounded_numbers": [
+        "32,067,681"
+      ],
+      "llm_review": null,
       "numbers_total": 1,
       "citation_coverage": 1.0,
-      "answer": "宁德时代2024年前五名客户合计销售金额为 **134,064,232 千元**[2]。",
+      "answer": "根据现有信息无法回答。\n\n上下文为公司年报附注中“其他应收款”“应收账款坏账准备”“预付款项”“存货”等章节，未披露前五名客户的销售金额数据。其中虽有“前五名应收账款和合同资产汇总金额 32,067,681 千元”[2]，但该数字是应收账款和合同资产余额，并非销售金额，不能用于回答本问题。",
       "citations": [
         {
           "number": 2,
-          "chunk_id": "300750-2024_chunk_33",
+          "chunk_id": "300750-2024_chunk_343",
           "file_name": "2024年年度报告",
           "document_id": "300750-2024",
-          "start_offset": 21112,
-          "end_offset": 22579,
-          "content_preview": "转让 无重大影响\n宁普时代数字科技（大连）有限公司 注销 无重大影响\n宁普时代数字科技（包头昆都仑区",
+          "start_offset": 216871,
+          "end_offset": 218450,
+          "content_preview": "类别 期初余额\n本期变动金额\n期末余额\n计提 收回或转回 核销 其他\n应收账款坏账准备 1,917,",
           "document_title": "2024年年度报告",
           "company": "宁德时代",
           "year": 2024,
-          "page": 23
+          "page": 222
         }
       ],
       "citation_count": 1,
       "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 10229,
-      "answer_tokens_est": 35,
-      "seconds": 92.32
+      "refused": true,
+      "prompt_tokens_est": 2800,
+      "answer_tokens_est": 138,
+      "seconds": 65.3
     },
     {
       "id": "ar-table-008",
@@ -2312,7 +1975,149 @@
         "300750-2024"
       ],
       "retrieved_docs": [
-        "300750-2024"
+        "000157-2023",
+        "000568-2024",
+        "002415-2024",
+        "300059-2024",
+        "300750-2025"
+      ],
+      "doc_recall": 0.0,
+      "all_docs_hit": false,
+      "first_relevant_rank_top5": null,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "answered",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": false,
+      "foreign_evidence_docs": [
+        "000157-2023",
+        "000568-2024",
+        "002415-2024",
+        "300059-2024",
+        "300750-2025"
+      ],
+      "foreign_cited_docs": [
+        "300750-2025"
+      ],
+      "grounding_checked": 0,
+      "grounding_verified": true,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "根据现有信息无法回答。上下文仅提供宁德时代2025年年度报告数据，其中前五名客户合计销售金额占年度销售总额比例为38.96%[1]，但未提供宁德时代2024年的对应比例。",
+      "citations": [
+        {
+          "number": 1,
+          "chunk_id": "300750-2025_chunk_43",
+          "file_name": "2025年年度报告",
+          "document_id": "300750-2025",
+          "start_offset": 26244,
+          "end_offset": 27038,
+          "content_preview": "% -4.68%\n注：以上数据口径为主营业务。\n（6） 报告期内合并范围是否发生变动\n是 □否\n详",
+          "document_title": "2025年年度报告",
+          "company": "宁德时代",
+          "year": 2025,
+          "page": 27
+        }
+      ],
+      "citation_count": 1,
+      "citation_valid": true,
+      "refused": true,
+      "prompt_tokens_est": 3300,
+      "answer_tokens_est": 85,
+      "seconds": 62.84
+    },
+    {
+      "id": "ar-table-009",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2025"
+      ],
+      "retrieved_docs": [
+        "600036-2025"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": false,
+      "graded_reason": "指标关键词未覆盖: 客户存款总额",
+      "needs_human_review": true,
+      "status": "answered",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": false,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": 4,
+      "grounding_verified": false,
+      "ungrounded_numbers": [
+        "9,924,558",
+        "99,245.58",
+        "9,547,148",
+        "95,471.48"
+      ],
+      "llm_review": null,
+      "numbers_total": 4,
+      "citation_coverage": 1.0,
+      "answer": "根据上下文，招商银行2025年末客户存款合计：\n\n- **本集团**：9,924,558（按人民币百万元列示，折合 **99,245.58亿元**）[1][2]\n- **本行**：9,547,148（按人民币百万元列示，折合 **95,471.48亿元**）[1][2]\n\n若“总额”指集团口径，则为 **99,245.58亿元**。",
+      "citations": [
+        {
+          "number": 1,
+          "chunk_id": "600036-2025_chunk_395",
+          "file_name": "招商银行股份有限公司2025年度报告",
+          "document_id": "600036-2025",
+          "start_offset": 253123,
+          "end_offset": 253920,
+          "content_preview": "－政策性银行债券 5,007 8,530 493 4,000\n－商业银行及其他金融机构债券 17,5",
+          "document_title": "招商银行股份有限公司2025年度报告",
+          "company": "招商银行",
+          "year": 2025,
+          "page": 221
+        },
+        {
+          "number": 2,
+          "chunk_id": "600036-2025_chunk_262",
+          "file_name": "招商银行股份有限公司2025年度报告",
+          "document_id": "600036-2025",
+          "start_offset": 169324,
+          "end_offset": 170101,
+          "content_preview": "秘书\n\n招商银行股份有限公司\n2025年度报告（A股）\n136 第八章 财务报告\n公司现金流量表\n2",
+          "document_title": "招商银行股份有限公司2025年度报告",
+          "company": "招商银行",
+          "year": 2025,
+          "page": 136
+        }
+      ],
+      "citation_count": 2,
+      "citation_valid": true,
+      "refused": false,
+      "prompt_tokens_est": 2058,
+      "answer_tokens_est": 130,
+      "seconds": 65.6
+    },
+    {
+      "id": "ar-table-010",
+      "question_type": "table",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "300750-2025"
+      ],
+      "retrieved_docs": [
+        "300750-2025"
       ],
       "doc_recall": 1.0,
       "all_docs_hit": true,
@@ -2331,154 +2136,47 @@
       "answer_value_hit": true,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 0,
+      "grounding_checked": 1,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[2]明确给出了宁德时代2024年前五名客户合计销售金额占年度销售总额比例为37.03%",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 0,
-      "citation_coverage": null,
-      "answer": "宁德时代2024年前五名客户合计销售金额占年度销售总额的比例是 **37.03%**[1]。",
-      "citations": [
-        {
-          "number": 1,
-          "chunk_id": "300750-2024_chunk_33",
-          "file_name": "2024年年度报告",
-          "document_id": "300750-2024",
-          "start_offset": 21112,
-          "end_offset": 22579,
-          "content_preview": "转让 无重大影响\n宁普时代数字科技（大连）有限公司 注销 无重大影响\n宁普时代数字科技（包头昆都仑区",
-          "document_title": "2024年年度报告",
-          "company": "宁德时代",
-          "year": 2024,
-          "page": 23
-        }
-      ],
-      "citation_count": 1,
-      "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 2125,
-      "answer_tokens_est": 43,
-      "seconds": 29.96
-    },
-    {
-      "id": "ar-table-009",
-      "question_type": "table",
-      "expected_behavior": "answer",
-      "wanted_docs": [
-        "600036-2025"
-      ],
-      "retrieved_docs": [
-        "600036-2025"
-      ],
-      "doc_recall": 1.0,
-      "all_docs_hit": true,
-      "first_relevant_rank_top5": 1,
-      "evidence_hit_top5": false,
-      "evidence_hit_final": true,
-      "evidence_count": 9,
-      "retry_count": 1,
-      "rewrite_sources": [
-        "llm"
-      ],
-      "graded_passed": true,
-      "graded_reason": "证据已覆盖问题要素",
-      "needs_human_review": false,
-      "status": "answered",
-      "repairs": 0,
-      "repair_fixed": null,
-      "answer_value_hit": true,
-      "foreign_evidence_docs": [],
-      "foreign_cited_docs": [],
-      "grounding_checked": 2,
-      "grounding_verified": false,
-      "ungrounded_numbers": [
-        "9,836.13",
-        "9,836,130"
-      ],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]明确列出了招商银行2025年末客户存款合计为9,924,558百万元，即9924.558亿元，满足问题中公司、年份和具体数值的要求。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 2,
-      "citation_coverage": 1.0,
-      "answer": "根据提供的上下文，招商银行2025年末的客户存款总额为 **9,836.13亿元**。\n\n该数据来源于报告中“客户存款”部分的“本集团 2025年12月31日”对应的“本金(a)”金额，即9,836,130百万元，换算为亿元为9,836.13亿元[1]。",
-      "citations": [
-        {
-          "number": 1,
-          "chunk_id": "600036-2025_chunk_395",
-          "file_name": "招商银行股份有限公司2025年度报告",
-          "document_id": "600036-2025",
-          "start_offset": 253123,
-          "end_offset": 253920,
-          "content_preview": "－政策性银行债券 5,007 8,530 493 4,000\n－商业银行及其他金融机构债券 17,5",
-          "document_title": "招商银行股份有限公司2025年度报告",
-          "company": "招商银行",
-          "year": 2025,
-          "page": 221
-        }
-      ],
-      "citation_count": 1,
-      "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 6734,
-      "answer_tokens_est": 103,
-      "seconds": 51.43
-    },
-    {
-      "id": "ar-table-010",
-      "question_type": "table",
-      "expected_behavior": "answer",
-      "wanted_docs": [
-        "300750-2025"
-      ],
-      "retrieved_docs": [
-        "300750-2025"
-      ],
-      "doc_recall": 1.0,
-      "all_docs_hit": true,
-      "first_relevant_rank_top5": 1,
-      "evidence_hit_top5": true,
-      "evidence_hit_final": true,
-      "evidence_count": 4,
-      "retry_count": 0,
-      "rewrite_sources": [],
-      "graded_passed": true,
-      "graded_reason": "证据已覆盖问题要素",
-      "needs_human_review": false,
-      "status": "answered",
-      "repairs": 0,
-      "repair_fixed": null,
-      "answer_value_hit": true,
-      "foreign_evidence_docs": [],
-      "foreign_cited_docs": [],
-      "grounding_checked": 1,
-      "grounding_verified": false,
-      "ungrounded_numbers": [
-        "8,422,709"
-      ],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]明确列出了宁德时代2025年研发费用明细中职工薪酬为8,422,709千元，覆盖了公司、年份和指标名，且数值准确。",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 1,
-      "citation_coverage": 0.0,
-      "answer": "根据提供的上下文，宁德时代2025年研发费用明细中职工薪酬为 **8,422,709 千元**[5]。",
-      "citations": [],
-      "citation_count": 0,
-      "citation_valid": null,
+      "citation_coverage": 1.0,
+      "answer": "根据2025年年度报告，研发费用明细中的职工薪酬本期发生额为 **8,422,709千元** [1][3]。",
+      "citations": [
+        {
+          "number": 1,
+          "chunk_id": "300750-2025_chunk_307",
+          "file_name": "2025年年度报告",
+          "document_id": "300750-2025",
+          "start_offset": 193202,
+          "end_offset": 194100,
+          "content_preview": "，包括对于重要的境外经营实体，应披露其境外主要经营地、记账本位币及选择\n依据，记账本位币发生变化的还",
+          "document_title": "2025年年度报告",
+          "company": "宁德时代",
+          "year": 2025,
+          "page": 204
+        },
+        {
+          "number": 3,
+          "chunk_id": "300750-2025_chunk_296",
+          "file_name": "2025年年度报告",
+          "document_id": "300750-2025",
+          "start_offset": 186598,
+          "end_offset": 187370,
+          "content_preview": "70,220 572,731\n教育费附加 592,955 293,946\n房产税 591,722 5",
+          "document_title": "2025年年度报告",
+          "company": "宁德时代",
+          "year": 2025,
+          "page": 195
+        }
+      ],
+      "citation_count": 2,
+      "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 3143,
+      "prompt_tokens_est": 2360,
       "answer_tokens_est": 53,
-      "seconds": 29.95
+      "seconds": 63.93
     },
     {
       "id": "ar-cross-004",
@@ -2495,7 +2193,7 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": true,
       "evidence_hit_final": true,
-      "evidence_count": 2,
+      "evidence_count": 3,
       "retry_count": 0,
       "rewrite_sources": [],
       "graded_passed": true,
@@ -2510,15 +2208,10 @@
       "grounding_checked": 2,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]明确列出了2025年茅台酒和其他系列酒的营业收入具体数值，且与问题中的实体和指标完全匹配。",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 2,
       "citation_coverage": 1.0,
-      "answer": "根据提供的上下文，贵州茅台2025年茅台酒与其他系列酒的营业收入分别为：\n\n- 茅台酒：146,499,906,480.49元  \n- 其他系列酒：22,274,678,707.16元  \n\n以上数据来源于《贵州茅台酒股份有限公司2025年年度报告》中“按产品档次”划分的主营业务构成表[1]。",
+      "answer": "根据上下文[1]：\n\n- 贵州茅台2025年茅台酒营业收入=146,499,906,480.49元\n- 贵州茅台2025年其他系列酒营业收入=22,274,678,707.16元\n\n以上数据来源于公司2025年年度报告主营业务构成表[1]。",
       "citations": [
         {
           "number": 1,
@@ -2537,9 +2230,9 @@
       "citation_count": 1,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 1532,
-      "answer_tokens_est": 135,
-      "seconds": 29.43
+      "prompt_tokens_est": 2289,
+      "answer_tokens_est": 102,
+      "seconds": 65.69
     },
     {
       "id": "ar-cross-005",
@@ -2556,40 +2249,46 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": false,
       "evidence_hit_final": false,
-      "evidence_count": 13,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "llm"
-      ],
-      "graded_passed": false,
-      "graded_reason": "LLM 复核判定证据不足: 未提供2025年国内与国外营业收入的分项数据，仅给出总营收及按产品档次、销售渠道的分类，无法确定国内外具体数值。",
-      "needs_human_review": true,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
       "answer_value_hit": false,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 0,
+      "grounding_checked": 2,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "insufficient",
-        "reason": "未提供2025年国内与国外营业收入的分项数据，仅给出总营收及按产品档次、销售渠道的分类，无法确定国内外具体数值。",
-        "missing": "2025年国内与国外营业收入的具体数值",
-        "source": "llm"
-      },
-      "numbers_total": 0,
-      "citation_coverage": null,
-      "answer": "根据现有信息无法回答。\n\n上下文未提供贵州茅台2025年国内与国外营业收入的具体数据。虽然提到“公司营销网络覆盖国内市场及五大洲66个国家和地区”，但并未对收入按国内、国外进行分拆披露。因此，无法从提供的材料中得出2025年国内与国外的营业收入金额。",
-      "citations": [],
-      "citation_count": 0,
-      "citation_valid": null,
-      "refused": true,
-      "prompt_tokens_est": 9369,
-      "answer_tokens_est": 126,
-      "seconds": 64.43
+      "llm_review": null,
+      "numbers_total": 2,
+      "citation_coverage": 1.0,
+      "answer": "贵州茅台2025年按地区分部营业收入为：\n\n- 国内：163,924,442,864.97 元\n- 国外：4,850,142,322.68 元\n\n以上数据来源于[1]。",
+      "citations": [
+        {
+          "number": 1,
+          "chunk_id": "600519-2025_chunk_27",
+          "file_name": "贵州茅台2025年年度报告",
+          "document_id": "600519-2025",
+          "start_offset": 16845,
+          "end_offset": 17745,
+          "content_preview": "道布局，通过“线\n上+线下”融合转型，线上管效率、管触达，线下管转化、管服务，形成以消费者为中心的良",
+          "document_title": "贵州茅台2025年年度报告",
+          "company": "贵州茅台",
+          "year": 2025,
+          "page": 17
+        }
+      ],
+      "citation_count": 1,
+      "citation_valid": true,
+      "refused": false,
+      "prompt_tokens_est": 2281,
+      "answer_tokens_est": 63,
+      "seconds": 69.52
     },
     {
       "id": "ar-cross-006",
@@ -2606,7 +2305,7 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": true,
       "evidence_hit_final": true,
-      "evidence_count": 4,
+      "evidence_count": 3,
       "retry_count": 0,
       "rewrite_sources": [],
       "graded_passed": true,
@@ -2621,15 +2320,10 @@
       "grounding_checked": 2,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[2]明确列出了宁德时代2025年境内营业收入为294,060,576千元，境外营业收入为129,641,258千元，完全满足问题要求的实体、年份和具体数值指标。",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 2,
       "citation_coverage": 1.0,
-      "answer": "根据提供的上下文，宁德时代2025年境内与境外的营业收入分别为：\n\n- 境内营业收入：**294,060,576 千元**  \n- 境外营业收入：**129,641,258 千元**\n\n信息来源：[2] 中“分地区”部分明确列示了境内和境外的营业收入金额。[2]",
+      "answer": "宁德时代2025年营业收入分地区为：\n\n- 境内：294,060,576 千元[2]\n- 境外：129,641,258 千元[2]",
       "citations": [
         {
           "number": 2,
@@ -2648,12 +2342,68 @@
       "citation_count": 1,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 3097,
-      "answer_tokens_est": 116,
-      "seconds": 30.0
+      "prompt_tokens_est": 2275,
+      "answer_tokens_est": 53,
+      "seconds": 62.15
     },
     {
       "id": "ar-cross-007",
+      "question_type": "cross_section",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600036-2024"
+      ],
+      "retrieved_docs": [
+        "600036-2024"
+      ],
+      "doc_recall": 1.0,
+      "all_docs_hit": true,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 2,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
+      "status": "answered",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": false,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": 0,
+      "grounding_verified": true,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "非利息净收入占营业收入的比重为 **37.40%**[1]。  \n净利息收入占营业收入的比重在上下文中**没有直接披露**，因此根据现有信息无法回答。",
+      "citations": [
+        {
+          "number": 1,
+          "chunk_id": "600036-2024_chunk_76",
+          "file_name": "招商银行股份有限公司2024年度报告",
+          "document_id": "600036-2024",
+          "start_offset": 47946,
+          "end_offset": 48694,
+          "content_preview": "大类资产结构，灵活安排票据、债券投资、同业等大类资产的组\n合配置。负债端，一是坚持负债高质量发展的理",
+          "document_title": "招商银行股份有限公司2024年度报告",
+          "company": "招商银行",
+          "year": 2024,
+          "page": 45
+        }
+      ],
+      "citation_count": 1,
+      "citation_valid": true,
+      "refused": true,
+      "prompt_tokens_est": 1657,
+      "answer_tokens_est": 74,
+      "seconds": 69.45
+    },
+    {
+      "id": "ar-cross-008",
       "question_type": "cross_section",
       "expected_behavior": "answer",
       "wanted_docs": [
@@ -2682,77 +2432,24 @@
       "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[3]明确给出了招商银行2024年净利息收入占营业收入的62.60%和非利息净收入占营业收入的37.40%，满足问题要求的实体、年份和指标名，且数值准确无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 0,
       "citation_coverage": null,
-      "answer": "根据提供的上下文，招商银行2024年营业收入中：\n\n- **净利息收入**占营业收入的 **62.60%**  \n- **非利息净收入**占营业收入的 **37.40%**\n\n该数据来源于报告中的“占营业收入百分比”表格[3]。",
+      "answer": "招商银行2024年末资本充足率因口径不同而不同：\n\n- **本集团高级法口径**：核心一级资本充足率 **14.86%**，一级资本充足率 **17.48%**[3]\n- **本集团权重法口径**：核心一级资本充足率 **12.43%**，一级资本充足率 **14.63%**[1][2]\n- **本公司权重法口径**：核心一级资本充足率 **12.19%**，一级资本充足率 **14.40%**[1]\n\n如未特别说明，通常可引用本集团高级法口径：**14.86%和17.48%**。",
       "citations": [
         {
           "number": 3,
-          "chunk_id": "600036-2024_chunk_24",
+          "chunk_id": "600036-2024_chunk_59",
           "file_name": "招商银行股份有限公司2024年度报告",
           "document_id": "600036-2024",
-          "start_offset": 14764,
-          "end_offset": 15526,
-          "content_preview": "8\n净利息收益率(2) 1.98 2.15 下降0.17个百分点 2.40\n占营业收入百分比\n－净利",
+          "start_offset": 36684,
+          "end_offset": 37467,
+          "content_preview": "贷款损失准备余额2,703.01亿元，较上年末增\n加7.67亿元 ；拨备覆盖率411.98%，较上年",
           "document_title": "招商银行股份有限公司2024年度报告",
           "company": "招商银行",
           "year": 2024,
-          "page": 16
-        }
-      ],
-      "citation_count": 1,
-      "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 2393,
-      "answer_tokens_est": 101,
-      "seconds": 29.52
-    },
-    {
-      "id": "ar-cross-008",
-      "question_type": "cross_section",
-      "expected_behavior": "answer",
-      "wanted_docs": [
-        "600036-2024"
-      ],
-      "retrieved_docs": [
-        "600036-2024"
-      ],
-      "doc_recall": 1.0,
-      "all_docs_hit": true,
-      "first_relevant_rank_top5": 1,
-      "evidence_hit_top5": true,
-      "evidence_hit_final": true,
-      "evidence_count": 4,
-      "retry_count": 0,
-      "rewrite_sources": [],
-      "graded_passed": true,
-      "graded_reason": "证据已覆盖问题要素",
-      "needs_human_review": false,
-      "status": "answered",
-      "repairs": 0,
-      "repair_fixed": null,
-      "answer_value_hit": false,
-      "foreign_evidence_docs": [],
-      "foreign_cited_docs": [],
-      "grounding_checked": 0,
-      "grounding_verified": true,
-      "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段1明确给出了招商银行2024年末的核心一级资本充足率12.43%和一级资本充足率14.63%，且与问题中的公司、年份及指标完全匹配，无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 0,
-      "citation_coverage": null,
-      "answer": "根据提供的上下文，招商银行2024年末的核心一级资本充足率与一级资本充足率如下：\n\n- **核心一级资本充足率**：12.19% [1]  \n- **一级资本充足率**：14.40% [1]\n\n该数据来源于《招商银行股份有限公司2024年度报告（A股）》中“权重法下资本充足率情况”的披露[1]。",
-      "citations": [
+          "page": 37
+        },
         {
           "number": 1,
           "chunk_id": "600036-2024_chunk_62",
@@ -2765,14 +2462,27 @@
           "company": "招商银行",
           "year": 2024,
           "page": 39
+        },
+        {
+          "number": 2,
+          "chunk_id": "600036-2024_chunk_25",
+          "file_name": "招商银行股份有限公司2024年度报告",
+          "document_id": "600036-2024",
+          "start_offset": 15406,
+          "end_offset": 16204,
+          "content_preview": "年\n12月31日\n核心一级资本充足率 14.86 13.73 上升1.13个百分点 13.68\n一级",
+          "document_title": "招商银行股份有限公司2024年度报告",
+          "company": "招商银行",
+          "year": 2024,
+          "page": 16
         }
       ],
-      "citation_count": 1,
+      "citation_count": 3,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 2963,
-      "answer_tokens_est": 143,
-      "seconds": 29.42
+      "prompt_tokens_est": 2240,
+      "answer_tokens_est": 207,
+      "seconds": 63.02
     },
     {
       "id": "ar-cross-009",
@@ -2801,18 +2511,13 @@
       "answer_value_hit": true,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 2,
+      "grounding_checked": 4,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[2]明确给出了2025年茅台酒与系列酒的基酒设计产能分别为46,395.00吨和59,400.00吨，实体与指标均完整且数值准确。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 2,
+      "llm_review": null,
+      "numbers_total": 4,
       "citation_coverage": 1.0,
-      "answer": "根据上下文，贵州茅台2025年茅台酒与系列酒的基酒设计产能分别为：\n\n- 茅台酒：46,395.00 吨  \n- 系列酒：59,400.00 吨  \n\n信息来源：[1] 中“2、 产能状况”部分的“现有产能”表格。",
+      "answer": "根据上下文，贵州茅台2025年：\n\n- 茅台酒基酒设计产能为 **46,395.00 吨**（同比新增基酒产能 1,800.00 吨）[1]\n- 系列酒基酒设计产能为 **59,400.00 吨**（同比新增基酒产能 6,940.00 吨）[1]\n\n上述计量单位按公司惯例为“吨”[1]。",
       "citations": [
         {
           "number": 1,
@@ -2832,8 +2537,8 @@
       "citation_valid": true,
       "refused": false,
       "prompt_tokens_est": 1666,
-      "answer_tokens_est": 103,
-      "seconds": 30.25
+      "answer_tokens_est": 129,
+      "seconds": 66.44
     },
     {
       "id": "ar-multi-004",
@@ -2850,79 +2555,13 @@
       "doc_recall": 1.0,
       "all_docs_hit": true,
       "first_relevant_rank_top5": 1,
-      "evidence_hit_top5": true,
-      "evidence_hit_final": true,
-      "evidence_count": 5,
-      "retry_count": 0,
-      "rewrite_sources": [],
-      "graded_passed": true,
-      "graded_reason": "证据已覆盖问题要素",
-      "needs_human_review": false,
-      "status": "answered",
-      "repairs": 0,
-      "repair_fixed": null,
-      "answer_value_hit": true,
-      "foreign_evidence_docs": [],
-      "foreign_cited_docs": [],
-      "grounding_checked": 2,
-      "grounding_verified": true,
-      "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]明确列出了宁德时代2024年和2025年的销售费用，分别为3,562,797千元和3,735,118千元，完全满足问题要求的实体、年份和具体数值。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 2,
-      "citation_coverage": 1.0,
-      "answer": "宁德时代2024年的销售费用为3,562,797千元，2025年的销售费用为3,735,118千元[3]。",
-      "citations": [
-        {
-          "number": 3,
-          "chunk_id": "300750-2025_chunk_296",
-          "file_name": "2025年年度报告",
-          "document_id": "300750-2025",
-          "start_offset": 186598,
-          "end_offset": 187370,
-          "content_preview": "70,220 572,731\n教育费附加 592,955 293,946\n房产税 591,722 5",
-          "document_title": "2025年年度报告",
-          "company": "宁德时代",
-          "year": 2025,
-          "page": 195
-        }
-      ],
-      "citation_count": 1,
-      "citation_valid": true,
-      "refused": false,
-      "prompt_tokens_est": 3463,
-      "answer_tokens_est": 47,
-      "seconds": 29.76
-    },
-    {
-      "id": "ar-multi-005",
-      "question_type": "cross_document",
-      "expected_behavior": "answer",
-      "wanted_docs": [
-        "600519-2023",
-        "600519-2024"
-      ],
-      "retrieved_docs": [
-        "600519-2023",
-        "600519-2024"
-      ],
-      "doc_recall": 1.0,
-      "all_docs_hit": true,
-      "first_relevant_rank_top5": 1,
       "evidence_hit_top5": false,
       "evidence_hit_final": false,
-      "evidence_count": 17,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "llm"
-      ],
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
       "graded_passed": false,
-      "graded_reason": "LLM 复核判定证据不足: 片段中未明确提及2023年与2024年的销售费用具体数值，仅提到费用变动原因或相关项目，无法确定具体金额",
+      "graded_reason": "指标关键词未覆盖: 销售费用",
       "needs_human_review": true,
       "status": "answered",
       "repairs": 0,
@@ -2933,36 +2572,60 @@
       "grounding_checked": 0,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "insufficient",
-        "reason": "片段中未明确提及2023年与2024年的销售费用具体数值，仅提到费用变动原因或相关项目，无法确定具体金额",
-        "missing": "2023年与2024年的销售费用具体数值",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 0,
       "citation_coverage": null,
-      "answer": "根据提供的上下文，无法直接获取贵州茅台2023年与2024年的销售费用具体金额。\n\n虽然在[4]中提到了“销售费用变动原因说明：主要是本期广告及市场拓展费用增加”，但并未提供具体的销售费用数值。其他段落也未明确列出2023年和2024年的销售费用金额。\n\n因此，**根据现有信息无法回答**。",
-      "citations": [
-        {
-          "number": 4,
-          "chunk_id": "600519-2023_chunk_15",
-          "file_name": "贵州茅台2023年年度报告",
-          "document_id": "600519-2023",
-          "start_offset": 8847,
-          "end_offset": 9622,
-          "content_preview": "活动产生的现金流量净额 -58,889,101,991.94 -57,424,528,979.83 ",
-          "document_title": "贵州茅台2023年年度报告",
-          "company": "贵州茅台",
-          "year": 2023,
-          "page": 8
-        }
-      ],
-      "citation_count": 1,
-      "citation_valid": true,
+      "answer": "根据现有信息无法回答：上下文中未提供宁德时代2024年与2025年的销售费用金额。",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
       "refused": true,
-      "prompt_tokens_est": 12541,
-      "answer_tokens_est": 137,
-      "seconds": 65.77
+      "prompt_tokens_est": 2770,
+      "answer_tokens_est": 40,
+      "seconds": 66.89
+    },
+    {
+      "id": "ar-multi-005",
+      "question_type": "cross_document",
+      "expected_behavior": "answer",
+      "wanted_docs": [
+        "600519-2023",
+        "600519-2024"
+      ],
+      "retrieved_docs": [
+        "600519-2024"
+      ],
+      "doc_recall": 0.5,
+      "all_docs_hit": false,
+      "first_relevant_rank_top5": 1,
+      "evidence_hit_top5": false,
+      "evidence_hit_final": false,
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": false,
+      "graded_reason": "证据缺少问题涉及年份的年报片段: 2023；指标关键词未覆盖: 销售费用",
+      "needs_human_review": true,
+      "status": "answered",
+      "repairs": 0,
+      "repair_fixed": null,
+      "answer_value_hit": false,
+      "foreign_evidence_docs": [],
+      "foreign_cited_docs": [],
+      "grounding_checked": 0,
+      "grounding_verified": true,
+      "ungrounded_numbers": [],
+      "llm_review": null,
+      "numbers_total": 0,
+      "citation_coverage": null,
+      "answer": "根据现有信息无法回答。上下文中未提供贵州茅台2023年和2024年的销售费用数据。",
+      "citations": [],
+      "citation_count": 0,
+      "citation_valid": null,
+      "refused": true,
+      "prompt_tokens_est": 1967,
+      "answer_tokens_est": 40,
+      "seconds": 64.93
     },
     {
       "id": "ar-multi-006",
@@ -2996,16 +2659,24 @@
       "grounding_checked": 2,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[1]和[3]分别明确给出了招商银行2024年末和2023年末的拨备覆盖率数值，且无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 2,
       "citation_coverage": 1.0,
-      "answer": "根据提供的上下文信息：\n\n- 招商银行2023年末的拨备覆盖率为 **437.70%**[3]。\n- 招商银行2024年末的拨备覆盖率为 **411.98%**[1]。\n\n因此，招商银行2023年末与2024年末的拨备覆盖率分别为437.70%和411.98%。",
+      "answer": "招商银行拨备覆盖率：\n- 2023年末：437.70%[2][3]\n- 2024年末：411.98%[1]",
       "citations": [
+        {
+          "number": 2,
+          "chunk_id": "600036-2023_chunk_7",
+          "file_name": "招商银行股份有限公司2023年度报告",
+          "document_id": "600036-2023",
+          "start_offset": 4189,
+          "end_offset": 4934,
+          "content_preview": "董事会确立的目标任务，坚持稳字当头、稳中求进，以价值银行战略目标为引领，走高质量发展之\n路，实现了“",
+          "document_title": "招商银行股份有限公司2023年度报告",
+          "company": "招商银行",
+          "year": 2023,
+          "page": 8
+        },
         {
           "number": 3,
           "chunk_id": "600036-2023_chunk_57",
@@ -3033,12 +2704,12 @@
           "page": 37
         }
       ],
-      "citation_count": 2,
+      "citation_count": 3,
       "citation_valid": true,
       "refused": false,
       "prompt_tokens_est": 3886,
-      "answer_tokens_est": 119,
-      "seconds": 30.45
+      "answer_tokens_est": 47,
+      "seconds": 73.78
     },
     {
       "id": "ar-multi-007",
@@ -3057,79 +2728,59 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": true,
       "evidence_hit_final": true,
-      "evidence_count": 12,
-      "retry_count": 1,
-      "rewrite_sources": [
-        "llm"
-      ],
+      "evidence_count": 3,
+      "retry_count": 0,
+      "rewrite_sources": [],
       "graded_passed": true,
       "graded_reason": "证据已覆盖问题要素",
       "needs_human_review": false,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
-      "answer_value_hit": false,
+      "answer_value_hit": true,
       "foreign_evidence_docs": [],
       "foreign_cited_docs": [],
-      "grounding_checked": 10,
+      "grounding_checked": 2,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[4]明确给出招商银行2025年非利息净收入为1,219.39亿元，片段[2]明确给出2024年为1,262.11亿元，实体、年份与指标均完整且无歧义。",
-        "missing": "",
-        "source": "llm"
-      },
-      "numbers_total": 10,
+      "llm_review": null,
+      "numbers_total": 2,
       "citation_coverage": 1.0,
-      "answer": "根据提供的上下文信息：\n\n- 招商银行2025年非利息净收入为 **1,219.86亿元**。  \n  计算依据：2025年营业收入为3,375.32亿元，其中净利息收入占比63.87%，则非利息净收入占比为36.13%。  \n  非利息净收入 = 3,375.32 × 36.13% ≈ **1,219.86亿元** [1]。\n\n- 招商银行2024年非利息净收入为 **1,145.28亿元**。  \n  计算依据：2024年营业收入为3,375.32 ÷ (1 + 0.01%) ≈ 3,372.05亿元（根据2025年同比增长0.01%反推），非利息净收入占比为36.13%？但更准确的是从分部数据中获取。  \n  实际上，根据报告中“经营分部”部分的外部净利息收入和合计数据可得：\n  - 2024年总外部净利息收入为211,277百万元（即211.277亿元）[6]。\n  - 2024年营业收入为3,372.05亿元（由2025年3,375.32亿元倒推，增长0.01%）。\n  - 因此，非利息净收入 = 营业收入 - 净利息收入  \n    净利息收入 = 211,277百万元 = 211.277亿元  \n    非利息净收入 = 3,372.05 - 211.277 ≈ **3,160.77亿元** —— 显然与实际不符。\n\n重新核查：  \n在[1]中明确指出：2025年营业收入3,375.32亿元，非利息净收入占比36.13% → 非利息净收入 = 3,375.32 × 36.13% ≈ **1,219.86亿元**。\n\n而2024年营业收入为：3,375.32 ÷ (1 + 0.01%) ≈ **3,372.05亿元**（因2025年同比+0.01%）。  \n2024年非利息净收入占比为36.13%？不，原文显示2024年非利息净收入占比为 **36.13%**？不对。\n\n查看[1]表格：\n- 2024年非利息净收入占比为 **36.13%**？不，原文是：\n  - 2024年：净手续费及佣金收入21.36%，其他净收入16.04%，合计非利息净收入占比 = 21.36% + 16.04% = **37.40%**\n\n因此，2024年非利息净收入 = 3,372.05 × 37.40% ≈ **1,261.17亿元**\n\n但更直接的方式是使用已知的净利润和利润总额等数据进行验证。\n\n然而，最可靠的数据来自[8]：\n> “其他净收入541.17亿元，同比增长34.13%” —— 这是2024年数据吗？\n\n不，[8]中提到：“其他净收入541.17亿元，同比增长34.13%”，结合上下文，这是指**2025年**的其他净收入。\n\n因为[8]前文说：“2025年……其他净收入541.17亿元，同比增长34.13%”，所以：\n- 2025年其他净收入 = 541.17亿元\n- 2024年其他净收入 = 541.17 ÷ (1 + 34.13%) ≈ 403.50亿元\n\n再看[8]中还提到：\n> “净手续费及佣金收入……2025年为……”\n\n但未直接给出2024年非利息净收入总额。\n\n我们回到[1]中的表格：\n- 2025年非利息净收入占比 =",
+      "answer": "招商银行非利息净收入：\n- 2024年=1,262.11亿元[2]\n- 2025年=1,219.39亿元[3]",
       "citations": [
         {
-          "number": 1,
-          "chunk_id": "600036-2025_chunk_28",
+          "number": 2,
+          "chunk_id": "600036-2024_chunk_76",
+          "file_name": "招商银行股份有限公司2024年度报告",
+          "document_id": "600036-2024",
+          "start_offset": 47946,
+          "end_offset": 48694,
+          "content_preview": "大类资产结构，灵活安排票据、债券投资、同业等大类资产的组\n合配置。负债端，一是坚持负债高质量发展的理",
+          "document_title": "招商银行股份有限公司2024年度报告",
+          "company": "招商银行",
+          "year": 2024,
+          "page": 45
+        },
+        {
+          "number": 3,
+          "chunk_id": "600036-2025_chunk_34",
           "file_name": "招商银行股份有限公司2025年度报告",
           "document_id": "600036-2025",
-          "start_offset": 17197,
-          "end_offset": 17977,
-          "content_preview": "(189) (843)\n其他业务成本 (7,456) (7,084)\n营业外收支净额 (259) (",
+          "start_offset": 21172,
+          "end_offset": 21939,
+          "content_preview": "利息支出\n年化平均\n成本率%\n计息负债\n客户存款 9,494,649 25,014 1.05 9,2",
           "document_title": "招商银行股份有限公司2025年度报告",
           "company": "招商银行",
           "year": 2025,
-          "page": 19
-        },
-        {
-          "number": 6,
-          "chunk_id": "600036-2024_chunk_438",
-          "file_name": "招商银行股份有限公司2024年度报告",
-          "document_id": "600036-2024",
-          "start_offset": 279434,
-          "end_offset": 280212,
-          "content_preview": "经营分部的会计政策与本集团的会计政策相同。上述分部收入代表外部客户产生的收入，分部间的内部交易已被\n",
-          "document_title": "招商银行股份有限公司2024年度报告",
-          "company": "招商银行",
-          "year": 2024,
-          "page": 259
-        },
-        {
-          "number": 8,
-          "chunk_id": "600036-2024_chunk_35",
-          "file_name": "招商银行股份有限公司2024年度报告",
-          "document_id": "600036-2024",
-          "start_offset": 21706,
-          "end_offset": 22480,
-          "content_preview": "元，同比下降22.70% ；资产管理手续费及佣金收入107.51亿元，同比下降6.30% ；银行卡手",
-          "document_title": "招商银行股份有限公司2024年度报告",
-          "company": "招商银行",
-          "year": 2024,
-          "page": 24
+          "page": 23
         }
       ],
-      "citation_count": 3,
+      "citation_count": 2,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 8568,
-      "answer_tokens_est": 1055,
-      "seconds": 57.11
+      "prompt_tokens_est": 2177,
+      "answer_tokens_est": 44,
+      "seconds": 67.97
     },
     {
       "id": "ar-calc-003",
@@ -3146,12 +2797,9 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": true,
       "evidence_hit_final": true,
-      "evidence_count": 11,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "rule"
-      ],
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
       "graded_passed": false,
       "graded_reason": "指标关键词未覆盖: 茅台酒营业收入,分产品小计",
       "needs_human_review": true,
@@ -3170,7 +2818,7 @@
       "llm_review": null,
       "numbers_total": 2,
       "citation_coverage": 1.0,
-      "answer": "根据上下文[1]中的“按产品档次”表格数据：\n\n- 茅台酒营业收入：146,499,906,480.49 元  \n- 分产品小计营业收入（茅台酒 + 其他系列酒）：168,774,585,187.65 元\n\n计算比例：\n$$\n\\frac{146,499,906,480.49}{168,774,585,187.65} \\times 100\\% \\approx 86.82\\%\n$$\n\n因此，贵州茅台2025年茅台酒营业收入占分产品小计的比例约为 **86.82%** [1]。",
+      "answer": "根据[1]数据计算：\n\n茅台酒营业收入 146,499,906,480.49 元，分产品小计营业收入 168,774,585,187.65 元。\n\n占比 = 146,499,906,480.49 ÷ 168,774,585,187.65 × 100% ≈ **86.80%**。[1]",
       "citations": [
         {
           "number": 1,
@@ -3189,9 +2837,9 @@
       "citation_count": 1,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 8325,
-      "answer_tokens_est": 178,
-      "seconds": 81.92
+      "prompt_tokens_est": 2953,
+      "answer_tokens_est": 98,
+      "seconds": 72.22
     },
     {
       "id": "ar-calc-004",
@@ -3208,12 +2856,9 @@
       "first_relevant_rank_top5": 1,
       "evidence_hit_top5": true,
       "evidence_hit_final": true,
-      "evidence_count": 14,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "llm"
-      ],
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
       "graded_passed": false,
       "graded_reason": "指标关键词未覆盖: 境内营业收入比境外营业收入多约",
       "needs_human_review": true,
@@ -3233,7 +2878,7 @@
       "llm_review": null,
       "numbers_total": 3,
       "citation_coverage": 1.0,
-      "answer": "根据上下文[2]中的“分地区”数据：\n\n- 境内营业收入：294,060,576 千元  \n- 境外营业收入：129,641,258 千元  \n\n计算差额：  \n294,060,576 - 129,641,258 = 164,419,318 千元\n\n因此，宁德时代2025年境内营业收入比境外营业收入多约 **164,419,318 千元**。[2]",
+      "answer": "宁德时代2025年境内营业收入为294,060,576千元，境外营业收入为129,641,258千元[2]。境内比境外多：\n\n294,060,576 − 129,641,258 = **164,419,318千元**，约**1.64亿千元**[2]。",
       "citations": [
         {
           "number": 2,
@@ -3252,9 +2897,9 @@
       "citation_count": 1,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 10125,
-      "answer_tokens_est": 133,
-      "seconds": 83.98
+      "prompt_tokens_est": 3100,
+      "answer_tokens_est": 95,
+      "seconds": 66.21
     },
     {
       "id": "ar-calc-005",
@@ -3272,7 +2917,7 @@
       "first_relevant_rank_top5": 2,
       "evidence_hit_top5": false,
       "evidence_hit_final": false,
-      "evidence_count": 5,
+      "evidence_count": 4,
       "retry_count": 0,
       "rewrite_sources": [],
       "graded_passed": true,
@@ -3285,20 +2930,30 @@
       "foreign_evidence_docs": [
         "600036-2023"
       ],
-      "foreign_cited_docs": [],
+      "foreign_cited_docs": [
+        "600036-2023"
+      ],
       "grounding_checked": 2,
       "grounding_verified": true,
       "ungrounded_numbers": [],
-      "llm_review": {
-        "judgment": "answerable",
-        "reason": "片段[2]明确给出招商银行2024年营业收入为3,374.88亿元，片段[1]给出2023年营业收入为3,391.23亿元，两者均可计算出减少额约为16.35亿元。",
-        "missing": "",
-        "source": "llm"
-      },
+      "llm_review": null,
       "numbers_total": 2,
       "citation_coverage": 1.0,
-      "answer": "根据上下文[2]，招商银行2024年营业收入为3,374.88亿元，2023年营业收入为3,391.23亿元。\n\n计算差额：\n3,391.23 - 3,374.88 = 16.35（亿元）\n\n因此，招商银行2024年营业收入较2023年减少约**16.35亿元**。[2]",
+      "answer": "招商银行2023年营业收入为3,391.23亿元[1]，2024年为3,374.88亿元[2]，因此2024年较2023年减少约 **16.35亿元**（3,391.23－3,374.88）。[1][2]",
       "citations": [
+        {
+          "number": 1,
+          "chunk_id": "600036-2023_chunk_25",
+          "file_name": "招商银行股份有限公司2023年度报告",
+          "document_id": "600036-2023",
+          "start_offset": 15059,
+          "end_offset": 15859,
+          "content_preview": "上数据均为本公司口径，根据中国银行业监督管理机构最新监管口径计算，历史数据已同口径调整。\n2.4 境",
+          "document_title": "招商银行股份有限公司2023年度报告",
+          "company": "招商银行",
+          "year": 2023,
+          "page": 18
+        },
         {
           "number": 2,
           "chunk_id": "600036-2024_chunk_26",
@@ -3313,12 +2968,12 @@
           "page": 17
         }
       ],
-      "citation_count": 1,
+      "citation_count": 2,
       "citation_valid": true,
       "refused": false,
-      "prompt_tokens_est": 3697,
-      "answer_tokens_est": 110,
-      "seconds": 34.69
+      "prompt_tokens_est": 3031,
+      "answer_tokens_est": 77,
+      "seconds": 65.76
     },
     {
       "id": "ar-refuse-004",
@@ -3327,7 +2982,6 @@
       "wanted_docs": [],
       "retrieved_docs": [
         "600519-2023",
-        "600519-2024",
         "600519-2025"
       ],
       "doc_recall": null,
@@ -3335,14 +2989,11 @@
       "first_relevant_rank_top5": null,
       "evidence_hit_top5": null,
       "evidence_hit_final": null,
-      "evidence_count": 15,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "llm"
-      ],
+      "evidence_count": 5,
+      "retry_count": 0,
+      "rewrite_sources": [],
       "graded_passed": false,
-      "graded_reason": "证据缺少问题涉及年份的年报片段: 2026",
+      "graded_reason": "证据缺少问题涉及年份的年报片段: 2026；指标关键词未覆盖: 第一季度",
       "needs_human_review": true,
       "status": "answered",
       "repairs": 0,
@@ -3350,7 +3001,6 @@
       "answer_value_hit": null,
       "foreign_evidence_docs": [
         "600519-2023",
-        "600519-2024",
         "600519-2025"
       ],
       "foreign_cited_docs": [],
@@ -3360,14 +3010,14 @@
       "llm_review": null,
       "numbers_total": 0,
       "citation_coverage": null,
-      "answer": "根据现有信息无法回答。提供的上下文内容均为贵州茅台酒股份有限公司2025年年度报告及相关财务数据，未包含2026年第一季度的营业收入信息。",
+      "answer": "根据现有信息无法回答。上下文仅提供了贵州茅台2023年度、2025年度相关营业收入数据，未包含2026年第一季度的营业收入数据。",
       "citations": [],
       "citation_count": 0,
       "citation_valid": null,
       "refused": true,
-      "prompt_tokens_est": 10839,
-      "answer_tokens_est": 70,
-      "seconds": 91.81
+      "prompt_tokens_est": 3709,
+      "answer_tokens_est": 62,
+      "seconds": 65.85
     },
     {
       "id": "ar-refuse-005",
@@ -3375,49 +3025,71 @@
       "expected_behavior": "refuse",
       "wanted_docs": [],
       "retrieved_docs": [
-        "300750-2024",
-        "600036-2024",
-        "600519-2024"
+        "601012-2024"
       ],
       "doc_recall": null,
       "all_docs_hit": null,
       "first_relevant_rank_top5": null,
       "evidence_hit_top5": null,
       "evidence_hit_final": null,
-      "evidence_count": 9,
-      "retry_count": 2,
-      "rewrite_sources": [
-        "llm",
-        "rule"
-      ],
-      "graded_passed": false,
-      "graded_reason": "指标关键词未覆盖: 隆基绿能",
-      "needs_human_review": true,
+      "evidence_count": 4,
+      "retry_count": 0,
+      "rewrite_sources": [],
+      "graded_passed": true,
+      "graded_reason": "证据已覆盖问题要素",
+      "needs_human_review": false,
       "status": "answered",
       "repairs": 0,
       "repair_fixed": null,
       "answer_value_hit": null,
       "foreign_evidence_docs": [
-        "300750-2024",
-        "600036-2024",
-        "600519-2024"
+        "601012-2024"
       ],
-      "foreign_cited_docs": [],
-      "grounding_checked": 0,
+      "foreign_cited_docs": [
+        "601012-2024"
+      ],
+      "grounding_checked": 4,
       "grounding_verified": true,
       "ungrounded_numbers": [],
       "llm_review": null,
-      "numbers_total": 0,
-      "citation_coverage": null,
-      "answer": "根据现有信息无法回答。上下文内容中未提及隆基绿能的营业收入数据。",
-      "citations": [],
-      "citation_count": 0,
-      "citation_valid": null,
-      "refused": true,
-      "prompt_tokens_est": 6164,
-      "answer_tokens_est": 34,
-      "seconds": 92.71
+      "numbers_total": 4,
+      "citation_coverage": 1.0,
+      "answer": "根据上下文[1]，隆基绿能2024年度“营业收入金额”为 **8,258,227.31万元**（按1万元=10,000元换算为 **82,582,273,100元**）。\n\n另，上下文[2]“营业收入和营业成本情况”中列示本期收入合计为 **20,410,802,683.88元**；该数据与[1]口径不同，上下文中未明确说明具体报表范围，引用时不宜混用。[1][2]",
+      "citations": [
+        {
+          "number": 1,
+          "chunk_id": "601012-2024_chunk_17",
+          "file_name": "2024年年度报告",
+          "document_id": "601012-2024",
+          "start_offset": 10712,
+          "end_offset": 11798,
+          "content_preview": "6 -332,409.41 -603,839.93\n合计 129,702,231.50 -82,23",
+          "document_title": "2024年年度报告",
+          "company": "隆基绿能",
+          "year": 2024,
+          "page": 13
+        },
+        {
+          "number": 2,
+          "chunk_id": "601012-2024_chunk_393",
+          "file_name": "2024年年度报告",
+          "document_id": "601012-2024",
+          "start_offset": 237680,
+          "end_offset": 238457,
+          "content_preview": "280,670.29\n合计 7,452,859,220.12 686,000,000.00 -612",
+          "document_title": "2024年年度报告",
+          "company": "隆基绿能",
+          "year": 2024,
+          "page": 298
+        }
+      ],
+      "citation_count": 2,
+      "citation_valid": true,
+      "refused": false,
+      "prompt_tokens_est": 2458,
+      "answer_tokens_est": 154,
+      "seconds": 68.76
     }
   ],
-  "elapsed_seconds": 2717.9
+  "elapsed_seconds": 3870.3
 }

@@ -1,0 +1,139 @@
+{
+  "generated_at": "2026-11-05T11:24:39.992558+00:00",
+  "source": "http://www.cninfo.com.cn/new/hisAnnouncement/query",
+  "target_config": "configs/cninfo_targets.json",
+  "out_dir": "data/docs/annual_reports",
+  "years": [
+    2023,
+    2024,
+    2025
+  ],
+  "requested_targets": [
+    {
+      "company": "贵州茅台",
+      "ts_code": "600519"
+    },
+    {
+      "company": "宁德时代",
+      "ts_code": "300750"
+    },
+    {
+      "company": "招商银行",
+      "ts_code": "600036"
+    },
+    {
+      "company": "五粮液",
+      "ts_code": "000858"
+    },
+    {
+      "company": "美的集团",
+      "ts_code": "000333"
+    },
+    {
+      "company": "海尔智家",
+      "ts_code": "600690"
+    },
+    {
+      "company": "伊利股份",
+      "ts_code": "600887"
+    },
+    {
+      "company": "海天味业",
+      "ts_code": "603288"
+    },
+    {
+      "company": "泸州老窖",
+      "ts_code": "000568"
+    },
+    {
+      "company": "比亚迪",
+      "ts_code": "002594"
+    },
+    {
+      "company": "隆基绿能",
+      "ts_code": "601012"
+    },
+    {
+      "company": "阳光电源",
+      "ts_code": "300274"
+    },
+    {
+      "company": "汇川技术",
+      "ts_code": "300124"
+    },
+    {
+      "company": "三一重工",
+      "ts_code": "600031"
+    },
+    {
+      "company": "中联重科",
+      "ts_code": "000157"
+    },
+    {
+      "company": "中国平安",
+      "ts_code": "601318"
+    },
+    {
+      "company": "兴业银行",
+      "ts_code": "601166"
+    },
+    {
+      "company": "中信证券",
+      "ts_code": "600030"
+    },
+    {
+      "company": "东方财富",
+      "ts_code": "300059"
+    },
+    {
+      "company": "海康威视",
+      "ts_code": "002415"
+    },
+    {
+      "company": "科大讯飞",
+      "ts_code": "002230"
+    },
+    {
+      "company": "中芯国际",
+      "ts_code": "688981"
+    },
+    {
+      "company": "立讯精密",
+      "ts_code": "002475"
+    },
+    {
+      "company": "京东方A",
+      "ts_code": "000725"
+    },
+    {
+      "company": "恒瑞医药",
+      "ts_code": "600276"
+    },
+    {
+      "company": "迈瑞医疗",
+      "ts_code": "300760"
+    },
+    {
+      "company": "药明康德",
+      "ts_code": "603259"
+    },
+    {
+      "company": "中国神华",
+      "ts_code": "601088"
+    },
+    {
+      "company": "长江电力",
+      "ts_code": "600900"
+    },
+    {
+      "company": "顺丰控股",
+      "ts_code": "002352"
+    }
+  ],
+  "fetched_count": 78,
+  "skipped_count": 12,
+  "failure_count": 0,
+  "failures": [],
+  "registered_documents": 90,
+  "status": "ok"
+}

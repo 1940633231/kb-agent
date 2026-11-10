@@ -22,12 +22,21 @@ class AgentRuntime:
     widened_top_k: int = 15
     #: facet 证据裁剪开关（默认开）；关掉可用于消融对比"裁剪到底值多少"
     scope_evidence_enabled: bool = True
+    #: 检索前公司/年份硬路由；关闭时完全回退旧的全库多查询路径。
+    enable_pre_retrieval_routing: bool = True
+    #: route 只允许命中自己的 document_ids；连后置 scope 也不得回退全库。
+    strict_route_filter: bool = True
+    #: 每条 route 在统一 rerank 前保留的候选上限。
+    route_candidate_limit: int = 50
     #: 规则评分通过后再做一次 LLM 语义复核（抓"规则假通过"，方案 §4.1）
     llm_grader: Optional[Any] = None
-    #: 生成后的落地复核与修复。**默认关闭**：`evals/repair_targeting.py` 用裁判口径
-    #: 离线量过——按当前触发条件（数字引不到出处 / 口径歧义未标注），修 5 道真错
-    #: 会同时改动 11 道本来正确的答案（13 道正确答案里只有 2 道能干净放过）。
-    #: 触发条件必须先收紧（例如只对"整个证据里都找不到的数字"触发）再打开。
+    #: P1 hard gate 默认开启；只拦截 Claim 级硬违规，不触发生成式重写。
+    enable_claim_hard_gate: bool = True
+    #: 软问题只提示并交人工审核，不自动修复。
+    enable_claim_soft_warnings: bool = True
+    #: 定向 Claim 修复默认关闭；开启后也只替换硬违规 Claim 的文本 span。
+    enable_claim_repair: bool = False
+    #: 兼容旧调用：等价于开启 Claim 定向修复，不再允许整段自由重写。
     enable_answer_repair: bool = False
     max_repair_rounds: int = 1
     min_coverage: float = 0.6         # 规则评分的关键词覆盖率下限
@@ -36,6 +45,9 @@ class AgentRuntime:
     memory_store: Optional[Any] = None   # LangGraph Store（跨会话记忆）
     memory_user_id: str = ""             # 记忆 namespace 里的用户标识
     review_timeout_seconds: Optional[float] = 3600.0  # 审核超时（秒）
+    # P2 统一上下文预算：None 表示沿用 production-rag 的 max_context_tokens。
+    max_context_tokens: Optional[int] = None
+    output_reserved_tokens: int = 1024
     # document_id → {title, company, year, pages}，用于把引用的字符偏移映射回原文页码
     page_offsets: Dict[str, Any] = field(default_factory=dict)
     extra: Dict[str, Any] = field(default_factory=dict)

@@ -11,6 +11,8 @@ fact-004 的四个季度归母净利润可以加总出 82,320,067,101.68 元。
 """
 from __future__ import annotations
 
+import json
+import re
 from typing import Any, Dict, List, Optional
 
 REPAIR_SYSTEM_PROMPT = (
@@ -60,3 +62,137 @@ def repair_answer(generator: Any, question: str, evidence_text: str, draft: str,
         return None
     revised = (revised or "").strip()
     return revised or None
+
+
+CLAIM_REPAIR_SYSTEM_PROMPT = (
+    "你是 Claim 定向校订器。只修正给定的硬违规 Claim，不要重写其它句子。"
+    "每个修复必须是原答案中的原文字片段替换。"
+    "不得引入证据片段中不存在的数字，不得改变与该 Claim 无关的引用或结论。"
+    "只输出 JSON：{\"repairs\":[{\"claim_id\":\"claim-1\","
+    "\"replacement\":\"替换后的原文字片段\"}]}。"
+)
+
+
+def build_claim_repair_messages(
+        question: str,
+        evidence_text: str,
+        draft: str,
+        claims: List[Dict[str, Any]],
+        missing_obligations: Optional[List[Dict[str, Any]]] = None
+        ) -> List[Dict[str, str]]:
+    claim_block = "\n".join(
+        "- {} [{}] {} | value={} | company={} | year={} | citations={}".format(
+            item.get("claim_id"),
+            item.get("claim_type"),
+            item.get("text_span"),
+            item.get("value"),
+            item.get("company") or "",
+            item.get("year") or "",
+            item.get("citation_ids") or [],
+        )
+        for item in claims or []
+    )
+    obligation_block = "\n".join(
+        "- {} {} {} {}".format(
+            item.get("obligation_id"),
+            item.get("company") or "",
+            item.get("year") or "",
+            item.get("metric") or "",
+        ).strip()
+        for item in missing_obligations or []
+    ) or "无"
+    user_prompt = (
+        "问题：{question}\n\n"
+        "需要修复的硬违规 Claim：\n{claims}\n\n"
+        "缺失证据义务：\n{obligations}\n\n"
+        "可引用证据：\n{evidence}\n\n"
+        "原答案：\n{draft}"
+    ).format(question=question, claims=claim_block,
+             obligations=obligation_block, evidence=evidence_text, draft=draft)
+    return [
+        {"role": "system", "content": CLAIM_REPAIR_SYSTEM_PROMPT},
+        {"role": "user", "content": user_prompt},
+    ]
+
+
+def _parse_claim_repairs(answer: Optional[str]) -> Dict[str, str]:
+    if not answer:
+        return {}
+    match = re.search(r"\{.*\}", answer, re.S)
+    if not match:
+        return {}
+    try:
+        payload = json.loads(match.group(0))
+    except json.JSONDecodeError:
+        return {}
+    repairs = payload.get("repairs") or []
+    if not isinstance(repairs, list):
+        return {}
+    parsed: Dict[str, str] = {}
+    for item in repairs:
+        if not isinstance(item, dict):
+            continue
+        claim_id = str(item.get("claim_id") or "").strip()
+        replacement = str(item.get("replacement") or "")
+        if claim_id and replacement:
+            parsed[claim_id] = replacement
+    return parsed
+
+
+def apply_claim_repairs(
+        draft: str,
+        claims: List[Dict[str, Any]],
+        replacements: Dict[str, str]
+        ) -> tuple[str, List[str]]:
+    """Apply only the spans named by repaired claims, from end to start."""
+    by_id = {
+        str(item.get("claim_id")): item
+        for item in claims or []
+        if item.get("claim_id") in replacements
+    }
+    spans: Dict[tuple[int, int], tuple[str, str]] = {}
+    for claim_id, item in by_id.items():
+        start = int(item.get("start") or 0)
+        end = int(item.get("end") or 0)
+        if end <= start or end > len(draft):
+            continue
+        spans[(start, end)] = (claim_id, replacements[claim_id])
+    repaired = draft
+    applied: List[str] = []
+    for (start, end), (claim_id, replacement) in sorted(
+            spans.items(), key=lambda item: item[0][0], reverse=True):
+        repaired = repaired[:start] + replacement + repaired[end:]
+        applied.append(claim_id)
+    return repaired, sorted(applied)
+
+
+def repair_claims(
+        generator: Any,
+        question: str,
+        evidence_text: str,
+        draft: str,
+        claims: List[Dict[str, Any]],
+        missing_obligations: Optional[List[Dict[str, Any]]] = None
+        ) -> Dict[str, Any]:
+    """Run one claim-targeted repair and apply only returned span replacements."""
+    try:
+        raw = generator.generate(build_claim_repair_messages(
+            question, evidence_text, draft, claims, missing_obligations))
+    except Exception:  # noqa: BLE001 - preserve the draft on external failure
+        return {"answer": None, "applied_claim_ids": [], "raw": None}
+    replacements = _parse_claim_repairs(raw)
+    if not replacements:
+        return {"answer": None, "applied_claim_ids": [], "raw": raw}
+    allowed = {str(item.get("claim_id")) for item in claims or []}
+    replacements = {
+        claim_id: text for claim_id, text in replacements.items()
+        if claim_id in allowed
+    }
+    if not replacements:
+        return {"answer": None, "applied_claim_ids": [], "raw": raw}
+    answer, applied = apply_claim_repairs(draft, claims, replacements)
+    return {
+        "answer": answer if applied else None,
+        "applied_claim_ids": applied,
+        "raw": raw,
+    }

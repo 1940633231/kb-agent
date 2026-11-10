@@ -1,0 +1,1462 @@
+{
+  "generated_at": "2026-11-06T05:49:50.119306+00:00",
+  "model": "rule-based-claim-audit",
+  "dataset": {
+    "path": "F:\\workSpace\\python\\kb-agent\\evals\\claim_audit_cases.jsonl",
+    "sha256": "a0f4560d488dc3230df84fe030162cbc44e57a17e1cf5fd9349adfa92f343e63",
+    "version": "p1-claim-audit-v1",
+    "size": 100
+  },
+  "corpus_metadata_sha256": "38bbabd11e54afbe1c3a4c5f67112bfb4640c503ad750fc824ebbe06e982deba",
+  "metrics": {
+    "hard_violation_recall": 1.0,
+    "hard_gate_precision": 1.0,
+    "clean_answer_false_positive_rate": 0.0,
+    "correct_cases": 50,
+    "polluted_cases": 50,
+    "targeted_repair_applied_claims": [
+      "claim-1"
+    ],
+    "targeted_repair_hard_before": 1,
+    "targeted_repair_hard_after": 0,
+    "targeted_repair_changed_unrelated_sentence": false
+  },
+  "targeted_repair": {
+    "before": {
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "text_span": "贵州茅台2023年营业收入为 999,888,777,666.55 元 [1]。",
+          "value": 999888777666.55,
+          "unit": "元",
+          "company": "贵州茅台",
+          "year": 2023,
+          "citation_ids": [
+            1
+          ],
+          "support_status": "unsupported",
+          "start": 0,
+          "end": 40
+        },
+        {
+          "claim_id": "claim-2",
+          "claim_type": "citation",
+          "text_span": "贵州茅台2023年营业收入为 999,888,777,666.55 元 [1]。",
+          "value": null,
+          "unit": null,
+          "company": null,
+          "year": null,
+          "citation_ids": [
+            1
+          ],
+          "support_status": "supported",
+          "start": 0,
+          "end": 40
+        }
+      ],
+      "hard_violations": [
+        {
+          "code": "unsupported_number",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "number does not appear in the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": [],
+      "repairable_claim_ids": [
+        "claim-1"
+      ],
+      "missing_obligations": [],
+      "citation_coverage": 1.0,
+      "hard_gate_passed": false,
+      "needs_human_review": true
+    },
+    "after": {
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "text_span": "贵州茅台2023年营业收入为 147,693,604,994.14 元 （主要会计数据）[1]。",
+          "value": 147693604994.14,
+          "unit": "元",
+          "company": "贵州茅台",
+          "year": 2023,
+          "citation_ids": [
+            1
+          ],
+          "support_status": "supported",
+          "start": 0,
+          "end": 48
+        },
+        {
+          "claim_id": "claim-2",
+          "claim_type": "citation",
+          "text_span": "贵州茅台2023年营业收入为 147,693,604,994.14 元 （主要会计数据）[1]。",
+          "value": null,
+          "unit": null,
+          "company": null,
+          "year": null,
+          "citation_ids": [
+            1
+          ],
+          "support_status": "supported",
+          "start": 0,
+          "end": 48
+        }
+      ],
+      "hard_violations": [],
+      "soft_issues": [],
+      "repairable_claim_ids": [],
+      "missing_obligations": [],
+      "citation_coverage": 1.0,
+      "hard_gate_passed": true,
+      "needs_human_review": false
+    },
+    "answer_before": "贵州茅台2023年营业收入为 999,888,777,666.55 元 [1]。\n公司经营稳定。",
+    "answer_after": "贵州茅台2023年营业收入为 147,693,604,994.14 元 （主要会计数据）[1]。\n公司经营稳定。"
+  },
+  "cases": [
+    {
+      "case_id": "correct-01",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-02",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-03",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-04",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-05",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-06",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-07",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-08",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-09",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-10",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-11",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-12",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-13",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-14",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-15",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-16",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-17",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-18",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-19",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-20",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-21",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-22",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-23",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-24",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-25",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-26",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-27",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-28",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-29",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-30",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-31",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-32",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-33",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-34",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-35",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-36",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-37",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-38",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-39",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-40",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-41",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-42",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-43",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-44",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-45",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-46",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-47",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-48",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-49",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "correct-50",
+      "kind": "correct",
+      "expected_hard": [],
+      "hard_violations": [],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-01",
+      "kind": "polluted",
+      "expected_hard": [
+        "unsupported_number"
+      ],
+      "hard_violations": [
+        {
+          "code": "unsupported_number",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "number does not appear in the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-02",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-03",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-04",
+      "kind": "polluted",
+      "expected_hard": [
+        "metric_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "metric_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "cited evidence does not contain the requested metric",
+          "repairable": true
+        },
+        {
+          "code": "missing_obligation",
+          "claim_id": "completeness-1",
+          "claim_type": "completeness",
+          "message": "answer evidence misses required obligations: obligation-1",
+          "repairable": false
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-05",
+      "kind": "polluted",
+      "expected_hard": [
+        "invalid_citation"
+      ],
+      "hard_violations": [
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "numeric claim citations do not map to chunks",
+          "repairable": true
+        },
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-2",
+          "claim_type": "citation",
+          "message": "citation ids do not map to evidence: [2]",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-06",
+      "kind": "polluted",
+      "expected_hard": [
+        "unsupported_number"
+      ],
+      "hard_violations": [
+        {
+          "code": "unsupported_number",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "number does not appear in the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-07",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-08",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-09",
+      "kind": "polluted",
+      "expected_hard": [
+        "metric_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "metric_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "cited evidence does not contain the requested metric",
+          "repairable": true
+        },
+        {
+          "code": "missing_obligation",
+          "claim_id": "completeness-1",
+          "claim_type": "completeness",
+          "message": "answer evidence misses required obligations: obligation-1",
+          "repairable": false
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-10",
+      "kind": "polluted",
+      "expected_hard": [
+        "invalid_citation"
+      ],
+      "hard_violations": [
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "numeric claim citations do not map to chunks",
+          "repairable": true
+        },
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-2",
+          "claim_type": "citation",
+          "message": "citation ids do not map to evidence: [2]",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-11",
+      "kind": "polluted",
+      "expected_hard": [
+        "unsupported_number"
+      ],
+      "hard_violations": [
+        {
+          "code": "unsupported_number",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "number does not appear in the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-12",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-13",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-14",
+      "kind": "polluted",
+      "expected_hard": [
+        "metric_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "metric_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "cited evidence does not contain the requested metric",
+          "repairable": true
+        },
+        {
+          "code": "missing_obligation",
+          "claim_id": "completeness-1",
+          "claim_type": "completeness",
+          "message": "answer evidence misses required obligations: obligation-1",
+          "repairable": false
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-15",
+      "kind": "polluted",
+      "expected_hard": [
+        "invalid_citation"
+      ],
+      "hard_violations": [
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "numeric claim citations do not map to chunks",
+          "repairable": true
+        },
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-2",
+          "claim_type": "citation",
+          "message": "citation ids do not map to evidence: [2]",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-16",
+      "kind": "polluted",
+      "expected_hard": [
+        "unsupported_number"
+      ],
+      "hard_violations": [
+        {
+          "code": "unsupported_number",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "number does not appear in the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-17",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-18",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-19",
+      "kind": "polluted",
+      "expected_hard": [
+        "metric_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "metric_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "cited evidence does not contain the requested metric",
+          "repairable": true
+        },
+        {
+          "code": "missing_obligation",
+          "claim_id": "completeness-1",
+          "claim_type": "completeness",
+          "message": "answer evidence misses required obligations: obligation-1",
+          "repairable": false
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-20",
+      "kind": "polluted",
+      "expected_hard": [
+        "invalid_citation"
+      ],
+      "hard_violations": [
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "numeric claim citations do not map to chunks",
+          "repairable": true
+        },
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-2",
+          "claim_type": "citation",
+          "message": "citation ids do not map to evidence: [2]",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-21",
+      "kind": "polluted",
+      "expected_hard": [
+        "unsupported_number"
+      ],
+      "hard_violations": [
+        {
+          "code": "unsupported_number",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "number does not appear in the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-22",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-23",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-24",
+      "kind": "polluted",
+      "expected_hard": [
+        "metric_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "metric_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "cited evidence does not contain the requested metric",
+          "repairable": true
+        },
+        {
+          "code": "missing_obligation",
+          "claim_id": "completeness-1",
+          "claim_type": "completeness",
+          "message": "answer evidence misses required obligations: obligation-1",
+          "repairable": false
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-25",
+      "kind": "polluted",
+      "expected_hard": [
+        "invalid_citation"
+      ],
+      "hard_violations": [
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "numeric claim citations do not map to chunks",
+          "repairable": true
+        },
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-2",
+          "claim_type": "citation",
+          "message": "citation ids do not map to evidence: [2]",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-26",
+      "kind": "polluted",
+      "expected_hard": [
+        "unsupported_number"
+      ],
+      "hard_violations": [
+        {
+          "code": "unsupported_number",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "number does not appear in the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-27",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-28",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-29",
+      "kind": "polluted",
+      "expected_hard": [
+        "metric_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "metric_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "cited evidence does not contain the requested metric",
+          "repairable": true
+        },
+        {
+          "code": "missing_obligation",
+          "claim_id": "completeness-1",
+          "claim_type": "completeness",
+          "message": "answer evidence misses required obligations: obligation-1",
+          "repairable": false
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-30",
+      "kind": "polluted",
+      "expected_hard": [
+        "invalid_citation"
+      ],
+      "hard_violations": [
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "numeric claim citations do not map to chunks",
+          "repairable": true
+        },
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-2",
+          "claim_type": "citation",
+          "message": "citation ids do not map to evidence: [2]",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-31",
+      "kind": "polluted",
+      "expected_hard": [
+        "unsupported_number"
+      ],
+      "hard_violations": [
+        {
+          "code": "unsupported_number",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "number does not appear in the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-32",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-33",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-34",
+      "kind": "polluted",
+      "expected_hard": [
+        "metric_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "metric_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "cited evidence does not contain the requested metric",
+          "repairable": true
+        },
+        {
+          "code": "missing_obligation",
+          "claim_id": "completeness-1",
+          "claim_type": "completeness",
+          "message": "answer evidence misses required obligations: obligation-1",
+          "repairable": false
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-35",
+      "kind": "polluted",
+      "expected_hard": [
+        "invalid_citation"
+      ],
+      "hard_violations": [
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "numeric claim citations do not map to chunks",
+          "repairable": true
+        },
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-2",
+          "claim_type": "citation",
+          "message": "citation ids do not map to evidence: [2]",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-36",
+      "kind": "polluted",
+      "expected_hard": [
+        "unsupported_number"
+      ],
+      "hard_violations": [
+        {
+          "code": "unsupported_number",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "number does not appear in the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-37",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-38",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-39",
+      "kind": "polluted",
+      "expected_hard": [
+        "metric_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "metric_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "cited evidence does not contain the requested metric",
+          "repairable": true
+        },
+        {
+          "code": "missing_obligation",
+          "claim_id": "completeness-1",
+          "claim_type": "completeness",
+          "message": "answer evidence misses required obligations: obligation-1",
+          "repairable": false
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-40",
+      "kind": "polluted",
+      "expected_hard": [
+        "invalid_citation"
+      ],
+      "hard_violations": [
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "numeric claim citations do not map to chunks",
+          "repairable": true
+        },
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-2",
+          "claim_type": "citation",
+          "message": "citation ids do not map to evidence: [2]",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-41",
+      "kind": "polluted",
+      "expected_hard": [
+        "unsupported_number"
+      ],
+      "hard_violations": [
+        {
+          "code": "unsupported_number",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "number does not appear in the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-42",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-43",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-44",
+      "kind": "polluted",
+      "expected_hard": [
+        "metric_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "metric_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "cited evidence does not contain the requested metric",
+          "repairable": true
+        },
+        {
+          "code": "missing_obligation",
+          "claim_id": "completeness-1",
+          "claim_type": "completeness",
+          "message": "answer evidence misses required obligations: obligation-1",
+          "repairable": false
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-45",
+      "kind": "polluted",
+      "expected_hard": [
+        "invalid_citation"
+      ],
+      "hard_violations": [
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "numeric claim citations do not map to chunks",
+          "repairable": true
+        },
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-2",
+          "claim_type": "citation",
+          "message": "citation ids do not map to evidence: [2]",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-46",
+      "kind": "polluted",
+      "expected_hard": [
+        "unsupported_number"
+      ],
+      "hard_violations": [
+        {
+          "code": "unsupported_number",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "number does not appear in the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-47",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-48",
+      "kind": "polluted",
+      "expected_hard": [
+        "entity_year_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "entity_year_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "company/year does not match the cited evidence",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-49",
+      "kind": "polluted",
+      "expected_hard": [
+        "metric_mismatch"
+      ],
+      "hard_violations": [
+        {
+          "code": "metric_mismatch",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "cited evidence does not contain the requested metric",
+          "repairable": true
+        },
+        {
+          "code": "missing_obligation",
+          "claim_id": "completeness-1",
+          "claim_type": "completeness",
+          "message": "answer evidence misses required obligations: obligation-1",
+          "repairable": false
+        }
+      ],
+      "soft_issues": []
+    },
+    {
+      "case_id": "polluted-50",
+      "kind": "polluted",
+      "expected_hard": [
+        "invalid_citation"
+      ],
+      "hard_violations": [
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-1",
+          "claim_type": "numeric",
+          "message": "numeric claim citations do not map to chunks",
+          "repairable": true
+        },
+        {
+          "code": "invalid_citation",
+          "claim_id": "claim-2",
+          "claim_type": "citation",
+          "message": "citation ids do not map to evidence: [2]",
+          "repairable": true
+        }
+      ],
+      "soft_issues": []
+    }
+  ]
+}

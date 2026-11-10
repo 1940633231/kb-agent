@@ -278,6 +278,9 @@ class KbAgentL3Adapter:
         generate_answers: bool | None = None,
         use_llm_rewrite: bool | None = None,
         use_llm_grader: bool | None = None,
+        enable_pre_retrieval_routing: bool | None = None,
+        strict_route_filter: bool | None = None,
+        route_candidate_limit: int | None = None,
         service: Any | None = None,
         graph: Any | None = None,
     ):
@@ -315,6 +318,21 @@ class KbAgentL3Adapter:
             if use_llm_grader is not None
             else _env_bool("KB_AGENT_EVAL_LLM_GRADER", False)
         )
+        self.enable_pre_retrieval_routing = (
+            enable_pre_retrieval_routing
+            if enable_pre_retrieval_routing is not None
+            else _env_bool("KB_AGENT_EVAL_PRE_ROUTING", True)
+        )
+        self.strict_route_filter = (
+            strict_route_filter
+            if strict_route_filter is not None
+            else _env_bool("KB_AGENT_EVAL_STRICT_ROUTE_FILTER", True)
+        )
+        self.route_candidate_limit = int(
+            route_candidate_limit
+            if route_candidate_limit is not None
+            else os.getenv("KB_AGENT_EVAL_ROUTE_CANDIDATE_LIMIT", "50")
+        )
         self._service = service
         self._graph = graph
         self._offsets: dict[str, Any] = {}
@@ -335,6 +353,8 @@ class KbAgentL3Adapter:
             errors.append("top_k must be positive")
         if self.max_retries < 0:
             errors.append("max_retries must be non-negative")
+        if self.route_candidate_limit <= 0:
+            errors.append("route_candidate_limit must be positive")
         return errors
 
     def _ensure_ready(self) -> None:
@@ -362,6 +382,9 @@ class KbAgentL3Adapter:
             service=self._service,
             use_llm_grader=self.use_llm_grader,
             top_k=self.top_k,
+            enable_pre_retrieval_routing=self.enable_pre_retrieval_routing,
+            strict_route_filter=self.strict_route_filter,
+            route_candidate_limit=self.route_candidate_limit,
         )
         self._graph = build_graph(runtime)
         self._offsets = rag.load_page_offsets(self.strategy)
@@ -425,10 +448,18 @@ class KbAgentL3Adapter:
                 "rewrite_sources": len(rewrite_history),
                 "needs_human_review": needs_review,
                 "retrieval_score": result.get("retrieval_score") or {},
+                "retrieval_stats": result.get("retrieval_stats") or {},
+                "routes_planned": (
+                    result.get("retrieval_stats") or {}
+                ).get("routes_planned", 0),
                 "repair_history": result.get("repair_history") or [],
                 "generate_answers": self.generate_answers,
                 "use_llm_rewrite": self.use_llm_rewrite,
                 "use_llm_grader": self.use_llm_grader,
+                "enable_pre_retrieval_routing":
+                    self.enable_pre_retrieval_routing,
+                "strict_route_filter": self.strict_route_filter,
+                "route_candidate_limit": self.route_candidate_limit,
             },
         )
 

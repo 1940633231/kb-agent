@@ -15,8 +15,7 @@ pytest.importorskip("app.core.config", reason="需要 production-rag（app 包�
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from agent.graph import ask, build_graph, default_runtime  # noqa: E402
-from agent.grounding import (detect_ambiguous_metric,  # noqa: E402
-                             has_statement_label, verify_grounding)
+from agent.grounding import detect_ambiguous_metric, verify_grounding  # noqa: E402
 from fakes import FakeService, make_hit  # noqa: E402
 
 
@@ -44,8 +43,8 @@ class ScriptedGenerator:
 def build(resolver, *answers: str, **runtime_kwargs):
     generator = ScriptedGenerator(*answers)
     service = FakeService(resolver, generator=generator)
-    # 修复环节默认关闭（离线分析显示触发过宽），这些用例显式打开来验证机制本身
-    runtime_kwargs.setdefault("enable_answer_repair", True)
+    # 自动修复默认关闭；这些用例显式打开 Claim 定向修复。
+    runtime_kwargs.setdefault("enable_claim_repair", True)
     runtime = default_runtime(service=service, use_llm_rewrite=False,
                               **runtime_kwargs)
     return build_graph(runtime), generator
@@ -63,6 +62,8 @@ def test_grounded_answer_needs_no_repair():
     assert result["status"] == "answered"
     assert len(generator.calls) == 1, "落地通过时不该触发修复"
     assert result["grounding"]["verified"] is True
+    assert result["prompt_budget"]["prompt_token_estimate"] > 0
+    assert result["prompt_budget"]["budget_overflow"] is False
 
 
 def test_ungrounded_number_triggers_repair_and_succeeds():
@@ -72,7 +73,8 @@ def test_ungrounded_number_triggers_repair_and_succeeds():
     graph, generator = build(
         resolver,
         "贵州茅台2023年营业收入为 81,415,570,788.59 元 [1]。",
-        "贵州茅台2023年营业收入为 147,693,604,994.14 元（主要会计数据）[1]。")
+        '{"repairs":[{"claim_id":"claim-1","replacement":'
+        '"贵州茅台2023年营业收入为 147,693,604,994.14 元（主要会计数据）[1]。"}]}')
     result = ask(graph, QUESTION, thread_id="rep-fix")
 
     assert result["status"] == "answered_repaired"
@@ -90,9 +92,9 @@ def test_unfixable_answer_gets_caveat_and_review_flag():
     graph, _ = build(resolver, bogus, bogus)
     result = ask(graph, QUESTION, thread_id="rep-bad")
 
-    assert result["status"] == "answered_unverified"
+    assert result["status"] == "answer_hard_gate_failed"
     assert result["needs_human_review"] is True
-    assert "无法在引用片段中逐字定位" in result["answer"]
+    assert "Claim 硬门禁" in result["answer"]
     assert result["repair_history"][0]["fixed"] is False
 
 
@@ -124,16 +126,17 @@ def test_ambiguity_detected_within_one_document_only():
     assert detect_ambiguous_metric(QUESTION, cross_doc)["ambiguous"] is False
 
 
-def test_ambiguous_without_label_triggers_repair():
+def test_ambiguous_without_label_goes_to_review_without_repair():
     merged = "主要会计数据 营业收入 147,693,604,994.14"
     parent = "母公司利润表 营业收入 81,415,570,788.59"
     resolver = lambda q: [hit("600519-2023", merged), hit("600519-2023", parent)]
     graph, generator = build(
         resolver,
         "营业收入为 81,415,570,788.59 元 [2]。",
-        "营业收入为 147,693,604,994.14 元（主要会计数据）[1]。")
+        "should-not-be-used")
     result = ask(graph, QUESTION, thread_id="rep-ambig")
 
-    assert len(generator.calls) == 2
-    assert result["ambiguity"]["ambiguous"] is True
-    assert has_statement_label(result["answer"]) is True
+    assert len(generator.calls) == 1, "软歧义不应进入自动修复"
+    assert result["needs_human_review"] is True
+    assert any(item["code"] == "ambiguous_caliber"
+               for item in result["answer_audit"]["soft_issues"])

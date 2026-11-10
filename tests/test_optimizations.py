@@ -76,9 +76,9 @@ def test_scope_keeps_all_named_facets_for_cross_company_question():
 
 
 def test_scope_with_unknown_company_filters_by_year_only():
-    """问题点名的公司不在语料里（应拒答题）：只有年份可用，就只按年份裁。"""
+    """问题点名的公司不在扩展后的语料里：只有年份可用，就只按年份裁。"""
     hits = [hit("600519-2023"), hit("300750-2024")]
-    kept, stats = scope_evidence("比亚迪2024年的营业收入是多少？", hits)
+    kept, stats = scope_evidence("苹果公司2024年的营业收入是多少？", hits)
     assert [h["document_id"] for h in kept] == ["300750-2024"]
     assert stats["scoped"] is True
 
@@ -237,6 +237,7 @@ def test_numeric_discipline_reaches_the_prompt():
     system = captured["system"]
     assert "数字纪律" in system
     assert "逐字一致" in system
+    assert "优先精确表格值" in system
     assert "公司+年份=数值" in system
 
 
@@ -247,7 +248,13 @@ def test_default_runtime_routes_known_fields_out_of_extra():
     grader = FakeGrader("answerable")
     runtime = default_runtime(service=service, use_llm_rewrite=False,
                               llm_grader=grader, widened_top_k=7,
+                              enable_pre_retrieval_routing=False,
+                              strict_route_filter=False,
+                              route_candidate_limit=12,
                               interrupt_on_low_confidence=True)
     assert runtime.llm_grader is grader
     assert runtime.widened_top_k == 7
+    assert runtime.enable_pre_retrieval_routing is False
+    assert runtime.strict_route_filter is False
+    assert runtime.route_candidate_limit == 12
     assert runtime.extra == {"interrupt_on_low_confidence": True}

@@ -17,7 +17,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import Dict, Iterable, List
+from typing import Any, Dict, Iterable, List, Optional
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REPORTS_REGISTRY = PROJECT_ROOT / "data" / "docs" / "annual_reports" / "metadata.json"
@@ -30,13 +30,15 @@ QUESTION_NOISE = (
     "是多少元", "是多少千元", "是多少亿元", "是多少百万元", "多少个百分点",
     "分别是多少", "保留两位小数", "单位不同", "分别是", "是多少", "有多少",
     "多少", "请问", "约为", "大约", "注意", "是否", "为什么", "哪些", "什么",
-    "如何", "同年", "列出", "两位小数",
+    "如何理解", "如何", "理解", "含义", "定义", "概念",
+    "同年", "列出", "两位小数",
     # 关系/比较类短语
     "较上年末", "较上年底", "上年末", "上年同期", "上期", "同期", "同比", "环比",
     "百分点", "个百分点", "增减", "变动", "变化", "上升", "下降", "增加", "减少",
     # 单位词与泛化填充词：它们不是指标名，留在关键词里只会让覆盖判定假失败
     "分别", "比例", "明细", "披露", "实现", "情况", "数据",
-    "百万元", "千元", "万元", "亿元", "元",
+    "分产品口径", "百万元", "千元", "万元", "亿元", "元",
+    "两家", "一家", "三家",
     "两年", "三年", "多年", "本年", "当年", "全年",
 )
 
@@ -121,14 +123,30 @@ def _evidence_documents(hits: Iterable[Dict]) -> Dict[str, Dict]:
 
 
 def grade_evidence(question: str, hits: List[Dict],
-                   min_coverage: float = 0.6) -> Dict:
+                   min_coverage: float = 0.6,
+                   obligations: Optional[List[Dict[str, Any]]] = None,
+                   route_coverage: Optional[List[Dict[str, Any]]] = None) -> Dict:
     """对当前证据打分并给出能否作答的判定。
 
     min_coverage: 指标关键词覆盖率下限，默认 0.6，容忍同义表述差异。
     """
+    from agent.evidence_contract import (
+        assess_obligations,
+        build_obligations,
+        scope_supported_by_corpus,
+    )
+
     facets = extract_facets(question)
     text = _evidence_text(hits)
     documents = _evidence_documents(hits)
+    if obligations is None:
+        obligations = [item.as_dict() for item in build_obligations(question, facets)]
+    obligation_result = assess_obligations(hits, obligations, question)
+    unscoped_general = not facets["companies"] and not facets["years"]
+    scope_supported = (
+        True if unscoped_general
+        else scope_supported_by_corpus(question, facets)
+    )
 
     years_in_evidence = set()
     for document_id in documents:
@@ -152,11 +170,50 @@ def grade_evidence(question: str, hits: List[Dict],
     if keyword_hits and coverage < min_coverage:
         missing = [kw for kw, ok in keyword_hits.items() if not ok]
         reasons.append("指标关键词未覆盖: {}".format(",".join(missing)))
+    if obligation_result["missing"]:
+        reasons.append("缺少证据义务: {}".format(
+            ",".join(obligation_result["missing"])))
+    if obligation_result["ambiguous"]:
+        reasons.append("证据义务存在多口径歧义: {}".format(
+            ",".join(obligation_result["ambiguous"])))
+    if not scope_supported:
+        reasons.append("语料中没有问题点名的公司/年份年报")
+
+    if unscoped_general:
+        passed = (
+            bool(hits)
+            and not reasons
+            and not obligation_result["refusal_expected"]
+            and coverage >= min_coverage
+        )
+    else:
+        passed = (scope_supported and not reasons
+                  and not obligation_result["refusal_expected"]
+                  and obligation_result["passed"])
 
     return {
-        "passed": not reasons,
-        "reason": "；".join(reasons) if reasons else "证据已覆盖问题要素",
+        "passed": passed,
+        "reason": "；".join(reasons) if reasons else (
+            "证据已覆盖问题要素" if passed else "证据义务未完整覆盖"),
         "coverage": round(coverage, 3),
+        "obligation_coverage": obligation_result["coverage"],
+        "obligations": obligation_result["obligations"],
+        "obligation_results": obligation_result["results"],
+        "covered_obligations": obligation_result["covered"],
+        "missing_obligations": [
+            item for item in obligation_result["results"]
+            if item["obligation_id"] in obligation_result["missing"]
+        ],
+        "ambiguous_obligations": [
+            item for item in obligation_result["results"]
+            if item["obligation_id"] in obligation_result["ambiguous"]
+        ],
+        "refusal_expected": (
+            obligation_result["refusal_expected"]
+            or (not scope_supported and not unscoped_general)
+        ),
+        "unscoped_general": unscoped_general,
+        "route_coverage": route_coverage or [],
         "keyword_hits": keyword_hits,
         "missing_years": missing_years,
         "missing_companies": missing_companies,

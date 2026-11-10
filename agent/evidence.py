@@ -9,7 +9,8 @@
     1. 只按问题**点名**的 facet 裁剪：公司名来自语料登记表、年份取问题里的 20xx；
        问题没点名公司就不按公司裁，没点名年份就不按年份裁；
     2. 多公司/多年份（跨文档题）取并集，绝不砍掉任何一个被点名的 facet；
-    3. 裁剪后为空则回退原集合——宁可混入，也不能让证据为空导致必然拒答。
+    3. 默认裁剪后为空则回退原集合；严格路由模式下不回退，避免重新带回
+       route 之外的公司/年份候选。
 
 已知边界（不假装解决）：**"片段年份"不等于"数字年份"**。年报含上年对照列
 （2024 年报的"主要会计数据"一行里同时有 2024 与 2023 的数），所以裁剪只解决
@@ -48,7 +49,8 @@ def _load_index() -> Tuple[Dict[str, Dict[str, Any]], Dict[str, str]]:
 DOCUMENT_FACETS, COMPANY_CODES = _load_index()
 
 
-def scope_evidence(question: str, hits: List[Dict], year_window: int = 0
+def scope_evidence(question: str, hits: List[Dict], year_window: int = 0,
+                   allow_fallback: bool = True
                    ) -> Tuple[List[Dict], Dict[str, Any]]:
     """按问题点名的 facet 裁剪证据，返回 (保留的片段, 裁剪统计)。"""
     facets = extract_facets(question)
@@ -59,7 +61,8 @@ def scope_evidence(question: str, hits: List[Dict], year_window: int = 0
 
     if not codes and not years:
         return hits, {"scoped": False, "reason": "问题未点名公司或年份",
-                      "kept": total, "dropped": 0}
+                      "kept": total, "dropped": 0,
+                      "scope_degraded": False}
 
     kept: List[Dict] = []
     for hit in hits:
@@ -77,8 +80,23 @@ def scope_evidence(question: str, hits: List[Dict], year_window: int = 0
         kept.append(hit)
 
     if not kept:
+        if not allow_fallback:
+            return [], {
+                "scoped": True,
+                "reason": "裁剪后为空，严格路由不允许回退",
+                "kept": 0,
+                "dropped": total,
+                "scope_degraded": True,
+                "companies": sorted(codes),
+                "years": sorted(years),
+                "year_window": year_window,
+            }
         return hits, {"scoped": False, "reason": "裁剪后为空，回退原集合",
-                      "kept": total, "dropped": 0}
+                      "kept": total, "dropped": 0,
+                      "scope_degraded": True,
+                      "companies": sorted(codes), "years": sorted(years),
+                      "year_window": year_window}
     return kept, {"scoped": True, "kept": len(kept), "dropped": total - len(kept),
+                  "scope_degraded": False,
                   "companies": sorted(codes), "years": sorted(years),
                   "year_window": year_window}

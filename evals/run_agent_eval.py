@@ -26,7 +26,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 EVALS_DIR = PROJECT_ROOT / "evals"
@@ -88,16 +88,40 @@ def mean(values: Sequence[Optional[float]]) -> Optional[float]:
     return round(sum(clean) / len(clean), 4) if clean else None
 
 
+def update_layer_matrix(path: Path, layer: str, label: str,
+                        config: Dict[str, Any],
+                        metrics: Dict[str, Any]) -> Dict[str, Any]:
+    """Upsert one evaluation layer without overwriting sibling ablations."""
+    matrix: Dict[str, Any] = {}
+    if path.exists():
+        matrix = json.loads(path.read_text(encoding="utf-8"))
+    matrix.setdefault("layers", {})[layer] = {
+        "label": label,
+        "config": config,
+        "metrics": metrics,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(matrix, ensure_ascii=False, indent=2),
+                    encoding="utf-8")
+    return matrix
+
+
 def citation_is_valid(citation: Dict, chunks: List[Dict]) -> bool:
     chunk_ids = {chunk.get("chunk_id") for chunk in chunks}
     return citation.get("chunk_id") in chunk_ids
 
 
-def evaluate(questions: List[Dict], args) -> Dict:
-    runtime = default_runtime(generate_answers=args.generate,
+def evaluate(questions: List[Dict], args, service: Optional[Any] = None) -> Dict:
+    runtime = default_runtime(service=service,
+                              generate_answers=args.generate,
                               use_llm_rewrite=not args.rule_rewrite,
                               max_retries=args.max_retries,
                               scope_evidence_enabled=not args.no_scope,
+                              enable_pre_retrieval_routing=(
+                                  not args.no_pre_retrieval_routing),
+                              strict_route_filter=(
+                                  not args.no_strict_route_filter),
+                              route_candidate_limit=args.route_candidate_limit,
                               use_llm_grader=not args.no_llm_grade)
     graph = build_graph(runtime)
     offsets = base.rag.load_page_offsets(args.strategy)
@@ -128,6 +152,8 @@ def evaluate(questions: List[Dict], args) -> Dict:
                 "ungrounded_numbers": [], "llm_review": None, "numbers_total": 0,
                 "citation_coverage": None, "answer": "", "citations": [],
                 "citation_count": 0, "citation_valid": None, "refused": False,
+                "claim_support_rate": None, "unsupported_claim_rate": None,
+                "context_overflow": None,
                 "seconds": round(time.time() - started, 2),
                 "error": "{}: {}".format(type(exc).__name__, str(exc)[:300]),
             })
@@ -199,6 +225,32 @@ def evaluate(questions: List[Dict], args) -> Dict:
             if doc and (doc.split("-")[0] not in wanted_companies
                         or doc.split("-")[1] not in wanted_years))
         cited_docs = {c.get("document_id") for c in (result.get("citations") or [])}
+        retrieval_score = result.get("retrieval_score") or {}
+        answer_audit = result.get("answer_audit") or {}
+        numeric_claims = [
+            claim for claim in answer_audit.get("claims") or []
+            if claim.get("claim_type") == "numeric"
+        ]
+        supported_claims = [
+            claim for claim in numeric_claims
+            if claim.get("support_status") == "supported"
+        ]
+        prompt_budget = result.get("prompt_budget") or {}
+        required_obligations = {
+            item.get("obligation_id")
+            for item in retrieval_score.get("obligations") or []
+            if item.get("required", True)
+        }
+        route_covered_obligations = {
+            obligation_id
+            for route in retrieval_score.get("route_coverage") or []
+            for obligation_id in route.get("covered") or []
+        }
+        route_coverage_rate = (
+            len(required_obligations & route_covered_obligations)
+            / len(required_obligations)
+            if required_obligations else None
+        )
         foreign_cited = sorted(
             doc for doc in cited_docs
             if doc and (doc.split("-")[0] not in wanted_companies
@@ -218,8 +270,34 @@ def evaluate(questions: List[Dict], args) -> Dict:
             "retry_count": result.get("retry_count", 0),
             "rewrite_sources": [entry.get("source")
                                 for entry in result.get("rewrite_history") or []],
-            "graded_passed": (result.get("retrieval_score") or {}).get("passed"),
-            "graded_reason": (result.get("retrieval_score") or {}).get("reason"),
+            "graded_passed": retrieval_score.get("passed"),
+            "graded_reason": retrieval_score.get("reason"),
+            "obligation_coverage": retrieval_score.get("obligation_coverage"),
+            "missing_obligations": retrieval_score.get("missing_obligations") or [],
+            "ambiguous_obligations": retrieval_score.get("ambiguous_obligations") or [],
+            "route_coverage_rate": route_coverage_rate,
+            "retrieval_stats": result.get("retrieval_stats") or {},
+            "routes_planned": (
+                result.get("retrieval_stats") or {}
+            ).get("routes_planned", 0),
+            "routes_empty": (
+                result.get("retrieval_stats") or {}
+            ).get("routes_empty", 0),
+            "route_filter_degraded": bool(
+                (result.get("retrieval_stats") or {}).get(
+                    "route_filter_degraded", False)
+            ),
+            "route_filter_missing": (
+                result.get("retrieval_stats") or {}
+            ).get("route_filter_missing") or [],
+            "refusal_expected": retrieval_score.get("refusal_expected"),
+            "claim_support_rate": (
+                len(supported_claims) / len(numeric_claims)
+                if numeric_claims else None),
+            "unsupported_claim_rate": (
+                1.0 - len(supported_claims) / len(numeric_claims)
+                if numeric_claims else None),
+            "context_overflow": prompt_budget.get("budget_overflow"),
             "needs_human_review": result.get("needs_human_review"),
             "status": result.get("status"),
             "repairs": len(result.get("repair_history") or []),
@@ -269,6 +347,23 @@ def evaluate(questions: List[Dict], args) -> Dict:
             [1.0 if r["evidence_hit_top5"] else 0.0 for r in scored]),
         "evidence_hit_final": mean([1.0 if r["evidence_hit_final"] else 0.0
                                     for r in scored]),
+        "evidence_obligation_coverage": mean(
+            [r["obligation_coverage"] for r in answerable]),
+        "missing_obligation_rate": mean(
+            [1.0 if r["missing_obligations"] else 0.0 for r in answerable]),
+        "ambiguous_obligation_rate": mean(
+            [1.0 if r["ambiguous_obligations"] else 0.0 for r in answerable]),
+        "route_obligation_coverage": mean(
+            [r["route_coverage_rate"] for r in answerable]),
+        "claim_support_rate": mean(
+            [r["claim_support_rate"] for r in rows
+             if r["claim_support_rate"] is not None]),
+        "unsupported_claim_rate": mean(
+            [r["unsupported_claim_rate"] for r in rows
+             if r["unsupported_claim_rate"] is not None]),
+        "context_overflow_rate": mean(
+            [1.0 if r["context_overflow"] else 0.0 for r in rows
+             if r["context_overflow"] is not None]),
         "mean_evidence_count": mean([r["evidence_count"] for r in rows]),
         "retry_rate": round(len(retried) / len(rows), 4) if rows else None,
         "mean_retries": mean([r["retry_count"] for r in rows]),
@@ -277,8 +372,17 @@ def evaluate(questions: List[Dict], args) -> Dict:
         "mean_seconds_per_query": mean([r["seconds"] for r in rows]),
         "foreign_evidence_rate": mean(
             [1.0 if r["foreign_evidence_docs"] else 0.0 for r in answerable]),
+        "cross_document_contamination_rate": mean(
+            [1.0 if r["foreign_evidence_docs"] else 0.0 for r in answerable]),
         "foreign_citation_rate": mean(
             [1.0 if r["foreign_cited_docs"] else 0.0 for r in answerable]),
+        "routes_planned_mean": mean([r["routes_planned"] for r in rows]),
+        "route_empty_rate": mean(
+            [1.0 if r["routes_empty"] else 0.0 for r in rows]),
+        "route_filter_degraded_rate": mean(
+            [1.0 if r["route_filter_degraded"] else 0.0 for r in rows]),
+        "route_filter_missing_rate": mean(
+            [1.0 if r["route_filter_missing"] else 0.0 for r in rows]),
         "grounding_verified_rate": mean(
             [1.0 if r["grounding_verified"] else 0.0
              for r in rows if r["grounding_checked"]]),
@@ -330,6 +434,12 @@ def main() -> int:
                         help="改写只用规则兜底（不调 LLM）")
     parser.add_argument("--no-scope", action="store_true",
                         help="关闭 facet 证据裁剪（消融对比用）")
+    parser.add_argument("--no-pre-retrieval-routing", action="store_true",
+                        help="关闭检索前公司/年份路由（L2/回滚消融）")
+    parser.add_argument("--no-strict-route-filter", action="store_true",
+                        help="允许 route 外候选进入合并池（仅消融）")
+    parser.add_argument("--route-candidate-limit", type=int, default=50,
+                        help="每条 route 在统一 rerank 前的候选上限")
     parser.add_argument("--no-llm-grade", action="store_true",
                         help="关闭 LLM 语义复核（消融对比用；默认开启）")
     parser.add_argument("--generate", action="store_true",
@@ -350,14 +460,28 @@ def main() -> int:
     print()
     print(json.dumps(outcome["metrics"], ensure_ascii=False, indent=2))
 
+    if args.no_pre_retrieval_routing:
+        layer = "L2" if args.max_retries == 0 else "L3-legacy"
+        label = "hybrid + rerank，无预路由"
+    elif args.max_retries == 0:
+        layer = "L3a"
+        label = "L2 + 检索前公司/年份路由"
+    else:
+        layer = "L3b"
+        label = "L3a + 缺失义务定向重试"
     report = {
-        "layer": "L3",
-        "label": "+自纠错重试（本项目）",
+        "layer": layer,
+        "label": label,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "config": {"mode": "hybrid", "use_rerank": True, "top_k": args.top_k,
                    "strategy": args.strategy, "max_retries": args.max_retries,
                    "generate": args.generate,
-                   "llm_rewrite": not args.rule_rewrite},
+                   "llm_rewrite": not args.rule_rewrite,
+                   "enable_pre_retrieval_routing":
+                       not args.no_pre_retrieval_routing,
+                   "strict_route_filter":
+                       not args.no_strict_route_filter,
+                   "route_candidate_limit": args.route_candidate_limit},
         "metrics": outcome["metrics"],
         "questions": outcome["rows"],
         "elapsed_seconds": round(time.time() - started, 1),
@@ -371,14 +495,14 @@ def main() -> int:
     print("\n报告 -> {}".format(target))
 
     matrix_path = reports_dir / "layer_matrix.json"
-    if matrix_path.exists():
-        matrix = json.loads(matrix_path.read_text(encoding="utf-8"))
-        matrix.setdefault("layers", {})["L3"] = {
-            "label": report["label"], "config": report["config"],
-            "metrics": outcome["metrics"]}
-        matrix_path.write_text(json.dumps(matrix, ensure_ascii=False, indent=2),
-                               encoding="utf-8")
-        print("已并入分层矩阵 -> {}".format(matrix_path))
+    update_layer_matrix(
+        matrix_path,
+        report["layer"],
+        report["label"],
+        report["config"],
+        outcome["metrics"],
+    )
+    print("已并入分层矩阵 -> {}".format(matrix_path))
     return 0
 
 

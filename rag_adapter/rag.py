@@ -15,6 +15,7 @@ from app.ingestion.document import Document
 from app.rag.service import RAGService
 
 from rag_adapter.pdfium_loader import PdfiumLoader
+from rag_adapter.prompting import GroundedAnswerPromptBuilder
 from rag_adapter.settings import (CONFIG_PATH, PROJECT_ROOT, REPORTS_REGISTRY,
                                  index_dir, page_offsets_path)
 
@@ -28,8 +29,10 @@ def build_service(strategy: str = "recursive", mode: str = "vector",
                   use_rerank: bool = False,
                   tenant_id: str = "default") -> RAGService:
     """构建 RAGService；mode 取 vector / bm25 / hybrid。"""
-    return RAGService(config=build_config(), strategy=strategy, mode=mode,
-                      use_rerank=use_rerank, tenant_id=tenant_id)
+    service = RAGService(config=build_config(), strategy=strategy, mode=mode,
+                         use_rerank=use_rerank, tenant_id=tenant_id)
+    service._pipeline.prompt_builder = GroundedAnswerPromptBuilder()  # noqa: SLF001
+    return service
 
 
 def retrieve(service: RAGService, query: str, top_k: int = 5) -> List[Dict]:
@@ -62,18 +65,161 @@ def retrieve_multi(service: RAGService, queries: List[str], top_k: int = 5,
     这里对齐 pipeline 的多路召回语义（_search_all 按路均分候选池后合并），
     再用 anchor（用户原始问题）统一重排，排序口径一致。
     """
-    pipeline = service._pipeline  # noqa: SLF001
-    ordered = [q for q in (queries or []) if q and q.strip()]
+    hits, _ = retrieve_multi_with_routes(service, queries, top_k=top_k,
+                                         anchor=anchor)
+    return hits
+
+
+def retrieve_multi_with_routes(
+        service: RAGService, queries: List[str], top_k: int = 5,
+        anchor: Optional[str] = None
+        ) -> Tuple[List[Dict], List[Dict]]:
+    """Backward-compatible multi-query retrieval without document scoping."""
+    ordered = [q.strip() for q in (queries or []) if q and q.strip()]
     if not ordered:
-        return []
-    primary = anchor or ordered[0]
-    candidates = pipeline._search_all(primary, ordered)  # noqa: SLF001
-    candidates = pipeline._filter_active_versions(candidates)  # noqa: SLF001
+        return [], []
+    route_limit = max(20, min(50, top_k * 5))
+    routes = [{
+        "query_id": "route-{}".format(index),
+        "query": query,
+        "obligation_ids": [],
+        "document_ids": [],
+        "unrouted": True,
+    } for index, query in enumerate(ordered, start=1)]
+    return retrieve_routes_with_evidence(
+        service,
+        routes,
+        top_k=top_k,
+        anchor=anchor,
+        route_candidate_limit=route_limit,
+        strict_route_filter=False,
+    )
+
+
+def retrieve_routes_with_evidence(
+        service: RAGService, routes: List[Dict],
+        top_k: int = 5,
+        anchor: Optional[str] = None,
+        route_candidate_limit: int = 50,
+        strict_route_filter: bool = True,
+        ) -> Tuple[List[Dict], List[Dict]]:
+    """Retrieve pre-routed company/year slices and preserve provenance.
+
+    ``document_ids`` is sent to production-rag before FAISS/BM25 retrieval and
+    is also enforced after retrieval. The second check matters because test
+    doubles, older backends, or future adapters may ignore the filter.
+    """
+    pipeline = service._pipeline  # noqa: SLF001
+    normalized: List[Dict] = []
+    for index, route in enumerate(routes or [], start=1):
+        query = str(route.get("query") or "").strip()
+        if not query:
+            continue
+        document_ids = tuple(dict.fromkeys(
+            str(item) for item in route.get("document_ids") or []
+            if str(item).strip()
+        ))
+        normalized.append({
+            "query_id": str(route.get("query_id") or "route-{}".format(index)),
+            "query": query,
+            "obligation_ids": [
+                str(item) for item in route.get("obligation_ids") or []
+            ],
+            "document_ids": document_ids,
+            "company": route.get("company"),
+            "year": (
+                int(route["year"])
+                if route.get("year") is not None else None
+            ),
+            "metrics": [str(item) for item in route.get("metrics") or []],
+            "unrouted": bool(route.get("unrouted", False)),
+        })
+    if not normalized:
+        return [], []
+
+    primary = anchor or normalized[0]["query"]
+    candidate_limit = max(1, int(route_candidate_limit))
+    candidates: List[Dict] = []
+    routes: List[Dict] = []
+
+    for route in normalized:
+        query_id = route["query_id"]
+        query = route["query"]
+        document_ids = route["document_ids"]
+        allowed = set(document_ids)
+        raw_count = 0
+        dropped = 0
+        empty_reason = ""
+        filtered: List[Dict] = []
+        if strict_route_filter and not route["unrouted"] and not allowed:
+            empty_reason = "no_document_ids"
+        else:
+            retriever = getattr(pipeline, "retriever", None)
+            if (pipeline.reranker is None and retriever is not None
+                    and hasattr(retriever, "search")):
+                raw = retriever.search(
+                    query,
+                    top_k=candidate_limit,
+                    document_ids=allowed or None,
+                )
+            else:
+                raw = pipeline._search_all(  # noqa: SLF001
+                    query,
+                    [query],
+                    document_ids=allowed or None,
+                )
+            active = pipeline._filter_active_versions(raw)  # noqa: SLF001
+            raw_count = len(active)
+            for hit in active:
+                metadata = hit.get("metadata") or {}
+                document_id = str(
+                    hit.get("document_id")
+                    or metadata.get("document_id")
+                    or ""
+                )
+                if allowed and not route["unrouted"] and document_id not in allowed:
+                    dropped += 1
+                    continue
+                filtered.append(hit)
+        ranked = sorted(filtered, key=lambda r: r.get("score", 0.0),
+                        reverse=True)
+        route_hits: List[Dict] = []
+        for hit in ranked[:candidate_limit]:
+            copied = dict(hit)
+            copied["retrieval_routes"] = sorted(set(
+                copied.get("retrieval_routes") or []
+            ) | {query_id})
+            copied["route_obligations"] = sorted(set(
+                copied.get("route_obligations") or []
+            ) | set(route["obligation_ids"]))
+            route_hits.append(copied)
+            candidates.append(copied)
+        routes.append({
+            "query_id": query_id,
+            "query": query,
+            "obligation_ids": list(route["obligation_ids"]),
+            "document_ids": list(document_ids),
+            "company": route["company"],
+            "year": route["year"],
+            "metrics": list(route["metrics"]),
+            "unrouted": route["unrouted"],
+            "candidate_count": len(filtered),
+            "raw_candidate_count": raw_count,
+            "post_filter_dropped": dropped,
+            "route_filter_degraded": bool(dropped),
+            "empty_reason": empty_reason,
+            "returned": len(route_hits),
+            "hits": route_hits,
+        })
+
     candidates = _dedupe_keep_best(candidates)
     if pipeline.reranker is not None:
-        return pipeline.reranker.rerank(primary, candidates, top_k=top_k)
-    return sorted(candidates, key=lambda r: r.get("score", 0.0),
-                  reverse=True)[:top_k]
+        reranked = pipeline.reranker.rerank(primary, candidates, top_k=top_k)
+    else:
+        reranked = sorted(candidates, key=lambda r: r.get("score", 0.0),
+                          reverse=True)[:top_k]
+    reranked = _restore_provenance(reranked, candidates)
+    return reranked, routes
 
 
 def _dedupe_keep_best(candidates: List[Dict]) -> List[Dict]:
@@ -84,8 +230,48 @@ def _dedupe_keep_best(candidates: List[Dict]) -> List[Dict]:
         current = best.get(key)
         if current is None or float(hit.get("score", 0.0)) > float(
                 current.get("score", 0.0)):
-            best[key] = hit
+            merged = dict(hit)
+            if current is not None:
+                merged["retrieval_routes"] = sorted(set(
+                    current.get("retrieval_routes") or []
+                ) | set(hit.get("retrieval_routes") or []))
+                merged["route_obligations"] = sorted(set(
+                    current.get("route_obligations") or []
+                ) | set(hit.get("route_obligations") or []))
+            best[key] = merged
+        else:
+            current["retrieval_routes"] = sorted(set(
+                current.get("retrieval_routes") or []
+            ) | set(hit.get("retrieval_routes") or []))
+            current["route_obligations"] = sorted(set(
+                current.get("route_obligations") or []
+            ) | set(hit.get("route_obligations") or []))
     return list(best.values())
+
+
+def _restore_provenance(reranked: List[Dict],
+                        candidates: List[Dict]) -> List[Dict]:
+    """Reattach route metadata if a reranker returns copied hit objects."""
+    source_by_key = {
+        str(hit.get("chunk_id") or hit.get("vector_id")): hit
+        for hit in candidates or []
+    }
+    restored: List[Dict] = []
+    for hit in reranked or []:
+        key = str(hit.get("chunk_id") or hit.get("vector_id"))
+        source = source_by_key.get(key)
+        if source is None:
+            restored.append(hit)
+            continue
+        merged = dict(hit)
+        merged["retrieval_routes"] = sorted(set(
+            hit.get("retrieval_routes") or []
+        ) | set(source.get("retrieval_routes") or []))
+        merged["route_obligations"] = sorted(set(
+            hit.get("route_obligations") or []
+        ) | set(source.get("route_obligations") or []))
+        restored.append(merged)
+    return restored
 
 
 def accumulate_evidence(previous: List[Dict], incoming: List[Dict],
@@ -108,6 +294,34 @@ def accumulate_evidence(previous: List[Dict], incoming: List[Dict],
         seen.add(key)
         merged.append(hit)
     return merged[:limit]
+
+
+def cap_evidence_preserving(candidates: List[Dict], limit: int,
+                            protected_keys: set[str]) -> List[Dict]:
+    """Cap the evidence pool without dropping obligation-critical chunks."""
+    if len(candidates) <= limit:
+        return list(candidates)
+    protected = [
+        hit for hit in candidates
+        if str(hit.get("chunk_id") or hit.get("vector_id")) in protected_keys
+    ]
+    ordinary = [
+        hit for hit in candidates
+        if str(hit.get("chunk_id") or hit.get("vector_id")) not in protected_keys
+    ]
+    ordinary_slots = max(0, limit - len(protected))
+    selected = {
+        str(hit.get("chunk_id") or hit.get("vector_id"))
+        for hit in ordinary[:ordinary_slots]
+    }
+    selected.update(
+        str(hit.get("chunk_id") or hit.get("vector_id")) for hit in protected
+    )
+    kept = [
+        hit for hit in candidates
+        if str(hit.get("chunk_id") or hit.get("vector_id")) in selected
+    ]
+    return kept[:limit]
 
 
 def load_annual_reports(registry_path: Optional[Path] = None

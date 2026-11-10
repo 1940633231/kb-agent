@@ -1,0 +1,250 @@
+{
+  "description": "CNINFO annual-report targets. Disabled entries are replacement candidates.",
+  "targets": [
+    {
+      "company": "贵州茅台",
+      "ts_code": "600519",
+      "stock": "600519,gssh0600519",
+      "searchkey": "",
+      "enabled": true
+    },
+    {
+      "company": "宁德时代",
+      "ts_code": "300750",
+      "stock": "",
+      "searchkey": "宁德时代",
+      "enabled": true
+    },
+    {
+      "company": "招商银行",
+      "ts_code": "600036",
+      "stock": "600036,gssh0600036",
+      "searchkey": "",
+      "enabled": true
+    },
+    {
+      "company": "五粮液",
+      "ts_code": "000858",
+      "stock": "000858,gssz0000858",
+      "searchkey": "",
+      "enabled": true
+    },
+    {
+      "company": "美的集团",
+      "ts_code": "000333",
+      "stock": "",
+      "searchkey": "美的集团",
+      "enabled": true
+    },
+    {
+      "company": "海尔智家",
+      "ts_code": "600690",
+      "stock": "",
+      "searchkey": "海尔智家",
+      "enabled": true
+    },
+    {
+      "company": "伊利股份",
+      "ts_code": "600887",
+      "stock": "",
+      "searchkey": "伊利股份",
+      "enabled": true
+    },
+    {
+      "company": "海天味业",
+      "ts_code": "603288",
+      "stock": "",
+      "searchkey": "海天味业",
+      "enabled": true
+    },
+    {
+      "company": "泸州老窖",
+      "ts_code": "000568",
+      "stock": "",
+      "searchkey": "泸州老窖",
+      "enabled": true
+    },
+    {
+      "company": "比亚迪",
+      "ts_code": "002594",
+      "stock": "",
+      "searchkey": "比亚迪",
+      "enabled": true
+    },
+    {
+      "company": "隆基绿能",
+      "ts_code": "601012",
+      "stock": "",
+      "searchkey": "隆基绿能",
+      "enabled": true
+    },
+    {
+      "company": "阳光电源",
+      "ts_code": "300274",
+      "stock": "",
+      "searchkey": "阳光电源",
+      "enabled": true
+    },
+    {
+      "company": "汇川技术",
+      "ts_code": "300124",
+      "stock": "",
+      "searchkey": "汇川技术",
+      "enabled": true
+    },
+    {
+      "company": "三一重工",
+      "ts_code": "600031",
+      "stock": "",
+      "searchkey": "三一重工",
+      "enabled": true
+    },
+    {
+      "company": "中联重科",
+      "ts_code": "000157",
+      "stock": "",
+      "searchkey": "中联重科",
+      "enabled": true
+    },
+    {
+      "company": "中国平安",
+      "ts_code": "601318",
+      "stock": "",
+      "searchkey": "中国平安",
+      "enabled": true
+    },
+    {
+      "company": "兴业银行",
+      "ts_code": "601166",
+      "stock": "",
+      "searchkey": "兴业银行",
+      "enabled": true
+    },
+    {
+      "company": "中信证券",
+      "ts_code": "600030",
+      "stock": "",
+      "searchkey": "中信证券",
+      "enabled": true
+    },
+    {
+      "company": "东方财富",
+      "ts_code": "300059",
+      "stock": "",
+      "searchkey": "东方财富",
+      "enabled": true
+    },
+    {
+      "company": "海康威视",
+      "ts_code": "002415",
+      "stock": "",
+      "searchkey": "海康威视",
+      "enabled": true
+    },
+    {
+      "company": "科大讯飞",
+      "ts_code": "002230",
+      "stock": "",
+      "searchkey": "科大讯飞",
+      "enabled": true
+    },
+    {
+      "company": "中芯国际",
+      "ts_code": "688981",
+      "stock": "",
+      "searchkey": "中芯国际",
+      "enabled": true
+    },
+    {
+      "company": "立讯精密",
+      "ts_code": "002475",
+      "stock": "",
+      "searchkey": "立讯精密",
+      "enabled": true
+    },
+    {
+      "company": "京东方A",
+      "ts_code": "000725",
+      "stock": "",
+      "searchkey": "京东方",
+      "enabled": true
+    },
+    {
+      "company": "恒瑞医药",
+      "ts_code": "600276",
+      "stock": "",
+      "searchkey": "恒瑞医药",
+      "enabled": true
+    },
+    {
+      "company": "迈瑞医疗",
+      "ts_code": "300760",
+      "stock": "",
+      "searchkey": "迈瑞医疗",
+      "enabled": true
+    },
+    {
+      "company": "药明康德",
+      "ts_code": "603259",
+      "stock": "",
+      "searchkey": "药明康德",
+      "enabled": true
+    },
+    {
+      "company": "中国神华",
+      "ts_code": "601088",
+      "stock": "",
+      "searchkey": "中国神华",
+      "enabled": true
+    },
+    {
+      "company": "长江电力",
+      "ts_code": "600900",
+      "stock": "",
+      "searchkey": "长江电力",
+      "enabled": true
+    },
+    {
+      "company": "顺丰控股",
+      "ts_code": "002352",
+      "stock": "",
+      "searchkey": "顺丰控股",
+      "enabled": true
+    },
+    {
+      "company": "中国中免",
+      "ts_code": "601888",
+      "stock": "",
+      "searchkey": "中国中免",
+      "enabled": false
+    },
+    {
+      "company": "万华化学",
+      "ts_code": "600309",
+      "stock": "",
+      "searchkey": "万华化学",
+      "enabled": false
+    },
+    {
+      "company": "紫金矿业",
+      "ts_code": "601899",
+      "stock": "",
+      "searchkey": "紫金矿业",
+      "enabled": false
+    },
+    {
+      "company": "长城汽车",
+      "ts_code": "601633",
+      "stock": "",
+      "searchkey": "长城汽车",
+      "enabled": false
+    },
+    {
+      "company": "山西汾酒",
+      "ts_code": "600809",
+      "stock": "",
+      "searchkey": "山西汾酒",
+      "enabled": false
+    }
+  ]
+}
