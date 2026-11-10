@@ -1,11 +1,11 @@
 # 检索前实体路由收尾执行计划
 
-> 用途：下一个 Codex 会话直接读取并执行。
+> 状态：本计划已完成（2026-11-10）
 > 创建日期：2026-11-07
 > 当前分支：`codex/stage0-corpus-expansion`
-> 当前 HEAD：`2dc40c4 优化生成证据与 Claim 审计`
+> 评测结果提交：`a9684f1 完成 v2 路由与 L3b 三轮生成评测`
 
-## 0. 2026-11-07 实施进度
+## 0. 2026-11-10 最终实施进度
 
 已完成：
 
@@ -22,7 +22,8 @@
   上下文溢出率 `0`。
 - layer matrix 已按当前 120 题 manifest 重建，仅保留 L2 / L3a / L3b。
 - 最终结果文档：`docs/routing-ablation-results.md`。
-- 全量测试：`190 passed, 1 skipped`。
+- 最终交付说明：`docs/final-handoff.md`。
+- 全量测试：`198 passed, 1 skipped`。
 
 正式执行命令（已完成）：
 
@@ -51,7 +52,7 @@
 - `enable_pre_retrieval_routing=False` 可回退旧单查询路径。
 - 120 题结构未变化。
 
-当前检查结果：
+历史首轮检查结果：
 
 ```text
 计划相关测试：58 passed
@@ -74,9 +75,10 @@ cross_document_contamination_rate = 0
 mean_seconds_per_query = 43.8359
 ```
 
-但不能将计划标记为全部完成，仍有两个必修缺口和一个报告问题。
+上述首轮缺口已在 2026-11-09 至 2026-11-10 的全部收尾工作中关闭。
+最终正式验收结果以第 0 节和 `docs/final-handoff.md` 为准。
 
-## 2. 必修缺口
+## 2. 必修缺口（已关闭）
 
 ### 2.1 无实体问题没有回退到单路检索
 
@@ -195,7 +197,7 @@ matrix.setdefault("layers", {})[layer] = {
 修复 L3a/L3b 消融矩阵覆盖
 ```
 
-## 3. 当前报告问题
+## 3. 首轮报告问题（已解决）
 
 ### 3.1 layer_matrix.json 当前不可使用
 
@@ -207,7 +209,8 @@ max_retries = 0
 mean_seconds_per_query = 65.8
 ```
 
-该文件不能用于最终报告。应用提交版本核对后，在完整消融跑完后重新生成。
+该文件已在 v2 完整消融跑完后重新生成，当前只包含同一 manifest 下的
+L2 / L3a / L3b。
 
 ### 3.2 旧 L3 报告不能与新的 120 题报告混用
 
@@ -499,18 +502,15 @@ git status --short --branch
 git log -6 --oneline --decorate
 ```
 
-启动后先检查：
+收尾复核可执行：
 
 ```powershell
 git diff --ignore-space-at-eol --stat
+.\.venv\Scripts\python.exe -m pytest tests -q -rs
 ```
 
-注意：
-
-- 工作区原本已有用户改动和 CRLF 差异。
-- `evals/reports/layer_matrix.json` 当前已被单题运行覆盖。
-- 不要回滚未参与本计划的文件。
-- 不要使用当前 layer_matrix 作为最终报告。
+注意：工作区可能存在历史 CRLF 统计差异；以
+`git diff --ignore-space-at-eol` 是否为空判断语义改动。
 
 ## 12. 完成标准
 
