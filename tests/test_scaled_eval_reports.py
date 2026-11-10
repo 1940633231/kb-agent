@@ -39,10 +39,12 @@ def test_evaluation_rows_supports_agent_and_retrieval_contracts():
 def test_scaled_generation_has_three_runs_with_mean_and_stddev():
     report = load("scaled_generation.json")
     assert report["model"]
-    if report.get("status") != "stale_dataset_manifest_mismatch":
-        assert report["dataset"]["manifest"]["version"] == "v2"
+    assert report.get("status") is None
+    assert report["dataset"]["manifest"]["version"] == "v2"
     assert report["config"]["repeats"] == 3
     assert len(report["runs"]) == 3
+    assert all(len(run["questions"]) == 120 for run in report["runs"])
+    assert set(report["answer_failures"]) == {"1", "2", "3"}
     assert report["dataset"]["evaluated"] == 120
     for metric in (
         "answer_value_rate",
@@ -56,6 +58,8 @@ def test_scaled_generation_has_three_runs_with_mean_and_stddev():
         assert "mean" in report["metrics"][metric]
         assert "stddev" in report["metrics"][metric]
     assert report["metrics"]["context_overflow_rate"]["mean"] == 0.0
+    assert report["metrics"]["answer_correctness"]["mean"] == 0.6603
+    assert round(report["metrics"]["claim_support_rate"]["mean"], 4) == 0.7988
     assert report["hard_gate"]["precision"] >= 0.95
     assert report["hard_gate"]["recall"] >= 0.95
 

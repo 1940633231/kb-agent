@@ -1,16 +1,16 @@
 {
   "temporary": false,
   "formal_report": true,
-  "generated_at": "2026-11-07T17:02:10.325580+00:00",
+  "generated_at": "2026-11-09T10:28:13.540462+00:00",
   "dataset": {
     "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
     "manifest_path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.manifest.json",
     "manifest": {
       "dataset_id": "kb-agent-scaled-120",
-      "version": "v1",
-      "generated_at": "2026-11-06T08:33:01.706287+00:00",
+      "version": "v2",
+      "generated_at": "2026-11-09T03:52:08.411403+00:00",
       "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
-      "sha256": "805751e132a5f94f7b80015ac232180d3480876cfdddf74360ddbda41eb895a1",
+      "sha256": "9b91a2457f47afab5de9968f9dfebef72e72598abdf4e8a58ef95c4e1417d29f",
       "corpus_metadata_sha256": "38bbabd11e54afbe1c3a4c5f67112bfb4640c503ad750fc824ebbe06e982deba",
       "companies": 30,
       "documents": 90,
@@ -66,9 +66,9 @@
     }
   },
   "elapsed_seconds": {
-    "L2": 7081.3,
-    "L3a": 6665.15,
-    "L3b": 6744.93
+    "L2": 5357.55,
+    "L3a": 4469.53,
+    "L3b": 6657.38
   },
   "metrics": {
     "L2": {
@@ -76,8 +76,8 @@
       "doc_recall@5": 0.9762,
       "all_docs_hit@5": 0.9619,
       "doc_mrr": 0.9905,
-      "evidence_hit@5": 0.4952,
-      "evidence_hit_final": 0.4952,
+      "evidence_hit@5": 0.4857,
+      "evidence_hit_final": 0.4857,
       "evidence_obligation_coverage": 0.9476,
       "missing_obligation_rate": 0.0762,
       "ambiguous_obligation_rate": 0.0095,
@@ -85,11 +85,11 @@
       "claim_support_rate": null,
       "unsupported_claim_rate": null,
       "context_overflow_rate": null,
-      "mean_evidence_count": 3.8083,
+      "mean_evidence_count": 3.7833,
       "retry_rate": 0.0,
       "mean_retries": 0.0,
       "refuse_flagged_rate": 1.0,
-      "mean_seconds_per_query": 58.988,
+      "mean_seconds_per_query": 44.6214,
       "foreign_evidence_rate": 0.0095,
       "cross_document_contamination_rate": 0.0095,
       "foreign_citation_rate": 0.0,
@@ -104,9 +104,9 @@
       "repair_rate": 0.0,
       "repair_fixed_rate": null,
       "unverified_rate": 0.0,
-      "prompt_tokens_est_mean": 2570.175,
+      "prompt_tokens_est_mean": 2556.2917,
       "answer_tokens_est_mean": 6.0,
-      "tokens_est_total": 309141,
+      "tokens_est_total": 307475,
       "cost_estimate_per_query": null
     },
     "L3a": {
@@ -127,7 +127,7 @@
       "retry_rate": 0.0,
       "mean_retries": 0.0,
       "refuse_flagged_rate": 1.0,
-      "mean_seconds_per_query": 55.5312,
+      "mean_seconds_per_query": 37.2332,
       "foreign_evidence_rate": 0.0,
       "cross_document_contamination_rate": 0.0,
       "foreign_citation_rate": 0.0,
@@ -142,9 +142,9 @@
       "repair_rate": 0.0,
       "repair_fixed_rate": null,
       "unverified_rate": 0.0,
-      "prompt_tokens_est_mean": 3035.2417,
+      "prompt_tokens_est_mean": 3037.3417,
       "answer_tokens_est_mean": 6.0,
-      "tokens_est_total": 364949,
+      "tokens_est_total": 365201,
       "cost_estimate_per_query": null
     },
     "L3b": {
@@ -165,7 +165,7 @@
       "retry_rate": 0.0917,
       "mean_retries": 0.1833,
       "refuse_flagged_rate": 1.0,
-      "mean_seconds_per_query": 56.1973,
+      "mean_seconds_per_query": 55.465,
       "foreign_evidence_rate": 0.0,
       "cross_document_contamination_rate": 0.0,
       "foreign_citation_rate": 0.0,
@@ -180,9 +180,9 @@
       "repair_rate": 0.0,
       "repair_fixed_rate": null,
       "unverified_rate": 0.0,
-      "prompt_tokens_est_mean": 3035.2417,
+      "prompt_tokens_est_mean": 3037.3417,
       "answer_tokens_est_mean": 6.0,
-      "tokens_est_total": 364949,
+      "tokens_est_total": 365201,
       "cost_estimate_per_query": null
     }
   },
@@ -195,17 +195,17 @@
       "cross_document_contamination_rate": -0.0095,
       "doc_mrr": 0.0095,
       "doc_recall@5": 0.0238,
-      "evidence_hit@5": 0.2286,
-      "evidence_hit_final": 0.2381,
+      "evidence_hit@5": 0.2381,
+      "evidence_hit_final": 0.2476,
       "evidence_obligation_coverage": 0.0429,
       "foreign_citation_rate": 0.0,
       "foreign_evidence_rate": -0.0095,
-      "mean_evidence_count": 0.65,
+      "mean_evidence_count": 0.675,
       "mean_retries": 0.0,
-      "mean_seconds_per_query": -3.4568,
+      "mean_seconds_per_query": -7.3882,
       "mean_ungrounded_numbers": 0.0,
       "missing_obligation_rate": -0.0762,
-      "prompt_tokens_est_mean": 465.0667,
+      "prompt_tokens_est_mean": 481.05,
       "refuse_flagged_rate": 0.0,
       "repair_rate": 0.0,
       "retry_rate": 0.0,
@@ -214,7 +214,7 @@
       "route_filter_missing_rate": 0.0833,
       "route_obligation_coverage": 0.0429,
       "routes_planned_mean": 0.0833,
-      "tokens_est_total": 55808.0,
+      "tokens_est_total": 57726.0,
       "unverified_rate": 0.0
     },
     "L3b-L3a": {
@@ -232,7 +232,7 @@
       "foreign_evidence_rate": 0.0,
       "mean_evidence_count": 0.0,
       "mean_retries": 0.1833,
-      "mean_seconds_per_query": 0.6661,
+      "mean_seconds_per_query": 18.2318,
       "mean_ungrounded_numbers": 0.0,
       "missing_obligation_rate": 0.0,
       "prompt_tokens_est_mean": 0.0,
@@ -250,108 +250,108 @@
   },
   "latency_breakdown": {
     "L2": {
-      "p50_seconds": 57.5,
-      "p95_seconds": 73.6415,
-      "mean_seconds_per_query": 58.988,
-      "single_company_single_year_mean_seconds": 60.209,
-      "fact_mean_seconds": 60.169722,
-      "table_mean_seconds": 60.366111,
-      "cross_document_mean_seconds": 54.261333,
-      "refusal_mean_seconds": 56.388667,
+      "p50_seconds": 36.715,
+      "p95_seconds": 70.992,
+      "mean_seconds_per_query": 44.621417,
+      "single_company_single_year_mean_seconds": 47.092,
+      "fact_mean_seconds": 46.846806,
+      "table_mean_seconds": 48.072778,
+      "cross_document_mean_seconds": 40.532,
+      "refusal_mean_seconds": 33.887333,
       "by_question_type": {
         "cross_document": {
           "questions": 15,
-          "mean_seconds": 54.261333,
+          "mean_seconds": 40.532,
           "doc_recall": 0.9,
           "route_obligation_coverage": 0.766667
         },
         "fact": {
           "questions": 72,
-          "mean_seconds": 60.169722,
+          "mean_seconds": 46.846806,
           "doc_recall": 0.986111,
           "route_obligation_coverage": 0.986111
         },
         "refuse": {
           "questions": 15,
-          "mean_seconds": 56.388667,
+          "mean_seconds": 33.887333,
           "doc_recall": null,
           "route_obligation_coverage": 0.0
         },
         "table": {
           "questions": 18,
-          "mean_seconds": 60.366111,
+          "mean_seconds": 48.072778,
           "doc_recall": 1.0,
           "route_obligation_coverage": 0.944444
         }
       }
     },
     "L3a": {
-      "p50_seconds": 55.28,
-      "p95_seconds": 111.19,
-      "mean_seconds_per_query": 55.531167,
-      "single_company_single_year_mean_seconds": 55.522667,
-      "fact_mean_seconds": 55.603472,
-      "table_mean_seconds": 55.199444,
-      "cross_document_mean_seconds": 110.958667,
-      "refusal_mean_seconds": 0.154667,
+      "p50_seconds": 34.055,
+      "p95_seconds": 72.7405,
+      "mean_seconds_per_query": 37.23325,
+      "single_company_single_year_mean_seconds": 36.228667,
+      "fact_mean_seconds": 36.015278,
+      "table_mean_seconds": 37.082222,
+      "cross_document_mean_seconds": 80.453333,
+      "refusal_mean_seconds": 0.040667,
       "by_question_type": {
         "cross_document": {
           "questions": 15,
-          "mean_seconds": 110.958667,
+          "mean_seconds": 80.453333,
           "doc_recall": 1.0,
           "route_obligation_coverage": 1.0
         },
         "fact": {
           "questions": 72,
-          "mean_seconds": 55.603472,
+          "mean_seconds": 36.015278,
           "doc_recall": 1.0,
           "route_obligation_coverage": 1.0
         },
         "refuse": {
           "questions": 15,
-          "mean_seconds": 0.154667,
+          "mean_seconds": 0.040667,
           "doc_recall": null,
           "route_obligation_coverage": 0.0
         },
         "table": {
           "questions": 18,
-          "mean_seconds": 55.199444,
+          "mean_seconds": 37.082222,
           "doc_recall": 1.0,
           "route_obligation_coverage": 0.944444
         }
       }
     },
     "L3b": {
-      "p50_seconds": 56.605,
-      "p95_seconds": 109.081,
-      "mean_seconds_per_query": 56.19725,
-      "single_company_single_year_mean_seconds": 56.749111,
-      "fact_mean_seconds": 56.816806,
-      "table_mean_seconds": 56.478333,
-      "cross_document_mean_seconds": 109.000667,
-      "refusal_mean_seconds": 0.082667,
+      "p50_seconds": 40.345,
+      "p95_seconds": 173.772,
+      "mean_seconds_per_query": 55.465,
+      "single_company_single_year_mean_seconds": 44.589556,
+      "fact_mean_seconds": 44.305556,
+      "table_mean_seconds": 45.725556,
+      "cross_document_mean_seconds": 174.839333,
+      "refusal_mean_seconds": 1.343333,
       "by_question_type": {
         "cross_document": {
           "questions": 15,
-          "mean_seconds": 109.000667,
+          "mean_seconds": 174.839333,
           "doc_recall": 1.0,
           "route_obligation_coverage": 1.0
         },
         "fact": {
           "questions": 72,
-          "mean_seconds": 56.816806,
+          "mean_seconds": 44.305556,
           "doc_recall": 1.0,
           "route_obligation_coverage": 1.0
         },
         "refuse": {
           "questions": 15,
-          "mean_seconds": 0.082667,
+          "mean_seconds": 1.343333,
           "doc_recall": null,
           "route_obligation_coverage": 0.0
         },
         "table": {
           "questions": 18,
-          "mean_seconds": 56.478333,
+          "mean_seconds": 45.725556,
           "doc_recall": 1.0,
           "route_obligation_coverage": 0.944444
         }
@@ -405,16 +405,16 @@
       },
       "l3a_single_company_latency_ratio": {
         "metric": "L3a / L2 single-company single-year mean seconds",
-        "l2_seconds": 60.209,
-        "l3a_seconds": 55.522667,
-        "ratio": 0.922166,
+        "l2_seconds": 47.092,
+        "l3a_seconds": 36.228667,
+        "ratio": 0.769317,
         "operator": "<=",
         "threshold": 1.1,
         "passed": true
       },
       "manifest_sha_consistent": {
         "values": [
-          "805751e132a5f94f7b80015ac232180d3480876cfdddf74360ddbda41eb895a1"
+          "9b91a2457f47afab5de9968f9dfebef72e72598abdf4e8a58ef95c4e1417d29f"
         ],
         "passed": true
       },
@@ -426,5 +426,5 @@
       }
     }
   },
-  "total_elapsed_seconds": 20701.78
+  "total_elapsed_seconds": 16697.32
 }

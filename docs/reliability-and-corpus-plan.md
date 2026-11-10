@@ -1,6 +1,6 @@
 # kb-agent 数据扩展与可靠性补强计划
 
-> 状态：阶段 0、P0、P1、P2 已完成；P3 数据集已定稿，模型评测待重跑
+> 状态：阶段 0、P0、P1、P2、P3 已完成；生成质量优化进入下一阶段
 > 适用范围：`kb-agent` 为主，阶段 2 可能涉及 `production-rag` 的小幅扩展  
 > 不在本计划内：`sql-mcp-agent` 的 MCP 链路改造；它只作为后续展示材料
 
@@ -21,8 +21,10 @@ P2 执行结果：system prompt、history、query、evidence 与输出预留已�
 105 个 scaled answerable case 预算溢出率为 `0.0`，P95 预算开销约 `1.78ms`，
 端到端估算开销 `0.0027%`。报告见 `evals/reports/context_budget.json`。
 
-P3 执行结果：新增 120 题扩展集与 manifest；确定性检索、L3 编排检索和三轮
-vector 生成评测均完成。报告见 `scaled_retrieval.json`、`scaled_l3.json`、
+P3 执行结果：120 题扩展集升级到 v2，源文审计 `120/120` 通过；正式路由
+消融中 L3a Recall@5 为 `1.0`，L3b Route 覆盖 `0.9905`、缺失义务率 `0`。
+三轮 hybrid L3b 生成答案正确率 `0.6603`，Claim 支持率 `0.7988`，
+上下文溢出率 `0`。报告见 `routing_ablation_summary.json`、
 `scaled_generation.json`、`claim_audit.json` 与 `context_budget.json`。
 
 ## 1. 目标与基线

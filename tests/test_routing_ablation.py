@@ -214,7 +214,12 @@ def test_formal_routing_ablation_reports_meet_acceptance_gates():
         report["dataset"]["manifest"]["sha256"]
         for report in reports.values()
     }
+    current_manifest = json.loads(
+        (PROJECT_ROOT / "evals" / "golden_set_scaled_120.manifest.json")
+        .read_text(encoding="utf-8")
+    )
     assert len(manifest_shas) == 1
+    assert manifest_shas == {current_manifest["sha256"]}
     for layer, report in reports.items():
         assert report["layer"] == layer
         assert report["temporary"] is False

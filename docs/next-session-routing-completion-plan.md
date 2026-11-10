@@ -17,6 +17,9 @@
   每档完成即落盘、`--resume`、正式/调试报告隔离。
 - 正式 120 题 L2 / L3a / L3b 消融已完成，三档各 120 条逐题明细。
 - 正式 summary 的 `acceptance.all_passed = true`。
+- v2 数据集修正后已重新跑完三轮路由消融，manifest SHA 为 `9b91a245...`。
+- 三轮 hybrid L3b 生成已完成：答案正确率 `0.6603`，Claim 支持率 `0.7988`，
+  上下文溢出率 `0`。
 - layer matrix 已按当前 120 题 manifest 重建，仅保留 L2 / L3a / L3b。
 - 最终结果文档：`docs/routing-ablation-results.md`。
 - 全量测试：`190 passed, 1 skipped`。
@@ -31,7 +34,7 @@
   --resume
 ```
 
-正式运行总耗时约 5 小时 45 分钟。`--resume` 只会复用配置、manifest SHA、
+正式运行总耗时约 4 小时 38 分钟。`--resume` 只会复用配置、manifest SHA、
 题数和逐题明细均匹配的已完成层。
 
 ## 1. 当前结论

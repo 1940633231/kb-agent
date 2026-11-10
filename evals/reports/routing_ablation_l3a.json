@@ -3,17 +3,17 @@
   "label": "L2 + 检索前公司/年份路由",
   "temporary": false,
   "formal_report": true,
-  "generated_at": "2026-11-07T14:43:24.472912+00:00",
-  "elapsed_seconds": 6665.15,
+  "generated_at": "2026-11-09T08:37:15.816768+00:00",
+  "elapsed_seconds": 4469.53,
   "dataset": {
     "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
     "manifest_path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.manifest.json",
     "manifest": {
       "dataset_id": "kb-agent-scaled-120",
-      "version": "v1",
-      "generated_at": "2026-11-06T08:33:01.706287+00:00",
+      "version": "v2",
+      "generated_at": "2026-11-09T03:52:08.411403+00:00",
       "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
-      "sha256": "805751e132a5f94f7b80015ac232180d3480876cfdddf74360ddbda41eb895a1",
+      "sha256": "9b91a2457f47afab5de9968f9dfebef72e72598abdf4e8a58ef95c4e1417d29f",
       "corpus_metadata_sha256": "38bbabd11e54afbe1c3a4c5f67112bfb4640c503ad750fc824ebbe06e982deba",
       "companies": 30,
       "documents": 90,
@@ -58,7 +58,7 @@
     "retry_rate": 0.0,
     "mean_retries": 0.0,
     "refuse_flagged_rate": 1.0,
-    "mean_seconds_per_query": 55.5312,
+    "mean_seconds_per_query": 37.2332,
     "foreign_evidence_rate": 0.0,
     "cross_document_contamination_rate": 0.0,
     "foreign_citation_rate": 0.0,
@@ -73,9 +73,9 @@
     "repair_rate": 0.0,
     "repair_fixed_rate": null,
     "unverified_rate": 0.0,
-    "prompt_tokens_est_mean": 3035.2417,
+    "prompt_tokens_est_mean": 3037.3417,
     "answer_tokens_est_mean": 6.0,
-    "tokens_est_total": 364949,
+    "tokens_est_total": 365201,
     "cost_estimate_per_query": null
   },
   "questions": [
@@ -212,7 +212,7 @@
       "refused": false,
       "prompt_tokens_est": 3023,
       "answer_tokens_est": 0,
-      "seconds": 57.65
+      "seconds": 34.53
     },
     {
       "id": "scaled-fact-002",
@@ -347,7 +347,7 @@
       "refused": false,
       "prompt_tokens_est": 3185,
       "answer_tokens_est": 0,
-      "seconds": 54.84
+      "seconds": 33.41
     },
     {
       "id": "scaled-fact-003",
@@ -482,7 +482,7 @@
       "refused": false,
       "prompt_tokens_est": 3270,
       "answer_tokens_est": 0,
-      "seconds": 56.39
+      "seconds": 32.77
     },
     {
       "id": "scaled-fact-004",
@@ -510,7 +510,7 @@
       "route_coverage_rate": 1.0,
       "retrieval_stats": {
         "queries": [
-          "美的集团2023年的营业收入是多少千元？"
+          "美的集团2023年的营业总收入是多少千元？"
         ],
         "returned": 5,
         "top_k": 5,
@@ -551,7 +551,7 @@
         "route_coverage": [
           {
             "query_id": "r0-route-1",
-            "query": "美的集团2023年的营业收入是多少千元？",
+            "query": "美的集团2023年的营业总收入是多少千元？",
             "obligation_ids": [
               "obligation-1"
             ],
@@ -563,7 +563,7 @@
             "ambiguous": []
           }
         ],
-        "top_score": 0.026973565905412694,
+        "top_score": 0.03007688828584351,
         "accumulated": 5,
         "budget": 5,
         "scope": {
@@ -615,9 +615,9 @@
       "citation_count": 0,
       "citation_valid": null,
       "refused": false,
-      "prompt_tokens_est": 3560,
+      "prompt_tokens_est": 3780,
       "answer_tokens_est": 0,
-      "seconds": 55.02
+      "seconds": 32.19
     },
     {
       "id": "scaled-fact-005",
@@ -645,7 +645,7 @@
       "route_coverage_rate": 1.0,
       "retrieval_stats": {
         "queries": [
-          "美的集团2024年的营业收入是多少元？"
+          "美的集团2024年的营业总收入是多少千元？"
         ],
         "returned": 5,
         "top_k": 5,
@@ -686,7 +686,7 @@
         "route_coverage": [
           {
             "query_id": "r0-route-1",
-            "query": "美的集团2024年的营业收入是多少元？",
+            "query": "美的集团2024年的营业总收入是多少千元？",
             "obligation_ids": [
               "obligation-1"
             ],
@@ -698,7 +698,7 @@
             "ambiguous": []
           }
         ],
-        "top_score": 0.030309988518943745,
+        "top_score": 0.030536130536130537,
         "accumulated": 5,
         "budget": 5,
         "scope": {
@@ -750,9 +750,9 @@
       "citation_count": 0,
       "citation_valid": null,
       "refused": false,
-      "prompt_tokens_est": 3476,
+      "prompt_tokens_est": 3478,
       "answer_tokens_est": 0,
-      "seconds": 59.76
+      "seconds": 33.73
     },
     {
       "id": "scaled-fact-006",
@@ -780,7 +780,7 @@
       "route_coverage_rate": 1.0,
       "retrieval_stats": {
         "queries": [
-          "美的集团2025年的营业收入是多少元？"
+          "美的集团2025年的营业总收入是多少千元？"
         ],
         "returned": 5,
         "top_k": 5,
@@ -821,7 +821,7 @@
         "route_coverage": [
           {
             "query_id": "r0-route-1",
-            "query": "美的集团2025年的营业收入是多少元？",
+            "query": "美的集团2025年的营业总收入是多少千元？",
             "obligation_ids": [
               "obligation-1"
             ],
@@ -833,7 +833,7 @@
             "ambiguous": []
           }
         ],
-        "top_score": 0.031024531024531024,
+        "top_score": 0.030798389007344232,
         "accumulated": 5,
         "budget": 5,
         "scope": {
@@ -885,9 +885,9 @@
       "citation_count": 0,
       "citation_valid": null,
       "refused": false,
-      "prompt_tokens_est": 3497,
+      "prompt_tokens_est": 3527,
       "answer_tokens_est": 0,
-      "seconds": 54.98
+      "seconds": 37.23
     },
     {
       "id": "scaled-fact-007",
@@ -1022,7 +1022,7 @@
       "refused": false,
       "prompt_tokens_est": 3529,
       "answer_tokens_est": 0,
-      "seconds": 53.95
+      "seconds": 33.63
     },
     {
       "id": "scaled-fact-008",
@@ -1157,7 +1157,7 @@
       "refused": false,
       "prompt_tokens_est": 3239,
       "answer_tokens_est": 0,
-      "seconds": 56.46
+      "seconds": 35.74
     },
     {
       "id": "scaled-fact-009",
@@ -1292,7 +1292,7 @@
       "refused": false,
       "prompt_tokens_est": 3171,
       "answer_tokens_est": 0,
-      "seconds": 52.82
+      "seconds": 34.09
     },
     {
       "id": "scaled-fact-010",
@@ -1427,7 +1427,7 @@
       "refused": false,
       "prompt_tokens_est": 2964,
       "answer_tokens_est": 0,
-      "seconds": 58.4
+      "seconds": 36.36
     },
     {
       "id": "scaled-fact-011",
@@ -1562,7 +1562,7 @@
       "refused": false,
       "prompt_tokens_est": 2894,
       "answer_tokens_est": 0,
-      "seconds": 52.27
+      "seconds": 33.42
     },
     {
       "id": "scaled-fact-012",
@@ -1697,7 +1697,7 @@
       "refused": false,
       "prompt_tokens_est": 2851,
       "answer_tokens_est": 0,
-      "seconds": 57.4
+      "seconds": 42.61
     },
     {
       "id": "scaled-fact-013",
@@ -1832,7 +1832,7 @@
       "refused": false,
       "prompt_tokens_est": 3728,
       "answer_tokens_est": 0,
-      "seconds": 53.69
+      "seconds": 45.86
     },
     {
       "id": "scaled-fact-014",
@@ -1967,7 +1967,7 @@
       "refused": false,
       "prompt_tokens_est": 3423,
       "answer_tokens_est": 0,
-      "seconds": 50.47
+      "seconds": 42.3
     },
     {
       "id": "scaled-fact-015",
@@ -2102,7 +2102,7 @@
       "refused": false,
       "prompt_tokens_est": 3932,
       "answer_tokens_est": 0,
-      "seconds": 54.98
+      "seconds": 43.16
     },
     {
       "id": "scaled-fact-016",
@@ -2237,7 +2237,7 @@
       "refused": false,
       "prompt_tokens_est": 3227,
       "answer_tokens_est": 0,
-      "seconds": 54.28
+      "seconds": 41.91
     },
     {
       "id": "scaled-fact-017",
@@ -2372,7 +2372,7 @@
       "refused": false,
       "prompt_tokens_est": 3500,
       "answer_tokens_est": 0,
-      "seconds": 61.39
+      "seconds": 35.78
     },
     {
       "id": "scaled-fact-018",
@@ -2507,7 +2507,7 @@
       "refused": false,
       "prompt_tokens_est": 3465,
       "answer_tokens_est": 0,
-      "seconds": 54.3
+      "seconds": 35.46
     },
     {
       "id": "scaled-fact-019",
@@ -2642,7 +2642,7 @@
       "refused": false,
       "prompt_tokens_est": 3513,
       "answer_tokens_est": 0,
-      "seconds": 52.45
+      "seconds": 34.48
     },
     {
       "id": "scaled-fact-020",
@@ -2777,7 +2777,7 @@
       "refused": false,
       "prompt_tokens_est": 3460,
       "answer_tokens_est": 0,
-      "seconds": 54.72
+      "seconds": 33.33
     },
     {
       "id": "scaled-fact-021",
@@ -2912,7 +2912,7 @@
       "refused": false,
       "prompt_tokens_est": 3525,
       "answer_tokens_est": 0,
-      "seconds": 55.96
+      "seconds": 32.82
     },
     {
       "id": "scaled-fact-022",
@@ -3047,7 +3047,7 @@
       "refused": false,
       "prompt_tokens_est": 3103,
       "answer_tokens_est": 0,
-      "seconds": 57.04
+      "seconds": 30.36
     },
     {
       "id": "scaled-fact-023",
@@ -3182,7 +3182,7 @@
       "refused": false,
       "prompt_tokens_est": 3507,
       "answer_tokens_est": 0,
-      "seconds": 56.13
+      "seconds": 32.22
     },
     {
       "id": "scaled-fact-024",
@@ -3317,7 +3317,7 @@
       "refused": false,
       "prompt_tokens_est": 3254,
       "answer_tokens_est": 0,
-      "seconds": 57.26
+      "seconds": 31.69
     },
     {
       "id": "scaled-fact-025",
@@ -3452,7 +3452,7 @@
       "refused": false,
       "prompt_tokens_est": 3504,
       "answer_tokens_est": 0,
-      "seconds": 56.03
+      "seconds": 32.41
     },
     {
       "id": "scaled-fact-026",
@@ -3587,7 +3587,7 @@
       "refused": false,
       "prompt_tokens_est": 3235,
       "answer_tokens_est": 0,
-      "seconds": 57.93
+      "seconds": 30.54
     },
     {
       "id": "scaled-fact-027",
@@ -3722,7 +3722,7 @@
       "refused": false,
       "prompt_tokens_est": 3391,
       "answer_tokens_est": 0,
-      "seconds": 60.97
+      "seconds": 34.02
     },
     {
       "id": "scaled-fact-028",
@@ -3857,7 +3857,7 @@
       "refused": false,
       "prompt_tokens_est": 3620,
       "answer_tokens_est": 0,
-      "seconds": 56.3
+      "seconds": 30.87
     },
     {
       "id": "scaled-fact-029",
@@ -3992,7 +3992,7 @@
       "refused": false,
       "prompt_tokens_est": 3143,
       "answer_tokens_est": 0,
-      "seconds": 54.72
+      "seconds": 29.57
     },
     {
       "id": "scaled-fact-030",
@@ -4127,7 +4127,7 @@
       "refused": false,
       "prompt_tokens_est": 3292,
       "answer_tokens_est": 0,
-      "seconds": 54.55
+      "seconds": 32.15
     },
     {
       "id": "scaled-fact-031",
@@ -4262,7 +4262,7 @@
       "refused": false,
       "prompt_tokens_est": 3273,
       "answer_tokens_est": 0,
-      "seconds": 54.45
+      "seconds": 28.78
     },
     {
       "id": "scaled-fact-032",
@@ -4397,7 +4397,7 @@
       "refused": false,
       "prompt_tokens_est": 3504,
       "answer_tokens_est": 0,
-      "seconds": 56.03
+      "seconds": 30.78
     },
     {
       "id": "scaled-fact-033",
@@ -4532,7 +4532,7 @@
       "refused": false,
       "prompt_tokens_est": 2951,
       "answer_tokens_est": 0,
-      "seconds": 57.22
+      "seconds": 33.93
     },
     {
       "id": "scaled-fact-034",
@@ -4667,7 +4667,7 @@
       "refused": false,
       "prompt_tokens_est": 3899,
       "answer_tokens_est": 0,
-      "seconds": 57.33
+      "seconds": 31.19
     },
     {
       "id": "scaled-fact-035",
@@ -4802,7 +4802,7 @@
       "refused": false,
       "prompt_tokens_est": 2969,
       "answer_tokens_est": 0,
-      "seconds": 51.63
+      "seconds": 32.34
     },
     {
       "id": "scaled-fact-036",
@@ -4937,7 +4937,7 @@
       "refused": false,
       "prompt_tokens_est": 3339,
       "answer_tokens_est": 0,
-      "seconds": 56.98
+      "seconds": 34.97
     },
     {
       "id": "scaled-fact-037",
@@ -5072,7 +5072,7 @@
       "refused": false,
       "prompt_tokens_est": 3142,
       "answer_tokens_est": 0,
-      "seconds": 54.82
+      "seconds": 36.48
     },
     {
       "id": "scaled-fact-038",
@@ -5207,7 +5207,7 @@
       "refused": false,
       "prompt_tokens_est": 3332,
       "answer_tokens_est": 0,
-      "seconds": 55.03
+      "seconds": 34.12
     },
     {
       "id": "scaled-fact-039",
@@ -5342,7 +5342,7 @@
       "refused": false,
       "prompt_tokens_est": 2889,
       "answer_tokens_est": 0,
-      "seconds": 56.0
+      "seconds": 31.35
     },
     {
       "id": "scaled-fact-040",
@@ -5477,7 +5477,7 @@
       "refused": false,
       "prompt_tokens_est": 3430,
       "answer_tokens_est": 0,
-      "seconds": 52.52
+      "seconds": 32.48
     },
     {
       "id": "scaled-fact-041",
@@ -5612,7 +5612,7 @@
       "refused": false,
       "prompt_tokens_est": 3256,
       "answer_tokens_est": 0,
-      "seconds": 53.48
+      "seconds": 31.73
     },
     {
       "id": "scaled-fact-042",
@@ -5747,7 +5747,7 @@
       "refused": false,
       "prompt_tokens_est": 3925,
       "answer_tokens_est": 0,
-      "seconds": 59.35
+      "seconds": 33.45
     },
     {
       "id": "scaled-fact-043",
@@ -5882,7 +5882,7 @@
       "refused": false,
       "prompt_tokens_est": 3691,
       "answer_tokens_est": 0,
-      "seconds": 60.14
+      "seconds": 31.07
     },
     {
       "id": "scaled-fact-044",
@@ -6017,7 +6017,7 @@
       "refused": false,
       "prompt_tokens_est": 3498,
       "answer_tokens_est": 0,
-      "seconds": 59.51
+      "seconds": 30.24
     },
     {
       "id": "scaled-fact-045",
@@ -6152,7 +6152,7 @@
       "refused": false,
       "prompt_tokens_est": 3232,
       "answer_tokens_est": 0,
-      "seconds": 58.35
+      "seconds": 33.6
     },
     {
       "id": "scaled-fact-046",
@@ -6287,7 +6287,7 @@
       "refused": false,
       "prompt_tokens_est": 3686,
       "answer_tokens_est": 0,
-      "seconds": 56.94
+      "seconds": 30.28
     },
     {
       "id": "scaled-fact-047",
@@ -6422,7 +6422,7 @@
       "refused": false,
       "prompt_tokens_est": 3303,
       "answer_tokens_est": 0,
-      "seconds": 57.13
+      "seconds": 32.56
     },
     {
       "id": "scaled-fact-048",
@@ -6557,7 +6557,7 @@
       "refused": false,
       "prompt_tokens_est": 2733,
       "answer_tokens_est": 0,
-      "seconds": 56.97
+      "seconds": 32.45
     },
     {
       "id": "scaled-fact-049",
@@ -6694,7 +6694,7 @@
       "refused": false,
       "prompt_tokens_est": 4670,
       "answer_tokens_est": 0,
-      "seconds": 54.09
+      "seconds": 33.43
     },
     {
       "id": "scaled-fact-050",
@@ -6829,7 +6829,7 @@
       "refused": false,
       "prompt_tokens_est": 3754,
       "answer_tokens_est": 0,
-      "seconds": 56.52
+      "seconds": 30.79
     },
     {
       "id": "scaled-fact-051",
@@ -6964,7 +6964,7 @@
       "refused": false,
       "prompt_tokens_est": 3659,
       "answer_tokens_est": 0,
-      "seconds": 53.79
+      "seconds": 35.92
     },
     {
       "id": "scaled-fact-052",
@@ -7099,7 +7099,7 @@
       "refused": false,
       "prompt_tokens_est": 3926,
       "answer_tokens_est": 0,
-      "seconds": 55.68
+      "seconds": 31.26
     },
     {
       "id": "scaled-fact-053",
@@ -7234,7 +7234,7 @@
       "refused": false,
       "prompt_tokens_est": 3518,
       "answer_tokens_est": 0,
-      "seconds": 54.39
+      "seconds": 30.25
     },
     {
       "id": "scaled-fact-054",
@@ -7369,7 +7369,7 @@
       "refused": false,
       "prompt_tokens_est": 3547,
       "answer_tokens_est": 0,
-      "seconds": 57.59
+      "seconds": 31.56
     },
     {
       "id": "scaled-fact-055",
@@ -7504,7 +7504,7 @@
       "refused": false,
       "prompt_tokens_est": 3867,
       "answer_tokens_est": 0,
-      "seconds": 56.67
+      "seconds": 31.74
     },
     {
       "id": "scaled-fact-056",
@@ -7639,7 +7639,7 @@
       "refused": false,
       "prompt_tokens_est": 3352,
       "answer_tokens_est": 0,
-      "seconds": 53.99
+      "seconds": 31.02
     },
     {
       "id": "scaled-fact-057",
@@ -7774,7 +7774,7 @@
       "refused": false,
       "prompt_tokens_est": 3459,
       "answer_tokens_est": 0,
-      "seconds": 57.22
+      "seconds": 30.69
     },
     {
       "id": "scaled-fact-058",
@@ -7909,7 +7909,7 @@
       "refused": false,
       "prompt_tokens_est": 3238,
       "answer_tokens_est": 0,
-      "seconds": 52.0
+      "seconds": 32.04
     },
     {
       "id": "scaled-fact-059",
@@ -8044,7 +8044,7 @@
       "refused": false,
       "prompt_tokens_est": 3450,
       "answer_tokens_est": 0,
-      "seconds": 55.05
+      "seconds": 79.25
     },
     {
       "id": "scaled-fact-060",
@@ -8179,7 +8179,7 @@
       "refused": false,
       "prompt_tokens_est": 3694,
       "answer_tokens_est": 0,
-      "seconds": 55.73
+      "seconds": 45.21
     },
     {
       "id": "scaled-fact-061",
@@ -8314,7 +8314,7 @@
       "refused": false,
       "prompt_tokens_est": 3920,
       "answer_tokens_est": 0,
-      "seconds": 57.31
+      "seconds": 43.17
     },
     {
       "id": "scaled-fact-062",
@@ -8449,7 +8449,7 @@
       "refused": false,
       "prompt_tokens_est": 3514,
       "answer_tokens_est": 0,
-      "seconds": 57.92
+      "seconds": 41.6
     },
     {
       "id": "scaled-fact-063",
@@ -8584,7 +8584,7 @@
       "refused": false,
       "prompt_tokens_est": 2766,
       "answer_tokens_est": 0,
-      "seconds": 58.59
+      "seconds": 39.85
     },
     {
       "id": "scaled-fact-064",
@@ -8719,7 +8719,7 @@
       "refused": false,
       "prompt_tokens_est": 3331,
       "answer_tokens_est": 0,
-      "seconds": 57.2
+      "seconds": 31.72
     },
     {
       "id": "scaled-fact-065",
@@ -8854,7 +8854,7 @@
       "refused": false,
       "prompt_tokens_est": 3329,
       "answer_tokens_est": 0,
-      "seconds": 54.75
+      "seconds": 35.53
     },
     {
       "id": "scaled-fact-066",
@@ -8989,7 +8989,7 @@
       "refused": false,
       "prompt_tokens_est": 3126,
       "answer_tokens_est": 0,
-      "seconds": 59.33
+      "seconds": 40.22
     },
     {
       "id": "scaled-fact-067",
@@ -9126,7 +9126,7 @@
       "refused": false,
       "prompt_tokens_est": 4532,
       "answer_tokens_est": 0,
-      "seconds": 55.69
+      "seconds": 32.34
     },
     {
       "id": "scaled-fact-068",
@@ -9261,7 +9261,7 @@
       "refused": false,
       "prompt_tokens_est": 3367,
       "answer_tokens_est": 0,
-      "seconds": 55.41
+      "seconds": 45.47
     },
     {
       "id": "scaled-fact-069",
@@ -9396,7 +9396,7 @@
       "refused": false,
       "prompt_tokens_est": 3451,
       "answer_tokens_est": 0,
-      "seconds": 54.52
+      "seconds": 32.94
     },
     {
       "id": "scaled-fact-070",
@@ -9531,7 +9531,7 @@
       "refused": false,
       "prompt_tokens_est": 3916,
       "answer_tokens_est": 0,
-      "seconds": 55.15
+      "seconds": 34.15
     },
     {
       "id": "scaled-fact-071",
@@ -9666,7 +9666,7 @@
       "refused": false,
       "prompt_tokens_est": 3203,
       "answer_tokens_est": 0,
-      "seconds": 58.65
+      "seconds": 35.32
     },
     {
       "id": "scaled-fact-072",
@@ -9801,7 +9801,7 @@
       "refused": false,
       "prompt_tokens_est": 3204,
       "answer_tokens_est": 0,
-      "seconds": 53.34
+      "seconds": 39.59
     },
     {
       "id": "scaled-fact-073",
@@ -9936,7 +9936,7 @@
       "refused": false,
       "prompt_tokens_est": 3435,
       "answer_tokens_est": 0,
-      "seconds": 55.04
+      "seconds": 35.33
     },
     {
       "id": "scaled-fact-074",
@@ -10071,7 +10071,7 @@
       "refused": false,
       "prompt_tokens_est": 3718,
       "answer_tokens_est": 0,
-      "seconds": 55.84
+      "seconds": 38.32
     },
     {
       "id": "scaled-fact-075",
@@ -10206,7 +10206,7 @@
       "refused": false,
       "prompt_tokens_est": 3229,
       "answer_tokens_est": 0,
-      "seconds": 54.64
+      "seconds": 36.14
     },
     {
       "id": "scaled-fact-076",
@@ -10341,7 +10341,7 @@
       "refused": false,
       "prompt_tokens_est": 3374,
       "answer_tokens_est": 0,
-      "seconds": 52.9
+      "seconds": 38.3
     },
     {
       "id": "scaled-fact-077",
@@ -10476,7 +10476,7 @@
       "refused": false,
       "prompt_tokens_est": 3339,
       "answer_tokens_est": 0,
-      "seconds": 53.16
+      "seconds": 39.38
     },
     {
       "id": "scaled-fact-078",
@@ -10611,7 +10611,7 @@
       "refused": false,
       "prompt_tokens_est": 3751,
       "answer_tokens_est": 0,
-      "seconds": 52.92
+      "seconds": 35.72
     },
     {
       "id": "scaled-fact-079",
@@ -10746,7 +10746,7 @@
       "refused": false,
       "prompt_tokens_est": 3782,
       "answer_tokens_est": 0,
-      "seconds": 54.7
+      "seconds": 58.29
     },
     {
       "id": "scaled-fact-080",
@@ -10881,7 +10881,7 @@
       "refused": false,
       "prompt_tokens_est": 4197,
       "answer_tokens_est": 0,
-      "seconds": 57.04
+      "seconds": 38.27
     },
     {
       "id": "scaled-fact-081",
@@ -11016,7 +11016,7 @@
       "refused": false,
       "prompt_tokens_est": 3779,
       "answer_tokens_est": 0,
-      "seconds": 56.07
+      "seconds": 34.52
     },
     {
       "id": "scaled-fact-082",
@@ -11153,7 +11153,7 @@
       "refused": false,
       "prompt_tokens_est": 4246,
       "answer_tokens_est": 0,
-      "seconds": 54.83
+      "seconds": 35.62
     },
     {
       "id": "scaled-fact-083",
@@ -11288,7 +11288,7 @@
       "refused": false,
       "prompt_tokens_est": 3266,
       "answer_tokens_est": 0,
-      "seconds": 53.89
+      "seconds": 36.53
     },
     {
       "id": "scaled-fact-084",
@@ -11423,7 +11423,7 @@
       "refused": false,
       "prompt_tokens_est": 3143,
       "answer_tokens_est": 0,
-      "seconds": 53.01
+      "seconds": 52.39
     },
     {
       "id": "scaled-fact-085",
@@ -11582,7 +11582,7 @@
       "refused": false,
       "prompt_tokens_est": 3506,
       "answer_tokens_est": 0,
-      "seconds": 50.58
+      "seconds": 35.94
     },
     {
       "id": "scaled-fact-086",
@@ -11717,7 +11717,7 @@
       "refused": false,
       "prompt_tokens_est": 3542,
       "answer_tokens_est": 0,
-      "seconds": 51.19
+      "seconds": 33.07
     },
     {
       "id": "scaled-fact-087",
@@ -11852,7 +11852,7 @@
       "refused": false,
       "prompt_tokens_est": 3697,
       "answer_tokens_est": 0,
-      "seconds": 52.08
+      "seconds": 35.82
     },
     {
       "id": "scaled-fact-088",
@@ -11987,7 +11987,7 @@
       "refused": false,
       "prompt_tokens_est": 3821,
       "answer_tokens_est": 0,
-      "seconds": 56.0
+      "seconds": 45.21
     },
     {
       "id": "scaled-fact-089",
@@ -12122,7 +12122,7 @@
       "refused": false,
       "prompt_tokens_est": 3403,
       "answer_tokens_est": 0,
-      "seconds": 54.01
+      "seconds": 36.08
     },
     {
       "id": "scaled-fact-090",
@@ -12257,7 +12257,7 @@
       "refused": false,
       "prompt_tokens_est": 3408,
       "answer_tokens_est": 0,
-      "seconds": 51.57
+      "seconds": 70.15
     },
     {
       "id": "scaled-cross-001",
@@ -12423,7 +12423,7 @@
       "refused": false,
       "prompt_tokens_est": 3158,
       "answer_tokens_est": 0,
-      "seconds": 107.19
+      "seconds": 85.64
     },
     {
       "id": "scaled-cross-002",
@@ -12495,10 +12495,10 @@
         },
         "per_route_obligations_covered": {
           "r0-route-1": [
-            "obligation-2"
+            "obligation-1"
           ],
           "r0-route-2": [
-            "obligation-1"
+            "obligation-2"
           ]
         },
         "per_route_obligations_missing": {
@@ -12510,11 +12510,11 @@
             "query_id": "r0-route-1",
             "query": "中联重科 2023年 营业收入 年度报告",
             "obligation_ids": [
-              "obligation-2"
+              "obligation-1"
             ],
             "returned": 4,
             "covered": [
-              "obligation-2"
+              "obligation-1"
             ],
             "missing": [],
             "ambiguous": []
@@ -12523,11 +12523,11 @@
             "query_id": "r0-route-2",
             "query": "泸州老窖 2023年 营业收入 年度报告",
             "obligation_ids": [
-              "obligation-1"
+              "obligation-2"
             ],
             "returned": 1,
             "covered": [
-              "obligation-1"
+              "obligation-2"
             ],
             "missing": [],
             "ambiguous": []
@@ -12589,7 +12589,7 @@
       "refused": false,
       "prompt_tokens_est": 2952,
       "answer_tokens_est": 0,
-      "seconds": 109.66
+      "seconds": 65.16
     },
     {
       "id": "scaled-cross-003",
@@ -12661,10 +12661,10 @@
         },
         "per_route_obligations_covered": {
           "r0-route-1": [
-            "obligation-1"
+            "obligation-2"
           ],
           "r0-route-2": [
-            "obligation-2"
+            "obligation-1"
           ]
         },
         "per_route_obligations_missing": {
@@ -12676,11 +12676,11 @@
             "query_id": "r0-route-1",
             "query": "中联重科 2023年 营业收入 年度报告",
             "obligation_ids": [
-              "obligation-1"
+              "obligation-2"
             ],
             "returned": 5,
             "covered": [
-              "obligation-1"
+              "obligation-2"
             ],
             "missing": [],
             "ambiguous": []
@@ -12689,11 +12689,11 @@
             "query_id": "r0-route-2",
             "query": "京东方A 2023年 营业收入 年度报告",
             "obligation_ids": [
-              "obligation-2"
+              "obligation-1"
             ],
             "returned": 1,
             "covered": [
-              "obligation-2"
+              "obligation-1"
             ],
             "missing": [],
             "ambiguous": []
@@ -12757,7 +12757,7 @@
       "refused": false,
       "prompt_tokens_est": 3492,
       "answer_tokens_est": 0,
-      "seconds": 107.98
+      "seconds": 62.55
     },
     {
       "id": "scaled-cross-004",
@@ -12925,7 +12925,7 @@
       "refused": false,
       "prompt_tokens_est": 3966,
       "answer_tokens_est": 0,
-      "seconds": 107.96
+      "seconds": 63.85
     },
     {
       "id": "scaled-cross-005",
@@ -12997,10 +12997,10 @@
         },
         "per_route_obligations_covered": {
           "r0-route-1": [
-            "obligation-1"
+            "obligation-2"
           ],
           "r0-route-2": [
-            "obligation-2"
+            "obligation-1"
           ]
         },
         "per_route_obligations_missing": {
@@ -13012,11 +13012,11 @@
             "query_id": "r0-route-1",
             "query": "中联重科 2023年 营业收入 年度报告",
             "obligation_ids": [
-              "obligation-1"
+              "obligation-2"
             ],
             "returned": 5,
             "covered": [
-              "obligation-1"
+              "obligation-2"
             ],
             "missing": [],
             "ambiguous": []
@@ -13025,11 +13025,11 @@
             "query_id": "r0-route-2",
             "query": "科大讯飞 2023年 营业收入 年度报告",
             "obligation_ids": [
-              "obligation-2"
+              "obligation-1"
             ],
             "returned": 1,
             "covered": [
-              "obligation-2"
+              "obligation-1"
             ],
             "missing": [],
             "ambiguous": []
@@ -13093,7 +13093,7 @@
       "refused": false,
       "prompt_tokens_est": 3755,
       "answer_tokens_est": 0,
-      "seconds": 111.76
+      "seconds": 72.49
     },
     {
       "id": "scaled-cross-006",
@@ -13259,7 +13259,7 @@
       "refused": false,
       "prompt_tokens_est": 3202,
       "answer_tokens_est": 0,
-      "seconds": 108.69
+      "seconds": 71.99
     },
     {
       "id": "scaled-cross-007",
@@ -13425,7 +13425,7 @@
       "refused": false,
       "prompt_tokens_est": 2986,
       "answer_tokens_est": 0,
-      "seconds": 110.57
+      "seconds": 66.76
     },
     {
       "id": "scaled-cross-008",
@@ -13591,7 +13591,7 @@
       "refused": false,
       "prompt_tokens_est": 3122,
       "answer_tokens_est": 0,
-      "seconds": 110.68
+      "seconds": 66.86
     },
     {
       "id": "scaled-cross-009",
@@ -13757,7 +13757,7 @@
       "refused": false,
       "prompt_tokens_est": 3041,
       "answer_tokens_est": 0,
-      "seconds": 111.85
+      "seconds": 66.29
     },
     {
       "id": "scaled-cross-010",
@@ -13923,7 +13923,7 @@
       "refused": false,
       "prompt_tokens_est": 3651,
       "answer_tokens_est": 0,
-      "seconds": 116.78
+      "seconds": 62.64
     },
     {
       "id": "scaled-cross-011",
@@ -14089,7 +14089,7 @@
       "refused": false,
       "prompt_tokens_est": 3054,
       "answer_tokens_est": 0,
-      "seconds": 115.37
+      "seconds": 66.7
     },
     {
       "id": "scaled-cross-012",
@@ -14257,7 +14257,7 @@
       "refused": false,
       "prompt_tokens_est": 3686,
       "answer_tokens_est": 0,
-      "seconds": 111.16
+      "seconds": 77.5
     },
     {
       "id": "scaled-cross-013",
@@ -14425,7 +14425,7 @@
       "refused": false,
       "prompt_tokens_est": 4336,
       "answer_tokens_est": 0,
-      "seconds": 113.43
+      "seconds": 129.83
     },
     {
       "id": "scaled-cross-014",
@@ -14593,7 +14593,7 @@
       "refused": false,
       "prompt_tokens_est": 4425,
       "answer_tokens_est": 0,
-      "seconds": 108.91
+      "seconds": 115.76
     },
     {
       "id": "scaled-cross-015",
@@ -14761,7 +14761,7 @@
       "refused": false,
       "prompt_tokens_est": 4156,
       "answer_tokens_est": 0,
-      "seconds": 112.39
+      "seconds": 132.78
     },
     {
       "id": "scaled-refuse-001",
@@ -14916,7 +14916,7 @@
       "refused": true,
       "prompt_tokens_est": 20,
       "answer_tokens_est": 48,
-      "seconds": 0.17
+      "seconds": 0.04
     },
     {
       "id": "scaled-refuse-002",
@@ -15071,7 +15071,7 @@
       "refused": true,
       "prompt_tokens_est": 20,
       "answer_tokens_est": 48,
-      "seconds": 0.19
+      "seconds": 0.04
     },
     {
       "id": "scaled-refuse-003",
@@ -15226,7 +15226,7 @@
       "refused": true,
       "prompt_tokens_est": 20,
       "answer_tokens_est": 48,
-      "seconds": 0.23
+      "seconds": 0.04
     },
     {
       "id": "scaled-refuse-004",
@@ -15381,7 +15381,7 @@
       "refused": true,
       "prompt_tokens_est": 19,
       "answer_tokens_est": 48,
-      "seconds": 0.23
+      "seconds": 0.04
     },
     {
       "id": "scaled-refuse-005",
@@ -15536,7 +15536,7 @@
       "refused": true,
       "prompt_tokens_est": 19,
       "answer_tokens_est": 48,
-      "seconds": 0.15
+      "seconds": 0.07
     },
     {
       "id": "scaled-refuse-006",
@@ -15691,7 +15691,7 @@
       "refused": true,
       "prompt_tokens_est": 17,
       "answer_tokens_est": 48,
-      "seconds": 0.07
+      "seconds": 0.06
     },
     {
       "id": "scaled-refuse-007",
@@ -15846,7 +15846,7 @@
       "refused": true,
       "prompt_tokens_est": 20,
       "answer_tokens_est": 48,
-      "seconds": 0.07
+      "seconds": 0.06
     },
     {
       "id": "scaled-refuse-008",
@@ -16001,7 +16001,7 @@
       "refused": true,
       "prompt_tokens_est": 21,
       "answer_tokens_est": 48,
-      "seconds": 0.13
+      "seconds": 0.04
     },
     {
       "id": "scaled-refuse-009",
@@ -16156,7 +16156,7 @@
       "refused": true,
       "prompt_tokens_est": 24,
       "answer_tokens_est": 48,
-      "seconds": 0.04
+      "seconds": 0.03
     },
     {
       "id": "scaled-refuse-010",
@@ -16311,7 +16311,7 @@
       "refused": true,
       "prompt_tokens_est": 18,
       "answer_tokens_est": 48,
-      "seconds": 0.14
+      "seconds": 0.04
     },
     {
       "id": "scaled-refuse-011",
@@ -16405,7 +16405,7 @@
       "refused": true,
       "prompt_tokens_est": 16,
       "answer_tokens_est": 48,
-      "seconds": 0.21
+      "seconds": 0.03
     },
     {
       "id": "scaled-refuse-012",
@@ -16499,7 +16499,7 @@
       "refused": true,
       "prompt_tokens_est": 19,
       "answer_tokens_est": 48,
-      "seconds": 0.46
+      "seconds": 0.03
     },
     {
       "id": "scaled-refuse-013",
@@ -16593,7 +16593,7 @@
       "refused": true,
       "prompt_tokens_est": 18,
       "answer_tokens_est": 48,
-      "seconds": 0.11
+      "seconds": 0.03
     },
     {
       "id": "scaled-refuse-014",
@@ -16687,7 +16687,7 @@
       "refused": true,
       "prompt_tokens_est": 16,
       "answer_tokens_est": 48,
-      "seconds": 0.05
+      "seconds": 0.03
     },
     {
       "id": "scaled-refuse-015",
@@ -16781,7 +16781,7 @@
       "refused": true,
       "prompt_tokens_est": 18,
       "answer_tokens_est": 48,
-      "seconds": 0.07
+      "seconds": 0.03
     }
   ]
 }

@@ -19,8 +19,8 @@
 | 第零阶段 | 语料扩展与审计、灌库、golden set、L0 检索基线 | 已完成：30 家 / 90 份年报 / 37,958 chunk；历史 L0 Recall@5=0.882（9 份语料） |
 | P0 | 证据义务契约、逐路覆盖、缺失义务重试 | 已完成：50 题证据义务覆盖率 `0.8333`，文档 Recall@5 `1.0` |
 | P1 | Claim 解析、硬门禁、软提示、定向修复 | 已完成：硬违规召回 `1.0`，正常答案误伤率 `0.0` |
-| P2 | 统一 system/history/query/evidence/output 预算 | 已完成：预算溢出率 `0.0`；scaled 报告待数据集定稿后重跑 |
-| P3 | 120 题扩展集、重复评测与新指标 | 数据集已修正并通过 `120/120` 源文审计；模型评测待重跑 |
+| P2 | 统一 system/history/query/evidence/output 预算 | 已完成：v2 数据集预算溢出率 `0.0` |
+| P3 | 120 题扩展集、重复评测与新指标 | v2 检索、路由和三 轮 hybrid 生成均完成；生成质量仍待优化 |
 | 第一阶段 | LangGraph 主图：State / 节点 / 条件边 / 检索子图 / 自纠错重试 | 已完成，见「第一阶段」 |
 | 第二阶段 | Postgres Checkpointer、Store 长期记忆、Interrupt 人工审核 | 已完成，见「第二阶段」 |
 | 第三阶段 | FastAPI + SSE、结构化日志、四场景演示 | 已完成，见「第三阶段」 |
@@ -165,10 +165,13 @@ expectations 与 source pages。确定性检索、L3 编排检索和三轮 vecto
 - `evals/reports/claim_audit.json`
 - `evals/reports/context_budget.json`
 
-评测集已完成自动源文核验：`120/120` 通过，人工复核短名单为空。此前基于旧版
-120 题生成的 `scaled_retrieval.json`、`scaled_l3.json`、
-`scaled_generation.json` 和 `context_budget.json` 已标记为
-`stale_dataset_manifest_mismatch`，不得继续作为当前指标引用。数据集定稿后再统一重跑。
+评测集 v2 已完成自动源文核验：`120/120` 通过，人工复核短名单为空。
+当前正式报告统一使用 manifest SHA `9b91a245...`：
+
+- 路由消融：L3a Recall@5 `1.0`，L3b Route 覆盖 `0.9905`，缺失义务率 `0`。
+- 三轮 hybrid L3b 生成：答案正确率 `0.6603`，Claim 支持率 `0.7988`，
+  引用完整覆盖率 `0.9930`，上下文溢出率 `0`。
+- 详细结果见 `docs/routing-ablation-results.md` 和 `docs/generation-eval-v2.md`。
 
 ### 1b. 辅库：LangGraph 官方文档
 
@@ -282,7 +285,8 @@ rag-eval run --config configs\eval.kb_agent.yaml `
 | L0 | 单路向量（基线） | — |
 | L1 | + BM25 + RRF | 检索方式 |
 | L2 | + Cross-Encoder Rerank | 重排开关 |
-| L3 | + 自纠错重试（第一阶段） | 待实现 |
+| L3a | + 检索前公司/年份路由 | 已完成 |
+| L3b | + 缺失义务定向重试 | 已完成 |
 
 指标定义见 `evals/run_eval.py` 顶部注释：`doc_recall@5`、`all_docs_hit@5`、
 `doc_mrr`、`value_hit_rate`、`evidence_hit@5`，应拒答题单列 top-1 相似度分布
@@ -885,6 +889,8 @@ Postgres 连不上时接口层会降级到内存 checkpointer，日志里留一�
   优化方向：候选池裁剪、批量重排、查询缓存，或换 API 侧的 rerank 服务。
 - 表格在抽取后是"拍平"的文本行，数字顺序保留、行列语义丢失；表格题的召回
   依赖数字与表头关键词共现，不是结构化取数。
-- golden set 的 20 题为自建最小集，验收前需扩到 50 题。
+- scaled golden set 已扩展到 120 题，并通过 v2 源文审计。
+- hybrid L3b 三轮生成的整体答案正确率为 `0.6603`，跨文档题仅 `0.4889`；
+  生成层仍是当前主要质量短板。
 - 第零阶段只验证检索层，**答案正确性 / 拒答 / 引用准确率**需要生成链路，
   属于第一阶段及以后。
