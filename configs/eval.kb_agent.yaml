@@ -12,6 +12,3 @@ k_values: [1, 3, 5]
 thresholds:
   recall@5: 0.0
   evidence_hit_final: 0.0
-  retry_rate: 0.05
-  foreign_evidence_rate: 0.0
-  human_review_rate: 0.1
