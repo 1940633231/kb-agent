@@ -201,6 +201,8 @@ PDF 和索引不提交 Git，首次运行需要抓取年报并灌库：
 - PDF 本体不进入 Git。
 - `data/index/{strategy}/` 保存 FAISS、chunk metadata 和页码偏移。
 - 索引重建不需要重新 embedding 已缓存模型，但 CPU 建库仍然较慢。
+- 本地全量灌库默认要求登记表中的 PDF 全部存在；CI 或增量语料使用
+  `python scripts/ingest_kb.py --available-only`，只索引当前实际下载到的文件。
 
 ### 2. CLI 问答
 

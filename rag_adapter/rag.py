@@ -324,9 +324,15 @@ def cap_evidence_preserving(candidates: List[Dict], limit: int,
     return kept[:limit]
 
 
-def load_annual_reports(registry_path: Optional[Path] = None
+def load_annual_reports(registry_path: Optional[Path] = None,
+                        available_only: bool = False
                         ) -> Tuple[List[Document], Dict[str, Dict]]:
-    """按抓取登记表读取年报，返回 (documents, page_offsets)。"""
+    """按抓取登记表读取年报，返回 (documents, page_offsets)。
+
+    ``available_only`` 用于 CI 或增量语料：登记表可能包含历史上抓取过的完整
+    90 份文档，但工作区只下载了当前评测需要的子集。默认 ``False`` 保持严格
+    校验，避免本地全量灌库在 PDF 缺失时静默生成不完整索引。
+    """
     registry_file = registry_path or REPORTS_REGISTRY
     registry = json.loads(registry_file.read_text(encoding="utf-8"))
     documents: List[Document] = []
@@ -336,6 +342,10 @@ def load_annual_reports(registry_path: Optional[Path] = None
         pdf_path = Path(entry["file"])
         if not pdf_path.is_absolute():
             pdf_path = PROJECT_ROOT / pdf_path
+        if not pdf_path.exists():
+            if available_only:
+                continue
+            raise FileNotFoundError(str(pdf_path))
         document_id = "{}-{}".format(entry["ts_code"], entry["year"])
 
         loader = PdfiumLoader({
@@ -361,6 +371,9 @@ def load_annual_reports(registry_path: Optional[Path] = None
             "year": entry["year"],
             "pages": extraction.pages,
         }
+    if available_only and not documents:
+        raise FileNotFoundError(
+            "available_only=True，但没有任何可用年报 PDF")
     return documents, offsets
 
 

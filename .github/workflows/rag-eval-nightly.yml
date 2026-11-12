@@ -55,7 +55,7 @@ jobs:
         run: |
           if [ ! -f data/index/recursive/faiss.index ] || \
              [ ! -f data/index/recursive/metadata.json ]; then
-            python scripts/ingest_kb.py
+            python scripts/ingest_kb.py --available-only
           fi
 
       - name: Build rag-eval datasets

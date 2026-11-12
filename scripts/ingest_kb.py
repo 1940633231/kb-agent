@@ -86,6 +86,8 @@ def main() -> int:
                         help="不清理旧索引，直接追加写入")
     parser.add_argument("--verify-only", action="store_true",
                         help="跳过写入，只核对已有索引并写页码映射")
+    parser.add_argument("--available-only", action="store_true",
+                        help="只索引工作区中实际存在的 PDF（用于 CI/增量语料）")
     args = parser.parse_args()
 
     use_project_root_as_cwd()
@@ -103,7 +105,8 @@ def main() -> int:
         print("已清理旧索引产物: {}".format(removed or "无"))
 
     started = time.time()
-    documents, offsets = rag.load_annual_reports()
+    documents, offsets = rag.load_annual_reports(
+        available_only=args.available_only)
     print("载入年报 {} 份，正文合计 {:,} 字符".format(
         len(documents), sum(len(d.content) for d in documents)))
 
