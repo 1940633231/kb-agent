@@ -1,0 +1,5 @@
+# Frozen evaluation artifacts are hashed as canonical LF files on every OS.
+evals/heldout_40.jsonl text eol=lf
+evals/heldout_40.manifest.json text eol=lf
+evals/reports/heldout_40_baseline.json text eol=lf
+evals/reports/heldout_40_after_fixes.json text eol=lf

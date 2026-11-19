@@ -5,7 +5,7 @@
   "frozen_at": "2026-11-18T10:19:05.125981+00:00",
   "status": "frozen",
   "path": "F:\\workSpace\\python\\kb-agent\\evals\\heldout_40.jsonl",
-  "sha256": "1d2c98a0b49f6a7c23299166c7a36bc2d700048e633708ebc6d706ead4001e39",
+  "sha256": "e530a98b7d97df2fa58d71d8ad735cc20c8dab8032c09cac2f83848514e1f574",
   "candidate_dataset_sha256": "a8575a52d1390cc899a67bdc8eac788ed6e2e3ea00be36c36c4a3806470ba975",
   "review_path": "F:\\workSpace\\python\\kb-agent\\evals\\heldout_40_review.md",
   "dev_set": {
@@ -46,7 +46,7 @@
   },
   "baseline": {
     "path": "F:\\workSpace\\python\\kb-agent\\evals\\reports\\heldout_40_baseline.json",
-    "sha256": "fe99005fddadba681ac8bfc76125a345b7bb173a07e4a76dde3511de5f6f59f1",
+    "sha256": "a24785212e59cf3b6baca8199425c91ed5c7960d2595d2c02a52de1f10f63454",
     "dataset_candidate_sha256": "a8575a52d1390cc899a67bdc8eac788ed6e2e3ea00be36c36c4a3806470ba975"
   },
   "freeze_policy": "Frozen after human confirmation. Do not change questions, labels, or evidence in place; use a new dataset version for changes."

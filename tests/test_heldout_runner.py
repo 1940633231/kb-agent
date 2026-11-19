@@ -5,12 +5,19 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "evals"))
 
 import run_heldout_eval as runner  # noqa: E402
 from rag_adapter import rag  # noqa: E402
+
+LOCAL_INDEX_AVAILABLE = (
+    runner.CHUNK_METADATA.exists()
+    and (runner.PROJECT_ROOT / "data" / "index" / "recursive" / "page_offsets.json").exists()
+)
 
 
 def _records() -> dict[str, dict]:
@@ -110,6 +117,10 @@ def test_multi_value_answer_requires_all_values_and_expected_chunks():
     assert score["citations"]["complete"] is True
 
 
+@pytest.mark.skipif(
+    not LOCAL_INDEX_AVAILABLE,
+    reason="本地检索索引未构建，跳过需要 chunk metadata 的绑定测试",
+)
 def test_value_presence_without_four_tuple_binding_is_not_fully_correct():
     record = _records()["heldout-conflict-003"]
     source = record["source_pages"][0]
@@ -191,6 +202,10 @@ def test_retrieval_page_matching_uses_chunk_start_page_not_evidence_page():
     assert mismatched["complete"] is False
 
 
+@pytest.mark.skipif(
+    not LOCAL_INDEX_AVAILABLE,
+    reason="本地检索索引未构建，跳过需要 chunk/page metadata 的页码测试",
+)
 def test_describe_hit_exposes_chunk_start_page_explicitly():
     record = _records()["heldout-mixed-002"]
     source = record["source_pages"][0]

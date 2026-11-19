@@ -7,11 +7,17 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+import pytest
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "evals"))
 
 import build_heldout_40 as builder  # noqa: E402
+
+LOCAL_INDEX_AVAILABLE = (
+    builder.INDEX_METADATA.exists() and builder.PAGE_OFFSETS.exists()
+)
 
 
 def _records() -> list[dict]:
@@ -20,6 +26,11 @@ def _records() -> list[dict]:
         for line in builder.OUTPUT.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
+
+
+def _canonical_sha256(path: Path) -> str:
+    raw = path.read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(raw).hexdigest()
 
 
 def test_heldout_candidate_has_40_unique_questions_and_eight_scenarios():
@@ -36,6 +47,10 @@ def test_heldout_candidate_has_40_unique_questions_and_eight_scenarios():
     ) == 18
 
 
+@pytest.mark.skipif(
+    not LOCAL_INDEX_AVAILABLE,
+    reason="本地检索索引未构建，跳过需要 chunk/page metadata 的源文审计",
+)
 def test_heldout_sources_still_pass_page_and_development_overlap_audit():
     raw = json.loads(builder.INDEX_METADATA.read_text(encoding="utf-8"))
     chunks = {item["chunk_id"]: item for item in raw.values()}
@@ -52,6 +67,10 @@ def test_heldout_sources_still_pass_page_and_development_overlap_audit():
     )
 
 
+@pytest.mark.skipif(
+    not LOCAL_INDEX_AVAILABLE,
+    reason="本地检索索引未构建，跳过需要 chunk/page metadata 的页码校验",
+)
 def test_heldout_source_pages_point_at_the_evidence_not_the_chunk_start():
     raw = json.loads(builder.INDEX_METADATA.read_text(encoding="utf-8"))
     chunks = {item["chunk_id"]: item for item in raw.values()}
@@ -91,7 +110,10 @@ def test_heldout_source_pages_point_at_the_evidence_not_the_chunk_start():
 
 def test_heldout_manifest_matches_frozen_dataset_and_baseline_hashes():
     manifest = json.loads(builder.MANIFEST.read_text(encoding="utf-8"))
-    digest = hashlib.sha256(builder.OUTPUT.read_bytes()).hexdigest()
+    # The frozen hash is defined over canonical LF bytes so Windows checkouts
+    # and Linux CI produce the same digest.
+    digest = _canonical_sha256(builder.OUTPUT)
+    baseline_digest = _canonical_sha256(builder.BASELINE)
     baseline = json.loads(builder.BASELINE.read_text(encoding="utf-8"))
 
     assert manifest["status"] == "frozen"
@@ -101,6 +123,7 @@ def test_heldout_manifest_matches_frozen_dataset_and_baseline_hashes():
     assert manifest["counts"]["source_audit_passed"] == 40
     assert manifest["counts"]["human_confirmation_pending"] == 0
     assert manifest["counts"]["human_confirmation_confirmed"] == 40
+    assert manifest["baseline"]["sha256"] == baseline_digest
     assert baseline["dataset_sha256"] == digest
     assert baseline["dataset_candidate_sha256"] == manifest[
         "candidate_dataset_sha256"]

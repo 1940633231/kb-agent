@@ -4,7 +4,7 @@
   "dataset": "F:\\workSpace\\python\\kb-agent\\evals\\heldout_40.jsonl",
   "dataset_candidate_sha256": "a8575a52d1390cc899a67bdc8eac788ed6e2e3ea00be36c36c4a3806470ba975",
   "dataset_frozen_at": "2026-11-18T10:19:05.125981+00:00",
-  "dataset_sha256": "1d2c98a0b49f6a7c23299166c7a36bc2d700048e633708ebc6d706ead4001e39",
+  "dataset_sha256": "e530a98b7d97df2fa58d71d8ad735cc20c8dab8032c09cac2f83848514e1f574",
   "config": {
     "generate": true,
     "strategy": "recursive",

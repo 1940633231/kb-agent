@@ -8,7 +8,7 @@
 - 文件：`evals/heldout_40.jsonl`
 - 版本：`v1-frozen`
 - 规模：40 题，8 个场景各 5 题
-- dataset SHA256：`1d2c98a0b49f6a7c23299166c7a36bc2d700048e633708ebc6d706ead4001e39`
+- dataset SHA256：`e530a98b7d97df2fa58d71d8ad735cc20c8dab8032c09cac2f83848514e1f574`
 - 人工确认：`40/40`
 - 开发集：`evals/golden_set_scaled_120.jsonl`，SHA256 `9b91a245...`
 

@@ -93,7 +93,7 @@ cross_document = 0.4889
 ### Held-out 40 题证据评测
 
 `evals/heldout_40.jsonl` 是人工确认后冻结的 `v1-frozen` 诊断集，
-SHA256 为 `1d2c98a0b49f6a7c23299166c7a36bc2d700048e633708ebc6d706ead4001e39`。
+SHA256 为 `e530a98b7d97df2fa58d71d8ad735cc20c8dab8032c09cac2f83848514e1f574`。
 它和 120 题开发集分开使用，不继续扩题。
 
 使用同一评分器重评基线后：
