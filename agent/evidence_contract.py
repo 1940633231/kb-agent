@@ -13,7 +13,12 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence
 
-from agent.grading import extract_facets, normalize
+from agent.grading import (
+    company_mentioned,
+    company_position,
+    extract_facets,
+    normalize,
+)
 from agent.grounding import extract_numbers
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +30,14 @@ EXPECTED_KINDS = {
     "calculation_input",
     "refusal",
     "comparison",
+}
+
+METRIC_TERM_ALIASES = {
+    "营业收入": ("营业总收入",),
+    "归母净利润": ("归属于上市公司股东的净利润",),
+    "扣非归母净利润": ("扣除非经常性损益后的归母净利润",),
+    "经营现金流净额": ("经营活动产生的现金流量净额",),
+    "总资产": ("资产总计", "资产总额"),
 }
 CALCULATION_MARKERS = (
     "增加", "减少", "差额", "相差", "比例", "占比", "较上年", "同比",
@@ -162,10 +175,21 @@ def _route_query(question: str, company: Optional[str], year: Optional[int],
     if single_route and question.strip():
         return question.strip()
     metric_text = "、".join(metrics)
+    hints = []
+    for metric in metrics:
+        if any(token in metric for token in ("净利润", "营业收入", "营业总收入")):
+            hints.extend(("主要会计数据", "合并利润表"))
+        elif "资产" in metric:
+            hints.extend(("主要会计数据", "合并资产负债表"))
+        elif "现金流" in metric:
+            hints.extend(("主要会计数据", "合并现金流量表"))
+        elif any(token in metric for token in ("研发", "销售费用")):
+            hints.append("财务报表附注")
     return " ".join(part for part in (
         company,
         "{}年".format(year) if year is not None else "",
         metric_text,
+        " ".join(dict.fromkeys(hints)),
         "年度报告",
     ) if part).strip()
 
@@ -185,29 +209,28 @@ def build_initial_routes(
         else EvidenceObligation.from_dict(item)
         for item in obligations or []
     ]
-    groups: Dict[tuple[Optional[str], Optional[int]],
+    groups: Dict[tuple[Optional[str], Optional[int], Optional[str]],
                  List[EvidenceObligation]] = {}
     for obligation in parsed:
         if obligation.expected_kind == "refusal":
             continue
-        key = (obligation.company, obligation.year)
+        key = (obligation.company, obligation.year, obligation.metric)
         groups.setdefault(key, []).append(obligation)
     if not groups:
         return []
 
     def group_order(item):
-        company, year = item[0]
-        position = question.find(company) if company else len(question) + 1
-        if position < 0:
-            position = len(question) + 1
-        return position, year if year is not None else 9999
+        company, year, metric = item[0]
+        position = company_position(question, company) if company else len(question) + 1
+        metric_position = question.find(metric) if metric else len(question) + 1
+        if metric_position < 0:
+            metric_position = len(question) + 1
+        return position, year if year is not None else 9999, metric_position
 
     drafts: List[Dict[str, Any]] = []
-    for (company, year), items in sorted(groups.items(), key=group_order):
-        metrics: List[str] = []
-        for item in items:
-            if item.metric and item.metric not in metrics:
-                metrics.append(item.metric)
+    for (company, year, metric), items in sorted(
+            groups.items(), key=group_order):
+        metrics: List[str] = [metric] if metric else []
         document_ids = _document_ids_for_scope(company, year)
         unrouted = company is None and year is None
         drafts.append({
@@ -328,7 +351,7 @@ def route_for_missing_obligations(
 
         matched_queries = [
             query for query in query_candidates
-            if (not route.company or route.company in query)
+            if (not route.company or company_mentioned(query, route.company))
             and (route.year is None or str(route.year) in query)
             and (
                 not metrics
@@ -377,7 +400,7 @@ def _metrics_by_company(question: str, companies: List[str],
     if len(companies) <= 1 or len(metrics) <= 1:
         return {company: list(metrics) for company in companies}
     positions = {
-        company: question.find(company)
+        company: company_position(question, company)
         for company in companies
     }
     ordered = sorted(companies, key=lambda item: positions[item])
@@ -402,7 +425,7 @@ def _group_metric_slots(question: str, company: str,
                         metrics: List[str]) -> List[Optional[str]]:
     if len(metrics) <= 1:
         return list(metrics) or [None]
-    start = max(0, question.find(company))
+    start = max(0, company_position(question, company))
     next_positions = [
         position for position in (
             question.find(other) for other in _known_companies()
@@ -559,8 +582,24 @@ def hit_matches_obligation(hit: Dict[str, Any],
             term.strip() for term in obligation.metric.split("+")
             if term.strip()
         ]
+        def has_metric_with_number(term: str) -> bool:
+            variants = (term,) + METRIC_TERM_ALIASES.get(term, ())
+            for variant in variants:
+                normalized = normalize(variant)
+                for match in re.finditer(re.escape(normalized), content):
+                    window = content[
+                        max(0, match.start() - 120):match.end() + 160]
+                    for number in re.finditer(
+                            r"-?\d[\d,]{2,}(?:\.\d+)?", window):
+                        plain = number.group(0).replace(",", "").rstrip(".")
+                        if (len(plain) == 4 and plain.isdigit()
+                                and 1900 <= int(plain) <= 2100):
+                            continue
+                        return True
+            return False
+
         if not metric_terms or not all(
-                normalize(term) in content for term in metric_terms):
+                has_metric_with_number(term) for term in metric_terms):
             return False
     if not obligation.company and not obligation.year and not obligation.metric:
         return False

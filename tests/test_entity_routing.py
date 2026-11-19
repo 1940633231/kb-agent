@@ -75,16 +75,19 @@ def test_multiple_companies_and_years_build_complete_matrix():
     }
 
 
-def test_multiple_metrics_in_one_company_year_share_a_document_route():
+def test_multiple_metrics_in_one_company_year_build_targeted_routes():
     question = "贵州茅台2023年营业收入、净利润分别是多少？"
     obligations = build_obligations(question)
 
     routes = build_initial_routes(question, obligations)
 
-    assert len(routes) == 1
-    assert len(routes[0].obligation_ids) == len(obligations)
-    assert routes[0].document_ids == ("600519-2023",)
-    assert routes[0].metrics == ("营业收入", "净利润")
+    assert len(routes) == 2
+    assert [route.metrics for route in routes] == [
+        ("营业收入",), ("净利润",)
+    ]
+    assert all(route.document_ids == ("600519-2023",) for route in routes)
+    assert sum(len(route.obligation_ids) for route in routes) == len(obligations)
+    assert all("主要会计数据" in route.query for route in routes)
 
 
 def test_refusal_obligation_does_not_generate_a_route():

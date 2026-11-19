@@ -1,0 +1,53 @@
+{
+  "dataset_id": "kb-agent-heldout-40",
+  "version": "v1-frozen",
+  "generated_at": "2026-11-18T10:19:05.147078+00:00",
+  "frozen_at": "2026-11-18T10:19:05.125981+00:00",
+  "status": "frozen",
+  "path": "F:\\workSpace\\python\\kb-agent\\evals\\heldout_40.jsonl",
+  "sha256": "1d2c98a0b49f6a7c23299166c7a36bc2d700048e633708ebc6d706ead4001e39",
+  "candidate_dataset_sha256": "a8575a52d1390cc899a67bdc8eac788ed6e2e3ea00be36c36c4a3806470ba975",
+  "review_path": "F:\\workSpace\\python\\kb-agent\\evals\\heldout_40_review.md",
+  "dev_set": {
+    "path": "F:\\workSpace\\python\\kb-agent\\evals\\golden_set_scaled_120.jsonl",
+    "sha256": "9b91a2457f47afab5de9968f9dfebef72e72598abdf4e8a58ef95c4e1417d29f"
+  },
+  "corpus_metadata": {
+    "path": "F:\\workSpace\\python\\kb-agent\\data\\docs\\annual_reports\\metadata.json",
+    "sha256": "38bbabd11e54afbe1c3a4c5f67112bfb4640c503ad750fc824ebbe06e982deba"
+  },
+  "field_semantics": {
+    "evidence_page": "PDF page containing the expected value or conflict literal",
+    "chunk_start_page": "PDF page returned by application retrieval for the chunk start; use this for retrieval page matching",
+    "unsupported_obligations": "Obligations that must be explicitly refused or marked outside the corpus"
+  },
+  "runner": {
+    "path": "F:\\workSpace\\python\\kb-agent\\evals\\run_heldout_eval.py",
+    "consumes_unsupported_obligations": true,
+    "retrieval_page_field": "chunk_start_page",
+    "answer_binding_field": "chunk_id"
+  },
+  "counts": {
+    "total": 40,
+    "by_scenario": {
+      "alias_or_abbreviation": 5,
+      "body_vs_table_crosscheck": 5,
+      "cross_page_table": 5,
+      "mixed_known_unknown": 5,
+      "multi_caliber": 5,
+      "multi_year_same_company": 5,
+      "partial_answer": 5,
+      "unsupported_scope": 5
+    },
+    "high_priority_review": 18,
+    "source_audit_passed": 40,
+    "human_confirmation_pending": 0,
+    "human_confirmation_confirmed": 40
+  },
+  "baseline": {
+    "path": "F:\\workSpace\\python\\kb-agent\\evals\\reports\\heldout_40_baseline.json",
+    "sha256": "fe99005fddadba681ac8bfc76125a345b7bb173a07e4a76dde3511de5f6f59f1",
+    "dataset_candidate_sha256": "a8575a52d1390cc899a67bdc8eac788ed6e2e3ea00be36c36c4a3806470ba975"
+  },
+  "freeze_policy": "Frozen after human confirmation. Do not change questions, labels, or evidence in place; use a new dataset version for changes."
+}

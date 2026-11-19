@@ -190,7 +190,7 @@ def test_human_review_interrupt_and_resume_approve():
     """低置信度 + 开启审核：图在 human_review 处暂停，Command 恢复后收敛结果。"""
     graph, _ = build_graph(lambda q: [maotai_year_hit(2025)],
                            enable_pre_retrieval_routing=False,
-                           extra={"interrupt_on_low_confidence": True})
+                           interrupt_on_low_confidence=True)
     result = agent_graph.ask(graph, QUESTION, thread_id="t-review")
 
     payload = pending_review(graph, "t-review")
@@ -210,7 +210,7 @@ def test_human_review_reject_and_idempotency():
     store = DictStore()
     graph, _ = build_graph(lambda q: [maotai_year_hit(2025)],
                            enable_pre_retrieval_routing=False,
-                           extra={"interrupt_on_low_confidence": True})
+                           interrupt_on_low_confidence=True)
     agent_graph.ask(graph, QUESTION, thread_id="t-reject")
     payload = pending_review(graph, "t-reject")
     assert payload
@@ -230,10 +230,25 @@ def test_human_review_reject_and_idempotency():
 def test_human_review_rejects_stale_review_id():
     graph, _ = build_graph(lambda q: [maotai_year_hit(2025)],
                            enable_pre_retrieval_routing=False,
-                           extra={"interrupt_on_low_confidence": True})
+                           interrupt_on_low_confidence=True)
     agent_graph.ask(graph, QUESTION, thread_id="t-stale")
     outcome = resume_review(graph, "t-stale", "deadbeef", decision="approve")
     assert outcome["status"] == "review_id_mismatch"
+
+
+def test_disabled_low_confidence_interrupt_does_not_pause():
+    graph, _ = build_graph(
+        lambda q: [maotai_year_hit(2025)],
+        enable_pre_retrieval_routing=False,
+        max_retries=0,
+        interrupt_on_low_confidence=False,
+    )
+
+    result = agent_graph.ask(graph, QUESTION, thread_id="t-no-interrupt")
+
+    assert pending_review(graph, "t-no-interrupt") is None
+    assert result["needs_human_review"] is False
+    assert result["review_reason"] is None
 
 
 def test_short_question_skips_retrieval():

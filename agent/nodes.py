@@ -355,7 +355,13 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
 
         return {
             "next_action": action,
-            "needs_human_review": bool(low_confidence),
+            "needs_human_review": bool(
+                low_confidence and runtime.interrupt_on_low_confidence),
+            "review_reason": (
+                "low_confidence"
+                if low_confidence and runtime.interrupt_on_low_confidence
+                else None
+            ),
             "status": status,
             "trace": [{"node": "decide_next_step", "action": action,
                        "retry_count": retry_count,
@@ -628,6 +634,9 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
                             repaired, citations_after, chunks, question),
                         "needs_human_review": bool(
                             audit_after.get("soft_issues")),
+                        "review_reason": (
+                            "claim_soft"
+                            if audit_after.get("soft_issues") else None),
                         "repair_history": [record],
                         "status": "answered_repaired",
                         "trace": [{
@@ -644,7 +653,10 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
 
         hard_enforced = bool(runtime.enable_claim_hard_gate and hard)
         soft_review = bool(runtime.enable_claim_soft_warnings and soft)
-        needs_review = hard_enforced or soft_review
+        prior_low_review = bool(
+            state.get("needs_human_review")
+            and state.get("review_reason") == "low_confidence")
+        needs_review = hard_enforced or soft_review or prior_low_review
         record = {
             "round": attempts + 1,
             "applied_claim_ids": (
@@ -656,6 +668,11 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             "claims": audit.get("claims") or [],
             "answer_audit": audit,
             "needs_human_review": needs_review,
+            "review_reason": (
+                "claim_hard" if hard_enforced
+                else "claim_soft" if soft_review
+                else "low_confidence" if prior_low_review else None
+            ),
             "status": (
                 "answer_hard_gate_failed" if hard_enforced
                 else "answered_soft_warnings" if soft_review
@@ -705,6 +722,7 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         return {
             "review_result": submission,
             "needs_human_review": False,
+            "review_reason": None,
             "answer": answer,
             "citations": state.get("citations") or [],
             "status": status,
@@ -758,11 +776,19 @@ def route_after_understand(state: Dict[str, Any]) -> str:
     return "finalize_response"
 
 
-def route_after_generate(state: Dict[str, Any]) -> str:
-    """低置信度且开启审核时，先把草稿交人工；否则直接收尾。"""
-    if state.get("needs_human_review") and state.get("status") != "reviewed":
+def make_route_after_generate(runtime: AgentRuntime):
+    """Route review needs without letting config bypass hard Claim failures."""
+    def route(state: Dict[str, Any]) -> str:
+        if not state.get("needs_human_review"):
+            return "remember_preference"
+        if state.get("status") == "reviewed":
+            return "remember_preference"
+        if (state.get("review_reason") == "low_confidence"
+                and not runtime.interrupt_on_low_confidence):
+            return "remember_preference"
         return "human_review"
-    return "remember_preference"
+
+    return route
 
 
 def route_after_decide(state: Dict[str, Any]) -> str:

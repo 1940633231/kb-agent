@@ -45,6 +45,8 @@ class AgentRuntime:
     memory_store: Optional[Any] = None   # LangGraph Store（跨会话记忆）
     memory_user_id: str = ""             # 记忆 namespace 里的用户标识
     review_timeout_seconds: Optional[float] = 3600.0  # 审核超时（秒）
+    #: 低置信度是否进入人工审核；Claim 硬违规不受此开关放行。
+    interrupt_on_low_confidence: bool = True
     # P2 统一上下文预算：None 表示沿用 production-rag 的 max_context_tokens。
     max_context_tokens: Optional[int] = None
     output_reserved_tokens: int = 1024

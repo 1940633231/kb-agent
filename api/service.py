@@ -35,7 +35,7 @@ class AppContext:
             self.bundle.close()
 
     # ---- 问答 ----
-    def ask(self, question: str, thread_id: str, user_id: str,
+    def ask(self, question: str, thread_id: str,
             generate: Optional[bool] = None) -> Dict[str, Any]:
         """同步问答：一次跑完，返回最终 State。"""
         from agent.state import initial_state
@@ -46,9 +46,10 @@ class AppContext:
         with self.semaphore:
             return graph.invoke(
                 initial_state(question, {"thread_id": thread_id,
-                                         "user_id": user_id}), config=config)
+                                         "user_id": self.settings.default_user}),
+                config=config)
 
-    def ask_stream(self, question: str, thread_id: str, user_id: str,
+    def ask_stream(self, question: str, thread_id: str,
                    generate: Optional[bool] = None) -> Iterator[Dict[str, Any]]:
         """SSE 事件流：节点级进度 → token → 最终结果。"""
         from agent.state import initial_state
@@ -57,7 +58,7 @@ class AppContext:
         graph = build_graph(runtime, checkpointer=self.checkpointer, store=self.store)
         config = {"configurable": {"thread_id": thread_id}}
         state = initial_state(question, {"thread_id": thread_id,
-                                        "user_id": user_id})
+                                        "user_id": self.settings.default_user})
 
         yield {"event": "progress",
                "data": {"node": "start", "thread_id": thread_id,
@@ -116,6 +117,7 @@ class AppContext:
     @staticmethod
     def result_payload(values: Dict[str, Any]) -> Dict[str, Any]:
         score = values.get("retrieval_score") or {}
+        audit = values.get("answer_audit") or {}
         return {
             "thread_id": values.get("thread_id"),
             "question": values.get("question"),
@@ -130,6 +132,10 @@ class AppContext:
                           "documents": score.get("documents") or []},
             "memories": [m.get("content") for m in values.get("memories") or []],
             "memory_written": values.get("memory_written") or [],
+            "answer_contract": audit.get("answer_contract") or {
+                "items": [],
+                "complete": None,
+            },
             "review_result": values.get("review_result"),
         }
 

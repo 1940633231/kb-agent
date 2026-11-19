@@ -30,13 +30,14 @@
 |---|---|
 | 30 家公司、90 份年报、37,958 chunk | 已完成并通过审计 |
 | 120 题评测集 v2 | 已完成，`120 normal / 0 fail` |
+| 40 题 held-out 证据集 | `v1-frozen`，人工确认 `40/40` |
 | 证据义务与 Claim 门禁 | 已完成 |
 | 多公司/多年份检索前路由 | 已完成 |
 | L2 / L3a / L3b 消融 | 已完成，全部验收通过 |
 | 三轮 hybrid L3b 生成 | 已完成 |
 | 生成质量优化 | 下一阶段 |
 
-最新评测统一使用：
+开发集和路由/生成消融统一使用：
 
 ```text
 dataset = evals/golden_set_scaled_120.jsonl
@@ -64,7 +65,7 @@ manifest_sha256 = 9b91a2457f47afab5de9968f9dfebef72e72598abdf4e8a58ef95c4e1417d2
 
 | 指标 | 均值 |
 |---|---:|
-| 答案正确率 | 0.6603 |
+| 期望数值命中率（自动代理指标） | 0.6603 |
 | Claim 支持率 | 0.7988 |
 | Grounding 通过率 | 0.9403 |
 | 引用完整覆盖率 | 0.9930 |
@@ -72,7 +73,7 @@ manifest_sha256 = 9b91a2457f47afab5de9968f9dfebef72e72598abdf4e8a58ef95c4e1417d2
 | 上下文溢出率 | 0.0000 |
 | 平均秒/题 | 92.8829 |
 
-分题型答案正确率：
+分题型期望数值命中率（自动代理指标）：
 
 ```text
 fact = 0.6713
@@ -88,6 +89,28 @@ cross_document = 0.4889
 - 路由层已经把文档召回、义务覆盖和跨文档污染控制住。
 - 生成层仍然会在多值绑定、精确表格值和跨文档逐项输出上出错。
 - 当前瓶颈已经从“找不找得到”转向“拿到证据后能不能稳定答对”。
+
+### Held-out 40 题证据评测
+
+`evals/heldout_40.jsonl` 是人工确认后冻结的 `v1-frozen` 诊断集，
+SHA256 为 `1d2c98a0b49f6a7c23299166c7a36bc2d700048e633708ebc6d706ead4001e39`。
+它和 120 题开发集分开使用，不继续扩题。
+
+使用同一评分器重评基线后：
+
+| 指标 | 基线 | 修复后 |
+|---|---:|---:|
+| `fully_correct` | 3/40 | 6/40 |
+| `partially_correct` | 16/40 | 15/40 |
+| `incorrect` | 6/40 | 5/40 |
+| `correctly_refused` | 5/40 | 5/40 |
+| `wrongly_refused` | 10/40 | 9/40 |
+| `evidence_binding_rate` | 0.3714 | 0.4571 |
+
+这里的 `evidence_binding_rate` 要求公司、年份、指标和数值来自同一被引证据，
+不是“数值字符串出现率”。别名组由 `0/5` 完整正确提升到 `3/5`；跨页表格仍有
+3/5 题未答完整。详细方法和失败归因见
+[docs/heldout-evaluation.md](docs/heldout-evaluation.md)。
 
 ## 架构
 
@@ -315,7 +338,7 @@ v2 修正了 3 道美的集团题的“营业收入/营业总收入”口径和�
 | `route_obligation_coverage` | route 内证据义务覆盖率 |
 | `missing_obligation_rate` | 存在缺失义务的题目比例 |
 | `cross_document_contamination_rate` | 混入非期望公司/年份文档的比例 |
-| `answer_value_rate` | 答案包含全部期望数值的比例 |
+| `answer_value_rate` | 答案包含全部期望数值的比例（自动代理，不等于业务正确率） |
 | `claim_support_rate` | 数值 Claim 能被证据支持的比例 |
 | `grounding_verified_rate` | 答案数字能在相关证据中定位的比例 |
 | `refusal_correctness` | 应拒答题正确拒答比例 |
@@ -333,6 +356,16 @@ records = 120
 normal = 120
 fail = 0
 ```
+
+### Held-out 40 题
+
+```powershell
+.\.venv\Scripts\python.exe evals\run_heldout_eval.py
+```
+
+默认输出为 `evals/reports/heldout_40_baseline.json`；修复后报告使用
+`--output evals\reports\heldout_40_after_fixes.json`。重评旧基线时使用
+`--rescore-existing`，保证两次报告的评分口径一致。
 
 ### 路由消融
 
@@ -396,7 +429,7 @@ context_overflow_rate == 0
 .\.venv\Scripts\python.exe -m pytest tests -q -rs
 ```
 
-当前：`198 passed, 1 skipped`。跳过项为未配置 Postgres。
+当前：`229 passed, 1 skipped`。跳过项为未配置 Postgres。
 
 ## 关键设计取舍
 
@@ -489,19 +522,27 @@ docs/           设计、评测、交付与历史文档
 
 ## 已知限制
 
-- 跨文档生成答案正确率为 `0.4889`，多值题仍容易漏答或错绑。
-- Claim 支持率为 `0.798833`，低于 `0.8` 优化门槛。
-- 美的集团三道题暴露了“正文概数 vs 精确表格值”问题，prompt 已强化但尚未完全解决。
+- 120 题的 `0.6603` 是期望数值命中的自动代理指标，不是真实业务正确率；
+  held-out 40 题修复后完整正确为 `6/40`，不能外推成泛化正确率。
+- held-out 中跨页表格仍有 `3/5` 题答不完整，剩余原因包括精确表格 chunk
+  未召回、上下文压缩后证据丢失，以及正文概数与表格精确值并存。
+- 别名组仍有 `2/5` 题错误拒答；`美的研发费用`、`海康经营现金流`等
+  说明别名归一化只解决了路由入口，没有解决最终证据选择。
 - 表格在 PDF 抽取后是扁平文本，行列语义仍需模型推断。
 - hybrid L3b 平均约 92.88 秒/题，瓶颈主要是 CPU reranker。
 - Postgres 未配置时退化到内存 Checkpointer，不能跨进程恢复审核状态。
-- 引用页码使用 chunk 起始页，跨页片段可能指向上一页。
+- 引用返回的 `page` 是 chunk 起始页；需要做检索页匹配时应使用
+  `chunk_start_page`，不能把它当作证据所在页。
+- API 是单用户 Demo：没有认证，客户端不能选择 `user_id`，thread 和 memory
+  固定绑定服务端 `default_user`；不要宣称已经具备多用户身份隔离。
+- `KB_AGENT_INTERRUPT=false` 已接线为不因低置信度挂起；Claim 硬违规仍可能进入
+  人工审核，配置不等于关闭全部安全门禁。
 
 ## 下一阶段
 
-1. 优化跨文档题的逐值输出与公司/年份/指标绑定。
-2. 解决正文概数和精确表格值并存时的取值选择。
-3. 将 Claim 支持率稳定提升到 `0.8+`。
+1. 不再扩题或扩语料，只针对 held-out 失败做有边界的证据选择改造。
+2. 优先修复跨页表格精确 chunk 召回和上下文压缩后的证据保留。
+3. 把 mixed/partial 的未知义务在运行时与评测器中使用同一套拒答契约。
 4. 优化 rerank 延迟，减少跨文档题多 route 成本。
 
 ## 文档索引
@@ -509,6 +550,7 @@ docs/           设计、评测、交付与历史文档
 | 文档 | 内容 |
 |---|---|
 | [final-handoff.md](docs/final-handoff.md) | 当前阶段最终交付说明 |
+| [heldout-evaluation.md](docs/heldout-evaluation.md) | 40 题冻结集的证据评测与残余失败 |
 | [routing-ablation-results.md](docs/routing-ablation-results.md) | 120 题路由消融 |
 | [generation-eval-v2.md](docs/generation-eval-v2.md) | 三轮 hybrid L3b 生成 |
 | [reliability-and-corpus-plan.md](docs/reliability-and-corpus-plan.md) | 数据与可靠性补强计划 |

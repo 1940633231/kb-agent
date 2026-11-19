@@ -62,6 +62,7 @@ class AgentState(TypedDict, total=False):
 
     # 人工介入（第二阶段接 Interrupt/Command，本阶段只记录待审标记）
     needs_human_review: bool
+    review_reason: Optional[str]
     review_result: Optional[Dict[str, Any]]
 
     status: str
@@ -103,6 +104,7 @@ def initial_state(question: str,
         "ambiguity": {},
         "repair_history": [],
         "needs_human_review": False,
+        "review_reason": None,
         "review_result": None,
         "status": "received",
         "trace": [],

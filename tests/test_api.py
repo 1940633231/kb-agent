@@ -44,13 +44,13 @@ def parse_sse(body: str) -> List[Dict[str, Any]]:
 
 
 def build_context(resolver=None, interrupt: bool = False, token_stream: bool = True,
-                  max_retries: int = 2
+                  max_retries: int = 2, default_user: str = "tester"
                   ) -> AppContext:
     resolver = resolver or (lambda query: [maotai_hit(2023)])
     service = FakeService(resolver, generator=FakeGenerator())
     settings = ApiSettings(generate=True, interrupt_on_low_confidence=interrupt,
-                           token_stream=token_stream)
-    runtime = default_runtime(service=service, memory_user_id="tester",
+                           token_stream=token_stream, default_user=default_user)
+    runtime = default_runtime(service=service, memory_user_id=default_user,
                               interrupt_on_low_confidence=interrupt,
                               max_retries=max_retries,
                               review_timeout_seconds=None)
@@ -74,6 +74,8 @@ def test_health_reports_checkpointer_and_store(client):
     assert body["status"] == "ok"
     assert body["checkpointer"] == "InMemorySaver"
     assert body["interrupt_on_low_confidence"] is False
+    assert body["identity_mode"] == "single_user_demo"
+    assert body["client_user_selection"] is False
 
 
 def test_ask_returns_answer_with_citations(client):
@@ -86,6 +88,8 @@ def test_ask_returns_answer_with_citations(client):
     assert body["retrieval"]["passed"] is True
     assert body["citations"], "答案里的 [1] 应被解析成引用"
     assert body["citations"][0]["document_id"] == "600519-2023"
+    assert body["answer_contract"]["items"]
+    assert body["answer_contract"]["complete"] is True
     assert body["thread_id"], "未指定 thread_id 时由服务端生成"
     assert response.headers["X-Request-Id"]
 
@@ -162,6 +166,37 @@ def test_review_flow_over_http():
         state = test_client.get("/threads/rev-1").json()
         assert state["status"] == "review_approved"
         assert state["has_checkpoint"] is True
+
+
+def test_interrupt_disabled_does_not_pause_low_confidence_request():
+    context = build_context(
+        resolver=lambda q: [
+            make_hit("600519-2023", "贵州茅台 2023 年年度报告 其他内容")
+        ],
+        interrupt=False,
+        max_retries=0,
+    )
+    with TestClient(create_app(context)) as test_client:
+        body = test_client.post("/ask", json={
+            "question": QUESTION, "thread_id": "rev-off", "generate": False,
+        }).json()
+
+    assert body["pending_review"] is None
+    assert body["needs_human_review"] is False
+
+
+def test_client_cannot_select_memory_user():
+    context = build_context(default_user="server-user")
+    with TestClient(create_app(context)) as test_client:
+        body = test_client.post("/ask", json={
+            "question": "记住以后都使用万元",
+            "user_id": "attacker",
+        }).json()
+
+    written = body["memory_written"]
+    assert len(written) == 1
+    assert "server-user" in written[0]["namespace"]
+    assert "attacker" not in written[0]["namespace"]
 
 
 def test_review_id_mismatch_returns_409():

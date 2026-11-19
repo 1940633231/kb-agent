@@ -18,6 +18,18 @@ from agent.grounding import (
 
 METRIC_ALIASES = {
     "营业收入": ("营业总收入",),
+    "归母净利润": (
+        "归属于上市公司股东的净利润",
+        "归属于母公司股东的净利润",
+        "归属于本公司股东的净利润",
+    ),
+    "扣非归母净利润": (
+        "扣除非经常性损益后的归母净利润",
+        "扣除非经常性损益后的净利润",
+        "归属于上市公司股东的扣除非经常性损益的净利润",
+    ),
+    "经营现金流净额": ("经营活动产生的现金流量净额",),
+    "总资产": ("资产总计", "资产总额"),
 }
 
 
@@ -83,6 +95,19 @@ def _has_metric(question: str, chunks: List[Dict]) -> bool:
                for alias in METRIC_ALIASES.get(keyword, ())):
             return True
     return False
+
+
+def _matched_metric(question: str, chunks: List[Dict]) -> Optional[str]:
+    keywords = extract_facets(question)["keywords"]
+    text = normalize(" ".join(chunk.get("content") or "" for chunk in chunks))
+    for keyword in keywords:
+        normalized = normalize(keyword)
+        if normalized in text:
+            return keyword
+        if any(normalize(alias) in text
+               for alias in METRIC_ALIASES.get(keyword, ())):
+            return keyword
+    return None
 
 
 def _derived_supported(claim: AnswerClaim, citations: List[Dict],
@@ -290,6 +315,33 @@ def audit_answer(answer: Optional[str],
             "repairable": False,
         })
 
+    contract_items = []
+    for claim in numeric_claims:
+        cited = _citation_chunks(claim, citations, chunks)
+        metric = _matched_metric(question, cited) if cited else None
+        contract_items.append({
+            "claim_id": claim.claim_id,
+            "company": claim.company,
+            "year": claim.year,
+            "metric": metric,
+            "raw_value": claim.value,
+            "unit": claim.unit,
+            "citation_ids": list(claim.citation_ids),
+            "chunk_ids": [
+                str(item.get("chunk_id")) for item in cited
+                if item.get("chunk_id")
+            ],
+            "support_status": claim.support_status,
+            "bound": bool(
+                claim.company
+                and claim.year
+                and metric
+                and claim.citation_ids
+                and cited
+                and claim.support_status == "supported"
+            ),
+        })
+
     return {
         "claims": [item.as_dict() for item in claims],
         "hard_violations": hard,
@@ -297,6 +349,16 @@ def audit_answer(answer: Optional[str],
         "repairable_claim_ids": sorted(set(repairable_claim_ids)),
         "missing_obligations": missing_obligations,
         "citation_coverage": citation_coverage,
+        "answer_contract": {
+            "items": contract_items,
+            "complete": bool(
+                not hard
+                and (
+                    not contract_items
+                    or all(item["bound"] for item in contract_items)
+                )
+            ),
+        },
         "hard_gate_passed": not hard,
         "needs_human_review": bool(hard or soft),
     }

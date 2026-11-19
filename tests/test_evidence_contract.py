@@ -12,8 +12,10 @@ from agent.evidence_contract import (  # noqa: E402
     assess_obligations,
     assess_route_coverage,
     build_obligations,
+    hit_matches_obligation,
     scope_supported_by_corpus,
 )
+from agent.grading import extract_facets  # noqa: E402
 from fakes import make_hit  # noqa: E402
 
 
@@ -36,6 +38,18 @@ def test_single_company_single_year_single_value():
     assert obligations[0].expected_kind == "single_value"
     assert result["passed"] is True
     assert result["coverage"] == 1.0
+
+
+def test_obligation_match_requires_metric_and_nearby_number():
+    obligation = build_obligations(
+        "贵州茅台2023年的营业收入是多少元？")[0]
+    prose = hit("贵州茅台", "600519", 2023, "营业收入",
+                value="", extra="详见营业收入说明")
+    exact = hit("贵州茅台", "600519", 2023, "营业收入",
+                value="147,693,604,994.14")
+
+    assert hit_matches_obligation(prose, obligation) is False
+    assert hit_matches_obligation(exact, obligation) is True
 
 
 def test_single_company_multiple_years_requires_each_year():
@@ -191,6 +205,57 @@ def test_parenthetical_qualifiers_do_not_create_fake_obligations():
     assert len(obligations) == 1
     assert "茅台酒" in obligations[0].metric
     assert "营业收入" in obligations[0].metric
+
+
+def test_multi_caliber_question_keeps_two_metric_phrases():
+    question = (
+        "美的集团2024年归属于上市公司股东的净利润和"
+        "扣除非经常性损益后的净利润分别是多少千元？")
+    obligations = build_obligations(question)
+
+    assert len(obligations) == 2
+    assert [item.metric for item in obligations] == [
+        "归属于上市公司股东的净利润",
+        "扣除非经常性损益后的净利润",
+    ]
+
+
+def test_statement_qualified_metrics_do_not_create_extra_obligations():
+    question = (
+        "贵州茅台2024年合并利润表中的净利润与"
+        "主要会计数据中的归母净利润分别是多少元？")
+    obligations = build_obligations(question)
+
+    assert len(obligations) == 2
+    assert {item.metric for item in obligations} == {
+        "合并利润表中的净利润",
+        "主要会计数据中的归母净利润",
+    }
+
+
+def test_operating_profit_metric_stays_one_obligation():
+    question = (
+        "中国平安2024年归属于母公司股东的营运利润和"
+        "归母净利润分别是多少百万元？")
+    obligations = build_obligations(question)
+
+    assert len(obligations) == 2
+    assert [item.metric for item in obligations] == [
+        "归属于母公司股东的营运利润",
+        "归母净利润",
+    ]
+
+
+def test_external_market_date_is_not_an_annual_report_year():
+    question = (
+        "美的集团2024年销售费用是多少千元？"
+        "截至2025年6月30日收盘价是多少元？")
+    facets = extract_facets(question)
+    obligations = build_obligations(question, facets)
+
+    assert facets["years"] == ["2024"]
+    assert len(obligations) == 1
+    assert obligations[0].year == 2024
 
 
 def test_comparison_filler_does_not_become_a_metric():

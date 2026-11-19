@@ -21,6 +21,7 @@ from typing import Any, Dict, Iterable, List, Optional
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REPORTS_REGISTRY = PROJECT_ROOT / "data" / "docs" / "annual_reports" / "metadata.json"
+ALIASES_REGISTRY = PROJECT_ROOT / "data" / "docs" / "annual_reports" / "company_aliases.json"
 
 # 问题里的疑问/口语化成分 + 关系/比较类短语，都不参与关键词覆盖判定。
 # 实测教训：漏掉"较上年末上升了"这类比较短语时，它会被当成"指标关键词"，
@@ -40,11 +41,44 @@ QUESTION_NOISE = (
     "分产品口径", "百万元", "千元", "万元", "亿元", "元",
     "两家", "一家", "三家",
     "两年", "三年", "多年", "本年", "当年", "全年",
+    "合并利润表", "母公司利润表", "主要会计数据",
 )
 
 # 清洗后若一个 token 的字符全部来自这里，说明它是关系词残留（如"上升了"），不是指标名
 RELATIONAL_CHARS = set(
     "较上年末同期同比环增减升降变动情况幅度分别为保留位小数单位注意与和及或是在于了"
+)
+
+KNOWN_METRICS = (
+    "主要会计数据中的归母净利润",
+    "主要会计数据中归母净利润",
+    "合并利润表中的净利润",
+    "合并利润表中净利润",
+    "归属于上市公司股东的扣除非经常性损益后的净利润",
+    "归属于上市公司股东的扣除非经常性损益的净利润",
+    "扣除非经常性损益后的归母净利润",
+    "扣除非经常性损益后的净利润",
+    "归属于上市公司股东的净利润",
+    "归属于母公司股东的净利润",
+    "归属于本公司股东的净利润",
+    "归属于母公司股东的营运利润",
+    "归属于母公司股东营运利润",
+    "经营活动产生的现金流量净额",
+    "加权平均净资产收益率",
+    "研发投入合计",
+    "基本每股收益",
+    "归母净利润",
+    "扣非归母净利润",
+    "归母营运利润",
+    "营运利润",
+    "经营现金流净额",
+    "营业总收入",
+    "营业收入",
+    "研发费用",
+    "销售费用",
+    "净利润",
+    "总资产",
+    "资产总计",
 )
 
 
@@ -63,6 +97,20 @@ def _load_companies() -> List[str]:
 
 COMPANIES = _load_companies()
 
+
+def _load_company_aliases(companies: List[str]) -> Dict[str, List[str]]:
+    try:
+        payload = json.loads(ALIASES_REGISTRY.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        payload = {}
+    return {
+        company: [str(item) for item in payload.get(company, []) if item]
+        for company in companies
+    }
+
+
+COMPANY_ALIASES = _load_company_aliases(COMPANIES)
+
 # 纯寒暄/无信息量的输入：没有可检索的要素，直接走"不检索"分支
 CHITCHAT = ("你好", "您好", "谢谢", "感谢", "在吗", "再见", "嗨", "hello", "hi", "hey")
 
@@ -72,17 +120,77 @@ def normalize(text: str) -> str:
     return re.sub(r"[\s,，\u3000]", "", text or "")
 
 
+def company_terms(company: str) -> List[str]:
+    terms = [company] + list(COMPANY_ALIASES.get(company, []))
+    return sorted({item for item in terms if item}, key=len, reverse=True)
+
+
+def company_position(question: str, company: str) -> int:
+    positions = [
+        question.find(term) for term in company_terms(company)
+        if question.find(term) >= 0
+    ]
+    return min(positions) if positions else len(question) + 1
+
+
+def company_mentioned(text: str, company: str) -> bool:
+    return any(term in (text or "") for term in company_terms(company))
+
+
+def _extract_known_metrics(question: str) -> tuple[List[str], str]:
+    occupied: List[tuple[int, int]] = []
+    matches: List[tuple[int, str]] = []
+    for phrase in sorted(KNOWN_METRICS, key=len, reverse=True):
+        for match in re.finditer(re.escape(phrase), question):
+            start, end = match.span()
+            if any(start < used_end and end > used_start
+                   for used_start, used_end in occupied):
+                continue
+            occupied.append((start, end))
+            matches.append((start, phrase))
+    matches.sort()
+    remainder = question
+    for start, phrase in sorted(matches, reverse=True):
+        remainder = (
+            remainder[:start] + " " + remainder[start + len(phrase):])
+    return [phrase for _, phrase in matches], remainder
+
+
 def extract_facets(question: str) -> Dict[str, List[str]]:
     """从问题里抽出可判定的要素：年份、公司、指标关键词。"""
-    years = sorted(set(re.findall(r"(20\d{2})", question)))
-    companies = [name for name in COMPANIES if name in question]
+    annual_question = re.sub(
+        r"20\d{2}\s*年\s*\d{1,2}\s*月(?:\s*\d{1,2}\s*日)?",
+        " ",
+        question,
+    )
+    years = sorted(set(re.findall(r"(20\d{2})", annual_question)))
+    matches = []
+    for name in COMPANIES:
+        for term in company_terms(name):
+            position = question.find(term)
+            if position >= 0:
+                matches.append((position, -len(term), name, term))
+    companies = []
+    matched_terms: Dict[str, List[str]] = {}
+    for _, _, name, _ in sorted(matches):
+        if name not in companies:
+            companies.append(name)
+    for name in companies:
+        terms = [
+            term for term in company_terms(name)
+            if term in question
+        ]
+        matched_terms[name] = (
+            [name] if name in terms else terms
+        )
 
-    remainder = question
+    metric_phrases, remainder = _extract_known_metrics(question)
     # 长短语优先替换，避免"是多少元"被"多少"先吃掉一半
     for noise in sorted(QUESTION_NOISE, key=len, reverse=True):
         remainder = remainder.replace(noise, " ")
     for name in companies:
-        remainder = remainder.replace(name, " ")
+        for term in matched_terms.get(name, [name]):
+            remainder = remainder.replace(term, " ")
     remainder = re.sub(r"20\d{2}年?", " ", remainder)
     # 注意：不要把"在/于/对"当分隔符——它们会切开"归属于上市公司股东的净利润"
     remainder = re.sub(
@@ -97,6 +205,9 @@ def extract_facets(question: str) -> Dict[str, List[str]]:
         if all(char in RELATIONAL_CHARS for char in token):
             continue
         keywords.append(token)
+    for metric in metric_phrases:
+        if metric not in keywords:
+            keywords.append(metric)
     return {"years": years, "companies": companies, "keywords": keywords}
 
 

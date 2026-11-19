@@ -19,8 +19,8 @@ from typing import Any, Dict, Optional
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, StateGraph
 
-from agent.nodes import (build_nodes, route_after_decide,
-                         route_after_generate, route_after_understand)
+from agent.nodes import (build_nodes, make_route_after_generate,
+                         route_after_decide, route_after_understand)
 from agent.rewriter import LLMRewriter
 from agent.runtime import AgentRuntime
 from agent.state import AgentState, initial_state
@@ -57,7 +57,8 @@ def build_graph(runtime: AgentRuntime, checkpointer: Optional[Any] = None,
     })
     builder.add_edge("rewrite_query", "retrieve_knowledge")
     builder.add_edge("generate_answer", "verify_answer")
-    builder.add_conditional_edges("verify_answer", route_after_generate, {
+    builder.add_conditional_edges(
+        "verify_answer", make_route_after_generate(runtime), {
         "human_review": "human_review",
         "remember_preference": "remember_preference",
     })
@@ -78,6 +79,7 @@ def default_runtime(strategy: str = "recursive",
                     memory_store: Optional[Any] = None,
                     memory_user_id: str = "",
                     review_timeout_seconds: Optional[float] = 3600.0,
+                    interrupt_on_low_confidence: bool = True,
                     scope_evidence_enabled: bool = True,
                     enable_pre_retrieval_routing: bool = True,
                     strict_route_filter: bool = True,
@@ -117,6 +119,8 @@ def default_runtime(strategy: str = "recursive",
                         rewriter=rewriter, generate_answers=generate_answers,
                         memory_store=memory_store, memory_user_id=memory_user_id,
                         review_timeout_seconds=review_timeout_seconds,
+                        interrupt_on_low_confidence=(
+                            interrupt_on_low_confidence),
                         scope_evidence_enabled=scope_evidence_enabled,
                         enable_pre_retrieval_routing=enable_pre_retrieval_routing,
                         strict_route_filter=strict_route_filter,

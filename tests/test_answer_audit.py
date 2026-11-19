@@ -41,6 +41,14 @@ def test_correct_number_company_year_and_citation_pass():
 
     assert audit["hard_gate_passed"] is True
     assert audit["hard_violations"] == []
+    contract = audit["answer_contract"]
+    assert contract["complete"] is True
+    assert contract["items"][0]["company"] == "贵州茅台"
+    assert contract["items"][0]["year"] == 2023
+    assert contract["items"][0]["metric"] == "营业收入"
+    assert contract["items"][0]["raw_value"] == 147693604994.14
+    assert contract["items"][0]["chunk_ids"] == [item["chunk_id"]]
+    assert contract["items"][0]["bound"] is True
 
 
 def test_number_missing_from_cited_chunk_is_hard_violation():

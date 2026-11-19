@@ -407,16 +407,19 @@ def describe_hit(hit: Dict, offsets: Optional[Dict[str, Dict]] = None) -> Dict:
     """把检索命中整理成评估/引用需要的字段（公司、年份、页码）。"""
     metadata = hit.get("metadata") or {}
     document_id = hit.get("document_id") or metadata.get("document_id") or ""
-    page = None
+    chunk_start_page = None
     if offsets and document_id:
-        page = page_for_offset(offsets, document_id,
-                              int(hit.get("start_offset") or 0))
+        chunk_start_page = page_for_offset(
+            offsets, document_id, int(hit.get("start_offset") or 0))
     return {
         "document_id": document_id,
         "company": metadata.get("company"),
         "year": metadata.get("year"),
         "title": metadata.get("document_title"),
-        "page": page,
+        # Retained for compatibility. Retrieval hits have no answer literal,
+        # so this page is the chunk start, not an evidence-span page.
+        "page": chunk_start_page,
+        "chunk_start_page": chunk_start_page,
         "score": hit.get("score"),
         "chunk_id": hit.get("chunk_id"),
         "snippet": (hit.get("content") or "")[:160].replace("\n", " "),

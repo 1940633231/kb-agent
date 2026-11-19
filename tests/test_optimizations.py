@@ -48,8 +48,7 @@ def test_ratio_phrase_splits_into_metrics():
 def test_metric_phrase_is_not_split_by_prepositions():
     """不要把"在/于/对"当分隔符——否则会切开"归属于上市公司股东的净利润"。"""
     keywords = extract_facets("贵州茅台2025年归属于上市公司股东的净利润是多少元？")["keywords"]
-    assert "净利润" in keywords
-    assert any("归属" in token for token in keywords)
+    assert keywords == ["归属于上市公司股东的净利润"]
     assert all(token not in ("归属", "上市公司股东") for token in keywords)
 
 
@@ -257,4 +256,5 @@ def test_default_runtime_routes_known_fields_out_of_extra():
     assert runtime.enable_pre_retrieval_routing is False
     assert runtime.strict_route_filter is False
     assert runtime.route_candidate_limit == 12
-    assert runtime.extra == {"interrupt_on_low_confidence": True}
+    assert runtime.interrupt_on_low_confidence is True
+    assert runtime.extra == {}

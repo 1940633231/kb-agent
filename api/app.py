@@ -33,7 +33,6 @@ from api.service import AppContext, get_context, set_context
 class AskRequest(BaseModel):
     question: str = Field(min_length=1, max_length=500)
     thread_id: str = Field(default="", max_length=64)
-    user_id: str = Field(default="", max_length=64)
     generate: Optional[bool] = None
 
 
@@ -97,6 +96,8 @@ def create_app(context: Optional[AppContext] = None) -> FastAPI:
             "mode": "hybrid+rerank",
             "generate": ctx.settings.generate,
             "interrupt_on_low_confidence": ctx.settings.interrupt_on_low_confidence,
+            "identity_mode": "single_user_demo",
+            "client_user_selection": False,
             "checkpointer": type(ctx.checkpointer).__name__ if ctx.checkpointer
             else "InMemorySaver",
             "store": type(ctx.store).__name__ if ctx.store else None,
@@ -109,7 +110,6 @@ def create_app(context: Optional[AppContext] = None) -> FastAPI:
         started = time.time()
         try:
             state = ctx.ask(payload.question, thread_id,
-                            payload.user_id or ctx.settings.default_user,
                             generate=payload.generate)
         except Exception as exc:  # noqa: BLE001
             log_event("ask_failed", level="error", thread_id=thread_id,
@@ -127,13 +127,12 @@ def create_app(context: Optional[AppContext] = None) -> FastAPI:
     def ask_stream(payload: AskRequest) -> StreamingResponse:
         ctx = get_context()
         thread_id = _thread_id(payload.thread_id)
-        user_id = payload.user_id or ctx.settings.default_user
 
         def event_stream() -> Iterator[str]:
             started = time.time()
             try:
-                for event in ctx.ask_stream(payload.question, thread_id, user_id,
-                                            generate=payload.generate):
+                for event in ctx.ask_stream(
+                        payload.question, thread_id, generate=payload.generate):
                     yield _sse(event["event"], event["data"])
             except Exception as exc:  # noqa: BLE001 - 错误也走事件流
                 log_event("stream_failed", level="error", thread_id=thread_id,
