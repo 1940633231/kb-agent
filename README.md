@@ -429,7 +429,8 @@ context_overflow_rate == 0
 .\.venv\Scripts\python.exe -m pytest tests -q -rs
 ```
 
-当前：`229 passed, 1 skipped`。跳过项为未配置 Postgres。
+当前：`231 passed`（Postgres 容器已启动时）。未启动数据库时，
+持久化相关用例会 skip，其余用例照常执行。
 
 ## 关键设计取舍
 
@@ -497,10 +498,23 @@ top-k 只表示“返回了多少片段”，不表示“每个公司/年份/指
 正常运行时不应这样。评测适配器会在 retrieval-only 模式设置 generation backend 为
 `stub`。如果仍然初始化真实 LLM，检查是否绕过了 `eval_adapter._build_service()`。
 
-### 为什么 Postgres 测试被跳过
+### 如何跑 Postgres 持久化测试
 
-本地没有配置 `POSTGRES_*` 或容器未启动。跳过不影响内存 Checkpointer 测试，
-但不能验证跨进程恢复和审核幂等。
+Postgres 跑在 WSL2 Ubuntu 的 Docker 里，映射到 Windows 的 `127.0.0.1:5433`：
+
+```bash
+# 在 WSL2 Ubuntu 内启动（首次或重启后）
+docker start kb-agent-postgres
+docker exec kb-agent-postgres pg_isready -U kb_agent -d kb_agent
+```
+
+```powershell
+# 在 Windows 仓库根目录
+.\.venv\Scripts\python.exe -m pytest tests\test_persistence.py -q
+```
+
+容器没启动或 `POSTGRES_*` 未配置时，用例会 skip 并退化为内存 Checkpointer；
+这不会影响其他测试，但无法验证跨进程恢复和审核幂等。
 
 ### 为什么单题很慢
 
@@ -526,11 +540,12 @@ docs/           设计、评测、交付与历史文档
   held-out 40 题修复后完整正确为 `6/40`，不能外推成泛化正确率。
 - held-out 中跨页表格仍有 `3/5` 题答不完整，剩余原因包括精确表格 chunk
   未召回、上下文压缩后证据丢失，以及正文概数与表格精确值并存。
-- 别名组仍有 `2/5` 题错误拒答；`美的研发费用`、`海康经营现金流`等
-  说明别名归一化只解决了路由入口，没有解决最终证据选择。
+- 别名归一化已补 `研发费用→研发投入`、`经营现金流净额` 等写法，并在判分、
+  证据义务、答案审计三处统一；尚未重跑 held-out 冻结集，不能宣称别名组已修复。
 - 表格在 PDF 抽取后是扁平文本，行列语义仍需模型推断。
 - hybrid L3b 平均约 92.88 秒/题，瓶颈主要是 CPU reranker。
-- Postgres 未配置时退化到内存 Checkpointer，不能跨进程恢复审核状态。
+- Postgres 持久化已用 WSL2 Ubuntu 的 `kb-agent-postgres` 容器验证：跨进程
+  Checkpoint 恢复与审核幂等均通过；容器未启动时仍退化到内存 Checkpointer。
 - 引用返回的 `page` 是 chunk 起始页；需要做检索页匹配时应使用
   `chunk_start_page`，不能把它当作证据所在页。
 - API 是单用户 Demo：没有认证，客户端不能选择 `user_id`，thread 和 memory

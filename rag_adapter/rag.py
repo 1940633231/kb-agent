@@ -122,6 +122,9 @@ def retrieve_routes_with_evidence(
         normalized.append({
             "query_id": str(route.get("query_id") or "route-{}".format(index)),
             "query": query,
+            "search_query": (
+                str(route.get("search_query") or "").strip() or query
+            ),
             "obligation_ids": [
                 str(item) for item in route.get("obligation_ids") or []
             ],
@@ -145,6 +148,7 @@ def retrieve_routes_with_evidence(
     for route in normalized:
         query_id = route["query_id"]
         query = route["query"]
+        search_query = route["search_query"]
         document_ids = route["document_ids"]
         allowed = set(document_ids)
         raw_count = 0
@@ -158,14 +162,14 @@ def retrieve_routes_with_evidence(
             if (pipeline.reranker is None and retriever is not None
                     and hasattr(retriever, "search")):
                 raw = retriever.search(
-                    query,
+                    search_query,
                     top_k=candidate_limit,
                     document_ids=allowed or None,
                 )
             else:
                 raw = pipeline._search_all(  # noqa: SLF001
-                    query,
-                    [query],
+                    search_query,
+                    [search_query],
                     document_ids=allowed or None,
                 )
             active = pipeline._filter_active_versions(raw)  # noqa: SLF001
@@ -197,6 +201,7 @@ def retrieve_routes_with_evidence(
         routes.append({
             "query_id": query_id,
             "query": query,
+            "search_query": route["search_query"],
             "obligation_ids": list(route["obligation_ids"]),
             "document_ids": list(document_ids),
             "company": route["company"],
@@ -214,12 +219,55 @@ def retrieve_routes_with_evidence(
 
     candidates = _dedupe_keep_best(candidates)
     if pipeline.reranker is not None:
-        reranked = pipeline.reranker.rerank(primary, candidates, top_k=top_k)
+        views = _rerank_views(candidates, _metric_terms(normalized))
+        reranked = pipeline.reranker.rerank(primary, views, top_k=top_k)
     else:
         reranked = sorted(candidates, key=lambda r: r.get("score", 0.0),
                           reverse=True)[:top_k]
     reranked = _restore_provenance(reranked, candidates)
     return reranked, routes
+
+
+def _metric_terms(normalized: List[Dict]) -> List[str]:
+    """问题指标词 + 别名，作为 rerank 窗口的锚点。"""
+    from agent.grading import METRIC_TERM_ALIASES
+
+    terms: List[str] = []
+    for route in normalized or []:
+        for metric in route.get("metrics") or []:
+            for term in (metric,) + tuple(
+                    METRIC_TERM_ALIASES.get(metric, ())[:2]):
+                if term and term not in terms:
+                    terms.append(term)
+    return terms
+
+
+def _rerank_views(candidates: List[Dict], terms: List[str],
+                  window: int = 320, lead: int = 80) -> List[Dict]:
+    """把候选内容裁到"指标词附近"再交给 reranker。
+
+    cross-encoder 只读内容开头 256 token；指标行若落在 chunk 后段（常被
+    供应商表、附注挤到末尾），重排时会被完全忽略，表现为"指标就在片段里、
+    却始终排不进 top_k"。这里以指标词为锚点截一段窗口，让重排看到真正的
+    指标行；未命中指标词的候选保持原样。
+    """
+    if not terms:
+        return candidates
+    views: List[Dict] = []
+    for item in candidates:
+        content = str(item.get("content") or "")
+        position = -1
+        for term in terms:
+            index = content.find(term)
+            if index >= 0 and (position < 0 or index < position):
+                position = index
+        if position < 0:
+            views.append(item)
+            continue
+        copied = dict(item)
+        copied["content"] = content[max(0, position - lead):position + window]
+        views.append(copied)
+    return views
 
 
 def _dedupe_keep_best(candidates: List[Dict]) -> List[Dict]:
@@ -263,7 +311,11 @@ def _restore_provenance(reranked: List[Dict],
         if source is None:
             restored.append(hit)
             continue
-        merged = dict(hit)
+        # 重排可能传入裁剪过的视图副本，这里以原候选为底稿回填，
+        # 避免把"窗口化内容"泄漏到最终上下文。
+        merged = dict(source)
+        if hit.get("rerank_score") is not None:
+            merged["rerank_score"] = hit["rerank_score"]
         merged["retrieval_routes"] = sorted(set(
             hit.get("retrieval_routes") or []
         ) | set(source.get("retrieval_routes") or []))

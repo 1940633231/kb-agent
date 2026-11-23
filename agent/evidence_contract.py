@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence
 
 from agent.grading import (
+    METRIC_TERM_ALIASES,
     company_mentioned,
     company_position,
     extract_facets,
@@ -32,13 +33,6 @@ EXPECTED_KINDS = {
     "comparison",
 }
 
-METRIC_TERM_ALIASES = {
-    "营业收入": ("营业总收入",),
-    "归母净利润": ("归属于上市公司股东的净利润",),
-    "扣非归母净利润": ("扣除非经常性损益后的归母净利润",),
-    "经营现金流净额": ("经营活动产生的现金流量净额",),
-    "总资产": ("资产总计", "资产总额"),
-}
 CALCULATION_MARKERS = (
     "增加", "减少", "差额", "相差", "比例", "占比", "较上年", "同比",
 )
@@ -95,6 +89,9 @@ class RetrievalRoute:
     company: Optional[str] = None
     year: Optional[int] = None
     metrics: tuple[str, ...] = field(default_factory=tuple)
+    #: Retrieval-only text. ``query`` keeps the original question so route
+    #: semantics, retry rewriting and report output stay unchanged.
+    search_query: Optional[str] = None
     #: True only when the question has no company/year facet and falls back to
     #: the legacy all-corpus query. A routed company/year with no matching
     #: document is intentionally different: it must not search the whole corpus.
@@ -121,6 +118,7 @@ class RetrievalRoute:
             company=payload.get("company"),
             year=int(payload["year"]) if payload.get("year") is not None else None,
             metrics=tuple(str(item) for item in payload.get("metrics") or []),
+            search_query=payload.get("search_query") or None,
             unrouted=bool(payload.get("unrouted", False)),
         )
 
@@ -174,7 +172,13 @@ def _route_query(question: str, company: Optional[str], year: Optional[int],
                  metrics: Sequence[str], *, single_route: bool) -> str:
     if single_route and question.strip():
         return question.strip()
-    metric_text = "、".join(metrics)
+    expanded: List[str] = []
+    for metric in metrics:
+        expanded.append(metric)
+        # 只带一个主别名：既覆盖年报的其他写法（营业收入/营业总收入、
+        # 研发费用/研发投入），又不至于把查询稀释成同义词列表。
+        expanded.extend(METRIC_TERM_ALIASES.get(metric, ())[:1])
+    metric_text = "、".join(dict.fromkeys(expanded))
     hints = []
     for metric in metrics:
         if any(token in metric for token in ("净利润", "营业收入", "营业总收入")):
@@ -192,6 +196,28 @@ def _route_query(question: str, company: Optional[str], year: Optional[int],
         " ".join(dict.fromkeys(hints)),
         "年度报告",
     ) if part).strip()
+
+
+def _search_query_with_aliases(question: str,
+                               metrics: Sequence[str]) -> Optional[str]:
+    """单 route 时只把指标别名拼进检索词，不改写 route.query。
+
+    单公司单年份只有一个 route，`_route_query` 会原样返回问题；如果问题里的
+    指标写法与年报不一致（"研发投入" vs "研发费用"），检索会漏掉真正的表格。
+    这里只追加一个主别名、不追加章节提示，避免把查询稀释成同义词列表，
+    也避免把"年度报告"这类词带进来改变既有召回行为。
+    """
+    base = (question or "").strip()
+    if not base:
+        return None
+    aliases: List[str] = []
+    for metric in metrics:
+        for alias in METRIC_TERM_ALIASES.get(metric, ())[:1]:
+            if alias and alias not in base and alias not in aliases:
+                aliases.append(alias)
+    if not aliases:
+        return None
+    return "{} {}".format(base, " ".join(aliases))
 
 
 def build_initial_routes(
@@ -252,9 +278,14 @@ def build_initial_routes(
             draft["metrics"],
             single_route=single_route,
         )
+        search_query = None
+        if single_route and not draft["unrouted"] and draft["metrics"]:
+            search_query = _search_query_with_aliases(
+                question, draft["metrics"])
         routes.append(RetrievalRoute(
             query_id="route-{}".format(index),
             query=query,
+            search_query=search_query,
             **draft,
         ))
     return routes

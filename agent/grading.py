@@ -120,6 +120,48 @@ def normalize(text: str) -> str:
     return re.sub(r"[\s,，\u3000]", "", text or "")
 
 
+# 同一指标在不同年报里的写法差异（"研发费用" vs "研发投入"、
+# "经营现金流净额" vs "经营活动产生的现金流量净额"）。判分、义务匹配、
+# 答案审计共用这一份，避免三处各写一套而漏掉同一批别名。
+METRIC_TERM_ALIASES = {
+    "营业收入": ("营业总收入", "营业收入合计", "营业总收入合计", "总营业收入"),
+    "营业总收入": ("营业收入", "营业总收入合计", "总营业收入"),
+    "归母净利润": (
+        "归属于上市公司股东的净利润",
+        "归属于母公司股东的净利润",
+        "归属于母公司所有者的净利润",
+        "归属于本公司股东的净利润",
+    ),
+    "扣非归母净利润": (
+        "扣除非经常性损益后的归母净利润",
+        "扣除非经常性损益后的净利润",
+        "归属于上市公司股东的扣除非经常性损益的净利润",
+        "归属于上市公司股东的扣除非经常性损益后的净利润",
+    ),
+    "经营现金流净额": (
+        "经营活动产生的现金流量净额",
+        "经营活动现金流量净额",
+        "经营活动现金流净额",
+    ),
+    "总资产": ("资产总计", "资产总额"),
+    "研发费用": ("研发投入", "研发投入合计", "研发费用合计"),
+    "研发投入": ("研发费用", "研发投入合计"),
+}
+
+
+def metric_mentioned(text: str, keyword: str) -> bool:
+    """指标关键词是否在证据里出现，包含同义写法。"""
+    normalized = normalize(text or "")
+    if not keyword:
+        return True
+    if normalize(keyword) in normalized:
+        return True
+    return any(
+        normalize(alias) in normalized
+        for alias in METRIC_TERM_ALIASES.get(keyword, ())
+    )
+
+
 def company_terms(company: str) -> List[str]:
     terms = [company] + list(COMPANY_ALIASES.get(company, []))
     return sorted({item for item in terms if item}, key=len, reverse=True)
@@ -134,7 +176,9 @@ def company_position(question: str, company: str) -> int:
 
 
 def company_mentioned(text: str, company: str) -> bool:
-    return any(term in (text or "") for term in company_terms(company))
+    normalized = normalize(text or "")
+    return any(normalize(term) in normalized
+               for term in company_terms(company))
 
 
 def _extract_known_metrics(question: str) -> tuple[List[str], str]:
@@ -267,8 +311,11 @@ def grade_evidence(question: str, hits: List[Dict],
 
     missing_years = [year for year in facets["years"]
                      if year not in years_in_evidence]
-    missing_companies = [name for name in facets["companies"] if name not in text]
-    keyword_hits = {kw: kw in text for kw in facets["keywords"]}
+    missing_companies = [
+        name for name in facets["companies"]
+        if not company_mentioned(text, name)
+    ]
+    keyword_hits = {kw: metric_mentioned(text, kw) for kw in facets["keywords"]}
     coverage = (sum(keyword_hits.values()) / len(keyword_hits)) if keyword_hits else 1.0
 
     reasons: List[str] = []

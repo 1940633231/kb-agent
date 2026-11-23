@@ -174,3 +174,92 @@ def test_checkpointer_persists_thread_across_graph_instances(bundle, tmp_path):
 
 def test_psycopg_dsn_from_env():
     assert postgres_dsn() is not None
+
+
+def test_review_idempotency_survives_process_restart(bundle, tmp_path):
+    """审核幂等表必须落在 Postgres Store：换进程后重复提交不能推进两次。
+
+    这里不装配完整 Agent 图（会加载 embedding/rerank），只复现审核相关的
+    最小拓扑：ask → gate(interrupt) → END。验证两件事：
+    1. 挂起的审核项能跨进程读回（Checkpointer 落库）；
+    2. 已处理结果能跨进程读回，重复提交返回 already_processed。
+    """
+    script = textwrap.dedent(
+        """
+        import json, os, sys
+        sys.path.insert(0, os.environ["KB_PROJECT_ROOT"])
+        from typing import TypedDict
+        from langgraph.graph import START, END, StateGraph
+        from langgraph.types import interrupt
+        from persistence.postgres import build_postgres_bundle
+        from agent.review import pending_review, resume_review
+
+        class S(TypedDict, total=False):
+            question: str
+            answer: str
+            status: str
+
+        thread_id = sys.argv[2]
+        review_id = "rv-" + thread_id
+
+        def ask(state):
+            return {"answer": "草稿答案"}
+
+        def gate(state):
+            decision = interrupt({"review_id": review_id,
+                                  "thread_id": thread_id})
+            if (decision or {}).get("decision") == "approve":
+                return {"status": "review_approved"}
+            return {"status": "review_rejected"}
+
+        bundle = build_postgres_bundle()
+        if bundle is None:
+            print(json.dumps({"error": "postgres_unavailable"}))
+            raise SystemExit(2)
+        builder = StateGraph(S)
+        builder.add_node("ask", ask)
+        builder.add_node("gate", gate)
+        builder.add_edge(START, "ask")
+        builder.add_edge("ask", "gate")
+        builder.add_edge("gate", END)
+        graph = builder.compile(checkpointer=bundle.checkpointer)
+        config = {"configurable": {"thread_id": thread_id}}
+
+        if sys.argv[1] == "start":
+            graph.invoke({"question": "测试问题"}, config=config)
+            print(json.dumps({"pending": pending_review(graph, thread_id)}))
+        else:
+            outcome = resume_review(
+                graph, thread_id, review_id,
+                decision=sys.argv[3], reviewer="bob", store=bundle.store)
+            print(json.dumps(outcome))
+        bundle.close()
+        """
+    )
+    script_path = tmp_path / "review_graph.py"
+    script_path.write_text(script, encoding="utf-8")
+    env = dict(os.environ)
+    env["PYTHONUTF8"] = "1"
+    env["KB_PROJECT_ROOT"] = str(PROJECT_ROOT)
+    thread_id = "review-{}".format(uuid.uuid4().hex[:8])
+
+    def run(mode: str, *extra: str) -> dict:
+        proc = subprocess.run(
+            [sys.executable, str(script_path), mode, thread_id, *extra],
+            capture_output=True, text=True, env=env, timeout=180)
+        assert proc.returncode == 0, proc.stderr[-800:]
+        return json.loads(proc.stdout.strip().splitlines()[-1])
+
+    started = run("start")
+    assert started["pending"] and started["pending"]["review_id"] == (
+        "rv-" + thread_id)
+
+    # 第一个进程驳回；第二个进程再用同一 review_id 提交"通过"
+    first = run("resume", "reject")
+    assert first["status"] == "resumed"
+    assert first["final_status"] == "review_rejected"
+
+    second = run("resume", "approve")
+    assert second["status"] == "already_processed"
+    assert second["final_status"] == "review_rejected", \
+        "跨进程重复提交不能把驳回改成通过"

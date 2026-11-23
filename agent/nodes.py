@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional
 from app.citation.citation import CitationExtractor
 from langgraph.types import interrupt
 
-from agent.answer_audit import audit_answer
+from agent.answer_audit import audit_answer, rebind_numeric_citations
 from agent.context_budget import build_context_with_budget
 from agent.grading import extract_facets, grade_evidence, needs_knowledge_base
 from agent.evidence_contract import (
@@ -56,6 +56,16 @@ MEMORY_UNAVAILABLE = ("识别到这是一条长期偏好，但当前线程没有
 UNCERTAIN_CLAUSE = (
     "本次检索证据未通过完整性校验。如果上下文不足以回答，请明确说明"
     "“根据现有信息无法回答”，不要给出未在上下文中出现的数字。"
+)
+# 跨文档/跨年份题的核心失败模式：只答一半、把两家的数字混配、或借用
+# 另一年份的证据。上下文里的“必答清单”给出每项对应的证据编号，这里再用
+# 硬性条款要求逐项作答，两者配合才能让合并后的证据真正被用上。
+MULTI_ITEM_CLAUSE = (
+    "本题为多项必答：严格按上下文的“必答清单”逐项作答，每项单独一行，"
+    "写清公司、年份、指标、原文精确数值、原文单位和引用编号，不得合并或省略；"
+    "不同公司/年份的证据不得互相替代；同一指标若原文存在多个口径"
+    "（如营业收入/营业总收入），须同时列出各口径数值并标注口径；"
+    "清单中标注“证据缺失”的项，必须明确说明该项无法回答，不得推测。"
 )
 # 数字纪律：针对实测的两类错答——模型自行换算单位后给出错值、
 # 以及跨公司题把两家的数字混配（ar-crossco-002 出现过 18,606,756,000 / 186.07）
@@ -477,6 +487,8 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
                            "\n（以上只影响回答口径与风格；具体事实仍必须来自上下文。）",
             }
         extra_clauses = [NUMERIC_DISCIPLINE]
+        if len(state.get("obligations") or []) > 1:
+            extra_clauses.append(MULTI_ITEM_CLAUSE)
         if not (state.get("retrieval_score") or {}).get("passed", True):
             extra_clauses.append(UNCERTAIN_CLAUSE)
         # 上游 system prompt 已编号到 6，这里接着往下编
@@ -576,6 +588,16 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
         obligations = state.get("obligations") or []
         audit = audit_answer(
             answer, citations, chunks, question, obligations=obligations)
+        recited = rebind_numeric_citations(answer, chunks, question, audit)
+        if recited:
+            answer = recited
+            citations = [
+                enrich_citation(citation, runtime.page_offsets, chunks)
+                for citation in CitationExtractor().extract(answer, chunks)
+            ]
+            audit = audit_answer(
+                answer, citations, chunks, question,
+                obligations=obligations)
         hard = audit.get("hard_violations") or []
         soft = audit.get("soft_issues") or []
         effective_repair = (
@@ -665,6 +687,8 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
             "fixed": False,
         }
         update: Dict[str, Any] = {
+            "answer": answer,
+            "citations": citations,
             "claims": audit.get("claims") or [],
             "answer_audit": audit,
             "needs_human_review": needs_review,
@@ -684,8 +708,12 @@ def build_nodes(runtime: Any) -> Dict[str, Any]:
                 "soft_issues": len(soft),
                 "repairs": 1 if repair_result else 0,
                 "fixed": False,
+                "recited": bool(recited),
             }],
         }
+        if recited:
+            update["grounding"] = verify_grounding(
+                answer, citations, chunks, question)
         if repair_result:
             repair_result = dict(repair_result)
             update["repair_history"] = [record]
